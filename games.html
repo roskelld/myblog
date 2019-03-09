@@ -1,0 +1,157 @@
+---
+layout: page
+permalink: /games/
+title: Games
+order: 3
+description: Game/Software Developer since 1997. Dean has worked on 16 published games across all major platforms. He has recently been developing web-based applications centered around Bitcoin & Lightning Network technologies. He is based in Edmonton, Canada.
+---
+<div class="row">
+    <div class="col s12 m12 l7">
+        {% for game in site.data.games.games %}
+        <div id="content-{{game.id}}"class="section content-panel hide">
+            <div class="row">
+                <div class="col s12 soft-grey-text title center-align">
+                    {{ game.title }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12 m3">
+                    Platform(s):
+                </div>
+                <div class="col s12 m9">
+                    {{ game.platforms }}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col s6 padding-left-0 padding-right-0">
+                    <div class="col s12 m6">
+                        Genre:
+                    </div>
+                    <div class="col s12 m6">
+                        {{ game.genre }}
+                    </div>
+                </div>
+                <div class="col s6 padding-left-0 padding-right-0">
+                    <div class="col s12 m6">
+                        Release:
+                    </div>
+                    <div class="col s12 m6">
+                        {{ game.release }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col s6 padding-left-0 padding-right-0">
+                    <div class="col s12 m6">
+                        Company:
+                    </div>
+                    <div class="col s12 m6">
+                        {{ game.company }}
+                    </div>
+                </div>
+                <div class="col s6 padding-left-0 padding-right-0">
+                    <div class="col s12 m6">
+                        Publisher:
+                    </div>
+                    <div class="col s12 m6">
+                        {{ game.publisher }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col s12 m3">
+                    Role(s):
+                </div>
+                <div class="col s12 m9">
+                    {{ game.role }}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col s12 m3">
+                    Responsibilities:
+                </div>
+                <div class="col s12 m9">
+                    {{ game.work }}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col s12 m3">
+                    Technology:
+                </div>
+                <div class="col s12 m9">
+                    {{ game.technology }}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col s6 padding-left-0 padding-right-0">
+                    <div class="col s12 m6">
+                        Team Size:
+                    </div>
+                    <div class="col s12 m6">
+                        {{ game.team_size }}
+                    </div>
+                </div>
+                <div class="col s6 padding-left-0 padding-right-0">
+                    <div class="col s12 m6">
+                        Dev Time:
+                    </div>
+                    <div class="col s12 m6">
+                        {{ game.dev_time }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                {% if game.trailer != '' %}
+                <div class="col s6 padding-left-0 padding-right-0">
+                    <div class="col s12 m6">
+                        Trailer:
+                    </div>
+                    <div class="col s12 m6">
+                        <a href="{{ game.trailer }}" target="_none"><i class="fas fa-film fa-2x"></i></a>
+                    </div>
+                </div>
+                {% endif %}
+                {% if game.website != '' %}
+                <div class="col s6 padding-left-0 padding-right-0">
+                    <div class="col s12 m6">
+                        Website:
+                    </div>
+                    <div class="col s12 m6">
+                        <a href="{{ game.website }}" target="_none"><i class="fas fa-home fa-2x"></i></a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            {% if game.description != '' %}
+            <div class="row">
+                <div class="col s12 offset-m2 m8">
+                    <h3>Description:</h3>
+                    <p>{{ game.description }}</p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="col s12 l5">
+        {% for game in site.data.games.games %}
+            <div class="col s4 m2 l6 xl3">
+                <div class="card card-link z-depth-0" id="card-{{ game.id }}" data-target="{{ game.id }}">
+                    <div class="card-image"><img src="{{base}}/img/product/{{ game.id }}.png" title="{{ game.title }}"></div>
+                    {% if game.release == "N/A" %}
+                        <span class="unreleased">unreleased</span>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
