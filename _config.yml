@@ -25,7 +25,7 @@ url: "https://deanroskell.com" # the base hostname & protocol for your site, e.g
 twitter_username: roskelld
 github_username:  roskelld
 
-paginate: 5
+# paginate: 5
 
 # Build settings
 markdown: kramdown
