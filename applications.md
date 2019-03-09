@@ -2,7 +2,7 @@
 layout: page
 title: Applications
 permalink: /applications/
-description: Game/Software Developer since 1997. Dean has worked on 16 published games across all major platforms. He has recently been developing web-based applications centered around Bitcoin & Lightning Network technologies. He is based in Edmonton, Canada.
+description: Game & Software Developer since 1997. Dean has worked on 16 published games across all major platforms. He has recently been developing web-based applications centered around Bitcoin & Lightning Network technologies. He is based in Edmonton, Canada.
 order: 4
 ---
 

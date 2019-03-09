@@ -2,7 +2,7 @@
 layout: page
 title: Articles
 permalink: /articles/
-description: Game/Software Developer since 1997. Dean has worked on 16 published games across all major platforms. He has recently been developing web-based applications centered around Bitcoin & Lightning Network technologies. He is based in Edmonton, Canada.
+description: Game & Software Developer since 1997. Dean has worked on 16 published games across all major platforms. He has recently been developing web-based applications centered around Bitcoin & Lightning Network technologies. He is based in Edmonton, Canada.
 order: 2
 ---
 <div class="slim">
@@ -11,19 +11,19 @@ order: 2
 			<h3>Articles</h3>
 		</div>
 	</section>
-	{% for post in site.posts %}
+	{% for p in site.posts %}
 	<section class="flex-row">
 		<article class="article-card">
 			<header>
 				<strong>Article</strong>
-				<time class="spanish-grey-text">{{ post.date | date_to_long_string: "ordinal", "US" }}</time>
+				<time class="spanish-grey-text">{{ p.date }}</time>
 			</header>
 			<h2 class="hvr-bounce-to-top">
-				<a class="soft-grey-text-2" href="{{ post.url}}">{{ post.title }}</a>
+				<a class="soft-grey-text-2" href="{{ post.url}}">{{ p.title }}</a>
 			</h2>
-			{{ post.excerpt }}<a class="inline" href="{{ post.url }}">Read Article</a>
+			{{ p.excerpt }}<a class="inline" href="{{ post.url }}">Read Article</a>
 			<p>
-				{% for c in post.tags %}
+				{% for c in p.tags %}
 				<div class="chip">{{ c }}</div>
 				{% endfor %}
 			</p>
