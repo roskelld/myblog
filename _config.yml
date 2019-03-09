@@ -20,7 +20,7 @@ description: >- # this means to ignore newlines until "baseurl:"
     across all major platforms. He has recently been developing web-based
     applications centered around Bitcoin & Lightning Network technologies.
     He is based in Edmonton, Canada.
-baseurl: "" # the subpath of your site, e.g. /blog
+baseurl: "myblog" # the subpath of your site, e.g. /blog
 url: "https://deanroskell.com" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: roskelld
 github_username:  roskelld
