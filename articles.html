@@ -16,12 +16,12 @@ order: 2
 		<article class="article-card">
 			<header>
 				<strong>Article</strong>
-				<time class="spanish-grey-text">{{ p.date }}</time>
+				<time class="spanish-grey-text">{{ p.date | date: "%-d %B %Y" }}</time>
 			</header>
 			<h2 class="hvr-bounce-to-top">
-				<a class="soft-grey-text-2" href="{{ post.url}}">{{ p.title }}</a>
+				<a class="soft-grey-text-2" href="{{ p.url }}">{{ p.title }}</a>
 			</h2>
-			{{ p.excerpt }}<a class="inline" href="{{ post.url }}">Read Article</a>
+			{{ p.excerpt }}<a class="inline" href="{{ p.url }}">Read Article</a>
 			<p>
 				{% for c in p.tags %}
 				<div class="chip">{{ c }}</div>

@@ -1,18 +1,18 @@
 ---
 layout: page
-permalink: /games/
-title: Games
-order: 3
+title: Applications
+permalink: /applications/
 description: Game & Software Developer since 1997. Dean has worked on 16 published games across all major platforms. He has recently been developing web-based applications centered around Bitcoin & Lightning Network technologies. He is based in Edmonton, Canada.
+order: 4
 ---
 <div class="row">
     <div class="col s12 m12 l7">
-        {% for game in site.data.games.games %}
-        <div id="content-{{game.id}}"class="section content-panel card-panel z-depth-0 hide">
+        {% for p in site.data.apps.apps %}
+        <div id="content-{{p.id}}"class="section content-panel card-panel z-depth-0 hide">
             <div class="row">
                 <div class="col s12">
                     <div class="soft-grey-text title center-align">
-                        {{ game.title }}
+                        {{ p.title }}
                     </div>
                 </div>
             </div>
@@ -23,7 +23,7 @@ description: Game & Software Developer since 1997. Dean has worked on 16 publish
                     </div>
                 </div>
                 <div class="col s12 m9">
-                    <div class="soft-grey-text detail-data"> · {% for p in game.platforms %}{{ p }} · {% endfor %}
+                    <div class="soft-grey-text detail-data"> · {% for p in p.platforms %}{{ p }} · {% endfor %}
                     </div>
                 </div>
             </div>
@@ -37,7 +37,7 @@ description: Game & Software Developer since 1997. Dean has worked on 16 publish
                     </div>
                     <div class="col s12 m6">
                         <div class="soft-grey-text detail-data">
-                            {{ game.genre }}
+                            {{ p.genre }}
                         </div>
                     </div>
                 </div>
@@ -49,7 +49,7 @@ description: Game & Software Developer since 1997. Dean has worked on 16 publish
                     </div>
                     <div class="col s12 m6">
                         <div class="soft-grey-text detail-data">
-                            {{ game.release }}
+                            {{ p.release }}
                         </div>
                     </div>
                 </div>
@@ -64,7 +64,7 @@ description: Game & Software Developer since 1997. Dean has worked on 16 publish
                     </div>
                     <div class="col s12 m6">
                         <div class="soft-grey-text detail-data">
-                            {{ game.company }}
+                            {{ p.company }}
                         </div>
                     </div>
                 </div>
@@ -76,7 +76,7 @@ description: Game & Software Developer since 1997. Dean has worked on 16 publish
                     </div>
                     <div class="col s12 m6">
                         <div class="soft-grey-text detail-data">
-                            {{ game.publisher }}
+                            {{ p.publisher }}
                         </div>
                     </div>
                 </div>
@@ -88,7 +88,7 @@ description: Game & Software Developer since 1997. Dean has worked on 16 publish
                         Role(s):
                     </div>
                 </div>
-                <div class="col s12 m9"> · {% for p in game.role %}{{ p }} · {% endfor %}
+                <div class="col s12 m9"> · {% for p in p.role %}{{ p }} · {% endfor %}
                 </div>
             </div>
 
@@ -98,7 +98,7 @@ description: Game & Software Developer since 1997. Dean has worked on 16 publish
                         Responsibilities:
                     </div>
                 </div>
-                <div class="col s12 m9"> · {% for p in game.work %}{{ p }} · {% endfor %}
+                <div class="col s12 m9"> · {% for p in p.work %}{{ p }} · {% endfor %}
                 </div>
             </div>
 
@@ -108,7 +108,7 @@ description: Game & Software Developer since 1997. Dean has worked on 16 publish
                         Technology:
                     </div>
                 </div>
-                <div class="col s12 m9"> · {% for p in game.technology %}{{ p }} · {% endfor %}
+                <div class="col s12 m9"> · {% for p in p.technology %}{{ p }} · {% endfor %}
                 </div>
             </div>
 
@@ -120,7 +120,7 @@ description: Game & Software Developer since 1997. Dean has worked on 16 publish
                         </div>
                     </div>
                     <div class="col s12 m6">
-                        {{ game.team_size }}
+                        {{ p.team_size }}
                     </div>
                 </div>
                 <div class="col s6 padding-left-0 padding-right-0">
@@ -130,13 +130,13 @@ description: Game & Software Developer since 1997. Dean has worked on 16 publish
                         </div>
                     </div>
                     <div class="col s12 m6">
-                        {{ game.dev_time }}
+                        {{ p.dev_time }}
                     </div>
                 </div>
             </div>
 
             <div class="row">
-                {% if game.trailer != '' %}
+                {% if p.trailer != '' %}
                 <div class="col s6 padding-left-0 padding-right-0">
                     <div class="col s12 m6">
                         <div class="soft-grey-text detail-header right-on-med-and-up">
@@ -144,11 +144,11 @@ description: Game & Software Developer since 1997. Dean has worked on 16 publish
                         </div>
                     </div>
                     <div class="col s12 m6">
-                        <a href="{{ game.trailer }}" target="_none"><i class="fas fa-film fa-2x"></i></a>
+                        <a href="{{ p.trailer }}" target="_none"><i class="fas fa-film fa-2x"></i></a>
                     </div>
                 </div>
                 {% endif %}
-                {% if game.website != '' %}
+                {% if p.website != '' %}
                 <div class="col s6 padding-left-0 padding-right-0">
                     <div class="col s12 m6">
                         <div class="soft-grey-text detail-header right-on-med-and-up">
@@ -156,17 +156,17 @@ description: Game & Software Developer since 1997. Dean has worked on 16 publish
                         </div>
                     </div>
                     <div class="col s12 m6">
-                        <a href="{{ game.website }}" target="_none"><i class="fas fa-home fa-2x"></i></a>
+                        <a href="{{ p.website }}" target="_none"><i class="fas fa-home fa-2x"></i></a>
                     </div>
                 </div>
                 {% endif %}
             </div>
 
-            {% if game.description != '' %}
+            {% if p.description != '' %}
             <div class="row">
                 <div class="col s12 offset-m2 m8">
                     <h3>Description:</h3>
-                    <p>{{ game.description }}</p>
+                    <p>{{ p.description }}</p>
                 </div>
             </div>
             {% endif %}
@@ -175,11 +175,11 @@ description: Game & Software Developer since 1997. Dean has worked on 16 publish
     </div>
 
     <div class="col s12 l5">
-        {% for game in site.data.games.games %}
+        {% for p in site.data.apps.apps %}
             <div class="col s4 m2 l6 xl3">
-                <div class="card card-link z-depth-0" id="card-{{ game.id }}" data-target="{{ game.id }}">
-                    <div class="card-image"><img src="{{base}}/img/product/{{ game.id }}.png" title="{{ game.title }}"></div>
-                    {% if game.release == "N/A" %}
+                <div class="card card-link z-depth-0" id="card-{{ p.id }}" data-target="{{ p.id }}">
+                    <div class="card-image"><img src="{{base}}/img/product/{{ p.id }}.png" title="{{ p.title }}"></div>
+                    {% if p.release == "N/A" %}
                         <span class="unreleased">unreleased</span>
                     {% endif %}
                 </div>

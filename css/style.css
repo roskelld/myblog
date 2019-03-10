@@ -859,6 +859,7 @@ h5 {
 .content-panel {
     /* opacity: 0 !important; */
     animation: fader 0.4s cubic-bezier(.91, .01, .65, 1) forwards;
+    background-color: inherit !important;
 }
 
 .btn-flat {
