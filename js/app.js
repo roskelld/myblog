@@ -4,8 +4,6 @@
  * Copyright Dean Roskell 2019
  * @author Dean Roskell <deanroskell@protonmail.com>
  */
-
-
 // Use https://jscompress.com/
 class WebSite {
     constructor() {
