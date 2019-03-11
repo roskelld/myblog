@@ -11,22 +11,27 @@ class CardPanels {
 
     init() {
         this.setCardLinks();
+        const h = window.location.hash;
+        if ( h !== "" )
+            this.selectCard( h.substr(1, h.length ) );
+
+        // If the address changes then react to it
+        window.addEventListener( 'hashchange', () => {
+            const h = window.location.hash;
+            if ( h !== "" )
+                this.selectCard( h.substr(1, h.length ) );
+        }, false );
     }
 
     setCardLinks() {
         this.cards.forEach( card => {
             card.addEventListener( 'click', e => {
                 this.selectCard( card.dataset.target );
-                console.log( card.dataset.target );
                 // Update URI
-                const h = window.location.hash;
-                const hash = ( h.includes("?") ) ? h.substr(0, h.indexOf("?") ) : h;
-                const uri = `${hash}${this.itemURI}${card.dataset.target}`;
-                // this.pushState( uri, card.dataset.target );
-                // window.history.pushState( { id: `#${uri}` }, 'Dean Roskell', `${uri}` );
+                window.location.hash = `${card.dataset.target}`;
                 window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
                 // this.setPageMetaData();
-
+                this.sendGA( card.firstElementChild.firstElementChild.title );
             }, false );
         });
     }
@@ -49,6 +54,16 @@ class CardPanels {
     hideAllCardPages() {
         this.panels.forEach( c => c.classList.add( 'hide') );                   // Hide all content
     }
+
+    sendGA( title ) {
+        // const item = this.getDataFromURI();
+
+        // let title = `${Utils.capitalize(item.type)}`
+        // if ( item.title !== null ) title += ` - ${item.title}`;
+        ga('set', { page: `${window.location.pathname}`, title: title } );
+        ga('send', 'pageview');
+    }
+
 }
 
 new CardPanels();
