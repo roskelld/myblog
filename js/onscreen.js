@@ -26,3 +26,5 @@ class FadeInOnScreen {
         });
     }
 }
+
+new FadeInOnScreen();

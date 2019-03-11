@@ -50,3 +50,5 @@ class CardPanels {
         this.panels.forEach( c => c.classList.add( 'hide') );                   // Hide all content
     }
 }
+
+new CardPanels();

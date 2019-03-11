@@ -22,11 +22,11 @@ order: 2
 				<a class="soft-grey-text-2" href="{{ p.url }}">{{ p.title }}</a>
 			</h2>
 			{{ p.excerpt }}<a class="inline" href="{{ p.url }}">Read Article</a>
-			<p>
+			<div>
 				{% for c in p.tags %}
 				<div class="chip">{{ c }}</div>
 				{% endfor %}
-			</p>
+			</div>
 		</article>
 
     </section>

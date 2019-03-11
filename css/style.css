@@ -902,7 +902,7 @@ a.text-link:visited {
 }
 
 code {
-    overflow: hidden;
+    /* overflow: hidden;
     white-space: nowrap;
     font-size: 0.8em !important;
     color: rgb(228, 131, 2);
@@ -910,7 +910,7 @@ code {
     font-weight: bold !important;
     background-color: rgb(85, 85, 85);
     border-radius: 0.5em;
-    padding: 2px 8px 2px 8px;
+    padding: 2px 8px 2px 8px; */
 }
 
 .center-img {
