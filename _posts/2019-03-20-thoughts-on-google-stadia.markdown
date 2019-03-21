@@ -4,17 +4,17 @@ type: blog
 title:  "Thoughts on the Google Stadia Announcement"
 description: "Google announced their video game console-like service named Stadia. Here are my thoughts."
 date:   2019-03-20 22:00:20 -0700
-tags:
+tags: Google Stadia Console Thoughts
 excerpt_separator: <!--more-->
 published: true
 ---
 
 _EDIT: This ended up way longer and more rambling than I expected, but hey it was my stream of thoughts and I don't have much control over them. I'll improve my process in time._
 
-<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/ZbzZJVXK8Tg" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
 Yesterday Google announced their video game console-like service named [Stadia](https://store.google.com/magazine/stadia). I initially saw the promotional video and was left quite perplexed, as it seemed like an exercise in creating a marketing video, filled with cliched statements and stock visuals of people in varying states of excitement, but zero information on what it was actually selling or revealing. Very odd.
 <!--more-->
+<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/ZbzZJVXK8Tg" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
 Thankfully the following presentation gave us something more tangible to understand and gather our thoughts over. So having let it swirl around my mind I thought it would be good to put down some thoughts and opinions on Stadia.
 NOTE: _These are just thoughts and reactions, some of my information might be incorrect or outdated by the time you read this._
 
