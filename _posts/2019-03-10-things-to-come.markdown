@@ -2,6 +2,7 @@
 layout: post
 type: blog
 title:  "of things to come"
+description: "A promise to write"
 date:   2019-03-10 11:00:20 -0700
 tags:
 excerpt_separator: <!--more-->

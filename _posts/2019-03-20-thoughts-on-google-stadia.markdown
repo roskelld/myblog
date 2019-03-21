@@ -2,9 +2,10 @@
 layout: post
 type: blog
 title:  "Thoughts on the Google Stadia Announcement"
-description: Google announced their video game console-like service named Stadia. Here are my thoughts.
+description: "Google announced their video game console-like service named Stadia. Here are my thoughts."
 date:   2019-03-20 22:00:20 -0700
 tags:
+excerpt_separator: <!--more-->
 published: true
 ---
 
