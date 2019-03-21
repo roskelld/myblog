@@ -21,12 +21,15 @@ order: 2
 			<h2 class="hvr-bounce-to-top">
 				<a class="soft-grey-text-2" href="{{ p.url }}">{{ p.title }}</a>
 			</h2>
-			{{ p.excerpt }}<a class="inline" href="{{ p.url }}">Read Article</a>
+			{{ p.excerpt }}
 			<div>
 				{% for c in p.tags %}
 				<div class="chip">{{ c }}</div>
 				{% endfor %}
 			</div>
+			<!-- <div>
+				<a class="inline" href="{{ p.url }}">Read Article</a>
+			</div> -->
 		</article>
 
     </section>
