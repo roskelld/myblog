@@ -8,5 +8,4 @@ document.addEventListener( 'DOMContentLoaded', function() {
     sideNavBtn.addEventListener( 'click', () => {
         sideNav[0].open();
     }, false );
-    
 }, false );

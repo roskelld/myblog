@@ -32,6 +32,29 @@ time {
 .inline {
     display: inline-block;
 }
+
+.button-filled {
+    max-width: 0.5em !important;
+    max-height: 25px !important;
+    height: 25px !important;
+    overflow: hidden;
+    word-wrap: normal;
+    padding: 0 !important;
+    line-height:  1.7em !important;
+    box-shadow:  inherit !important;
+    filter: grayscale(100%) !important;
+    margin: 0 0 7px 0 !important;
+}
+
+ul:not(.browser-default) {
+    list-style: inherit !important;
+}
+
+li {
+    list-style: inherit !important;
+    padding-bottom: 0.5em;
+}
+
 /* ****************************************************************************/
 /* ARTICLE CARD
 /* ****************************************************************************/

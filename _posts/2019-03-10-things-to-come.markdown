@@ -1,8 +1,9 @@
 ---
 layout: post
+type: blog
 title:  "of things to come"
 date:   2019-03-10 11:00:20 -0700
-tags: 
+tags:
 excerpt_separator: <!--more-->
 published: true
 ---
