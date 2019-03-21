@@ -12,7 +12,7 @@ published: true
 Like many people I use my iPhone for working out, there's a lot of apps that are great for tracking sessions, and it's able to tell you distances, footsteps and elevation. I don't have an Apple Watch, but I know that it can add more such as heart rate tracking.
 <!--more-->
 
-# The Problem
+## The Problem
 
 More than use my iPhone for logging workouts, I also use it to play music or podcasts during a workout, and I also like to mark workouts on my calendar so I can track my progress. Now that's three things I have to do for every session.
 
@@ -22,7 +22,7 @@ More than use my iPhone for logging workouts, I also use it to play music or pod
 
 Ok, so it's not too bad, but I found myself asking, why can't I just press one button and have all this done instead of loading and running each app in sequence, that's like 10 clicks. I ain't got time for 10 clicks!
 
-# The Solution
+## The Solution
 
 ![Apple Shortcuts App](/assets/apple-shortcuts-app.jpg)
 

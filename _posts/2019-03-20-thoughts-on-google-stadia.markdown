@@ -20,10 +20,10 @@ NOTE: _These are just thoughts and reactions, some of my information might be in
 
 <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/nUih5C5rOrA" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
-# From Streaming Video to Streaming Interactive Entertainment
+## From Streaming Video to Streaming Interactive Entertainment
 At its core what Stadia is presenting is not a new idea nor is it the first of its kind. In the last decade, we've seen a number of services offer streaming gaming to a device the ones that come to mind are [Gaikai](https://en.wikipedia.org/wiki/Gaikai) and [OnLive](https://en.wikipedia.org/wiki/OnLive) The former was launched by Dave Perry, he of Earthworm Jim fame, that service was acquired by Sony in 2012 to become part of their PlayStation Now platform. Onlive, which started much earlier back in 2003 also ended up part of Sony's PlayStation Now platform after they acquired its patents.
 
-# Lag
+## Lag
 My limited time with the previous streaming services raised a number of concerns, one of which being input lag due to a poor connection with the server. Google makes claims that they have solved this issue thanks to their server configuration, and more so geographical server placement. They have spent many years building out a server infrastructure across the globe to reduce the physical distance from the user to the server data. Whilst this is a very important factor in delivering a good gaming experience, however, it's one of the areas where I raise my flag of concern. Essentially what Google is trying to address with their [Edge Network](https://peering.google.com) is the issues surrounding the speed of light, that darn universal law we're finding so hard to overcome.
 
 Let me explain, for situations like webpages, music and Youtube videos, there's a high goal of being able to quickly respond to an input, be it a link or a play button. I'm sure many of you, myself included, has clicked on a web link and after getting no response within one or two seconds become frustrated. This is a created problem with navigating the web thanks to the technological successes we've seen from the likes of Google, Amazon and many other companies. They've built out these extensive datacenters which can deliver content to users extremely fast, so much so it's become expected, so now when it doesn't happen we feel disappointed, maybe even angry.
@@ -34,7 +34,7 @@ So the frustration you feel when a webpage doesn't load in a second or two is a 
 
 What happens if the same problem occurs during a game? It could be one of many things, at best, there's a stutter and after a few seconds, you can continue to play. If that stutter happens whilst you're doing something challenging, say jumping over a gap or navigating an intricate space that requires a combination of well-timed button presses, that might cost you a life, it might result in the game sending you back to the last checkpoint, or restarting a level, or losing the match. Unlike streaming video, the cost to any hiccups in gaming isn't just time, it can have an actual effect on the outcome, changing the state of the game.
 
-# Client and Server Relationship
+## Client and Server Relationship
 Online Gaming has been around pretty much since the start of the video game movement with many modern genres having their roots tied to the origins of the great mainframes run out of universities connected over a pre-internet network. This approach came at a great cost and limited what games could do because the server had to compute 100% of what each connected client saw, but with the advent of the home-computer developers found that there was a good line to be found between server side and client side processing. Servers started to become more about being the hosts of critical data and decision making, and the client could focus on aesthetic and rendering information unique to the viewing player.
 
 This server and client divide coupled with the growth in power of graphics cards gave way to games looking richer and more varied, it allowed servers to advance in calculating key data and improve the pathways for exchanging data between the client and server by limiting it down to mission-critical information such as avatar location, bullet fired, collision, health state.
@@ -47,22 +47,22 @@ The upside is that there's a very low barrier to entry to play any supported gam
 
 The downside is the service is wholly reliant on the server giving users no access if they're not online or have a poor/spotty internet connection.  
 
-# Games are not linear
+## Games are not linear
 Streaming services are a great fit for linear mediums, books start on page one and are read in a linear fashion, movies start at the beginning and run through to the end, music starts and plays in the same way. Games often do not, they're dynamic, and even what we consider linear games are often far more branching than any movie, book or song.
 This means that it's harder to package the data for a game to stream it to the user. In comparison to a movie, where your options are limited to play, pause or scrub linearly to another point in time. Games don't just differ with every button press, each instance of a game differs from each other. Meaning every game is a unique event and will differ in ways impossible to imagine from any other instance of that game.
 This means that it's also impossible to pre-generate content before a player has performed an input as the action could completely change the timeline of events, one second the player's avatar is alive, and the next it's dead, but it could have easily just as much stayed living.
 It's certainly feasible to suggest that perhaps Google is working on some form of input prediction system here where it might guess what the player is about to do, or pre-calculate every eventuality, but that seems like a very heavy weight solution to a problem we needn't have if the player didn't have to stream the game to play it.
 
-# Bandwidth
+## Bandwidth
 Many ISPs limit or charge for the amount of bandwidth use, even some services that advertise unlimited in fact do have a limit which is buried in their terms and conditions. With Strata, Google is proposing another reason to eat away at bandwidth caps because the delivery system for the games is the same as streaming a Netflix show or Youtube video. The higher the resolution of the video the more data has to be streamed down the pipe.
 
 Services like Netflix, Youtube, and Spotify all offer the ability to download and enjoy offline, which I find really useful when travelling as it saves on mobile data. They can do this because the client is able to decode and play music and video. That's not the case with a game as it cannot be stored in the same sort of format, to play a game offline Google would have to offer a device resembling a game console or PC, which you might have already seen around, we call them games consoles and PC.
 
-# Immediacy
+## Immediacy
 There's certainly something to be said about Google approach to this in solving the problem of immediacy. As mentioned before, we can find ourselves losing interest if a response to action takes more than a few seconds, so with the current model of gaming, where a user might be required to download 40-100GB of data before being able to play a game, you could be talking many hours or even a day before getting a response to that click, which doesn't make for a good UX.
 Some games are now structured to combat this by segmenting their dataset such that a playable version of the game can be downloaded, which can get the game running in minutes, leaving the bulk of the data to trickle down whilst the user is playing the game. This is still not a solution to the immediate play problem, so Stadia is on the right track with that as games compete for our time along with the likes of Netflix, Youtube and other forms of entertainment which are not subject to the delay to start problem.
 
-# Monetization
+## Monetization
 We've seen the ways that games can monetize grow drastically over the last few years. For decades we either paid per go at an arcade by dropping a quarter in the slot, or we bought the game outright on some form of a tangible medium such a cartridge, disc or tape. Now games can be monetized through subscription services, through streaming adverts during play, via premium currencies that offer unique or time-saving functionality. So it's clear that the path to making money through games is far from over and there's now a question over how Stadia will look to doing this.
 With Youtube, Google used an advert based monetization system which has allowed an incredible number of video creators a way to earn a living or at least make some money from their content. This process has become quite cyclical however in that because Youtube started to gain a lot of attraction it found it possible to bring adverts on board as a way to monetize, but as both video creators and Google found, there were ways to improve their ways to monetize, for Google that meant better aligning their setup to the needs of the advertisers, and for the video creators, how to better create their content in order to increase the money made per video.
 
@@ -74,7 +74,7 @@ If Stadia goes for a subscription-based service that means there'll be a maximum
 
 Many games already have some form of monetization in them already, which I presume they'd want to keep should they be released on Stadia. This could add layers of complication to the system as users would need to deal with different payment processors. However, Google might throw up restrictions on this type of activity, especially if they feel like they're getting a strong hold on the market. I believe that certain types of monetization are disallowed or at least it's not encouraged on Youtube, and we do have examples such as Twitch partnered streamers are restricted from streaming on other platforms to show how these kinds of services can discourage behaviour which they deem to compete against their own market. Also, another example would be Apple's Appstore and its restriction of including services which compete against their own, such as Amazon not being able to sell Kindle books through the iOS reader.
 
-# Why do this?
+## Why do this?
 Like with most of this post I'm just putting down my thoughts. So one thing is to ponder why Google might want to get into the games market space at all. The easy answer on this is that games are an extremely lucrative market, and Stadia looks to be a very Google-like solution to the problem of how they might get into games. Other companies such as Amazon have looked to come in by offering game server hosting as well as game development, but if there's one thing I know, game development is very hard and requires problem-solving that's quite different from developing tech utilities. Microsoft is another company who came into games, and it's fair to say that it was and still is a bumpy ride to really dig in a find a home.
 So Stadia does feel like it plays to Google's strengths, utilising their knowledge of hosting and distribution. It allows them to fill their catalogue quickly with existing games and leave the challenge of trying to create their own Mario or Halo to a later time, or perhaps never.
 
@@ -82,7 +82,7 @@ Google has shown great interest in data gathering. Right now Google via its Chro
 This means every input, including voice (Many multiplayer games feature voice support), is being procced on a Google server of which they have full access too.
 So if they were to do that what would it mean? Who knows, they could use the data for training algorithms, they could use it for advertising models, they could sell it to other companies who want to get a grasp on the behaviour models.
 
-# Final Thoughts
+## Final Thoughts
 
 My own personal want for the future of gaming is to see growth in the client and server setup, spending the energy on the server to manipulate and react to player inputs, and compute over a dataset before delivering the output to the client to render at a high refresh rate. With the client's processing power being spent on optimising the input to render loop at constant high frame rates without latency issues or external bandwidth problems to hamper it.
 
