@@ -1,7 +1,8 @@
 html {
     overflow-y: scroll;
     overflow-x: hidden;
-    font-family: 'Karla', sans-serif;
+    /* font-family: 'Karla', sans-serif !important; */
+    font-family: 'Nunito', sans-serif !important;
     height: 100%;
     text-rendering: optimizeLegibility !important;
     -webkit-font-smoothing: antialiased !important;
@@ -48,11 +49,16 @@ time {
 
 ul:not(.browser-default) {
     list-style: inherit !important;
+    padding-left: 2em !important;
 }
 
 li {
     list-style: inherit !important;
     padding-bottom: 0.5em;
+}
+
+img {
+    max-width: 100% !important;
 }
 
 /* ****************************************************************************/
@@ -426,8 +432,15 @@ main {
 /* GRID */
 /* ****************************************************************************/
 
-.slim {
+.wide {
     max-width: 960px;
+    margin: 0 auto;
+    padding: 1em;
+}
+
+.slim {
+    /* max-width: 960px; */
+    max-width: 750px;
     margin: 0 auto;
     padding: 1em;
 }
@@ -472,7 +485,7 @@ main {
         /* flex: 1; */
     }
     p {
-        font-size: 1em;
+        font-size: 1.2em;
         line-height: 2em;
     }
 }
@@ -519,7 +532,7 @@ main {
         flex-wrap: wrap;
         justify-content: space-between;
         align-items: flex-start;
-        margin: 7em 0;
+        margin: 5em 0;
     }
     .flex-column > h3 {
         font-size:     2em      !important;
@@ -625,8 +638,8 @@ footer {
 /* ****************************************************************************/
 
 .karla-font {
-    font-family: 'Karla', sans-serif;
-    font-size: 1.3em;
+    font-family: 'Karla', sans-serif !important;
+    font-size: 1em;
     line-height: 1.7em;
 }
 
@@ -673,21 +686,34 @@ p.caption {
     margin-bottom: 2em !important;
 }
 
+h1 {
+    font-family: 'Karla', sans-serif !important;
+}
+
+h2 {
+    font-family: 'Karla', sans-serif !important;
+}
+
 h3 {
+    font-family: 'Karla', sans-serif !important;
     font-size: 1.7em   !important;
+    line-height: 1.7em !important;
 }
 
 h4 {
+    font-family: 'Karla', sans-serif !important;
     font-size: 1.2em !important;
     line-height: 5em !important;
 }
 
 h5 {
+    font-family: 'Karla', sans-serif !important;
     font-size: 1.1em !important;
     font-weight: bold !important;
 }
 
 .title {
+    font-family: 'Karla', sans-serif !important;
     font-size: 1.7em;
     line-height: 1.2em;
     margin: 0.3em;
@@ -975,6 +1001,10 @@ code {
     padding: 2em !important;
 }
 
+.margin-2 {
+    margin: 2em !important;
+}
+
 /* ****************************************************************************/
 /* STORY                                                                       */
 /* ****************************************************************************/
@@ -1050,6 +1080,11 @@ code {
 }
 
 /* Bounce To Right */
+.hvr-overdraw::before {
+    left: -20px !important;
+    right: -20px !important;
+}
+
 .hvr-bounce-to-right {
     display: inline-block;
     vertical-align: middle;
@@ -1227,6 +1262,57 @@ code {
 }
 
 .hvr-bounce-to-top:hover:before, .hvr-bounce-to-top:focus:before, .hvr-bounce-to-top:active:before {
+    -webkit-transform: scaleY(1);
+    transform: scaleY(1);
+    -webkit-transition-timing-function: cubic-bezier(0.52, 1.64, 0.37, 0.66);
+    transition-timing-function: cubic-bezier(0.52, 1.64, 0.37, 0.66);
+}
+
+/* Bounce To Top */
+p a {
+    color: inherit !important;
+
+}
+
+p a {
+    display: inline-block;
+    vertical-align: middle;
+    -webkit-transform: perspective(1px) translateZ(0);
+    transform: perspective(1px) translateZ(0);
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+    position: relative;
+    -webkit-transition-property: color;
+    transition-property: color;
+    -webkit-transition-duration: 0.5s;
+    transition-duration: 0.5s;
+}
+
+p a:before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgb(243, 246, 169);
+    -webkit-transform: scaleY(0.2);
+    transform: scaleY(0.2);
+    -webkit-transform-origin: 50% 100%;
+    transform-origin: 50% 100%;
+    -webkit-transition-property: transform;
+    transition-property: transform;
+    -webkit-transition-duration: 0.5s;
+    transition-duration: 0.5s;
+    -webkit-transition-timing-function: ease-out;
+    transition-timing-function: ease-out;
+}
+
+p a:hover, a:focus, a:active {
+    color: #343434;
+}
+
+p a:hover:before, a:focus:before, a:active:before {
     -webkit-transform: scaleY(1);
     transform: scaleY(1);
     -webkit-transition-timing-function: cubic-bezier(0.52, 1.64, 0.37, 0.66);
