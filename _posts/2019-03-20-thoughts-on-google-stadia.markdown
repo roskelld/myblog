@@ -13,12 +13,12 @@ _EDIT: This ended up way longer and more rambling than I expected, but hey it wa
 
 Yesterday Google announced their video game console-like service named [Stadia](https://store.google.com/magazine/stadia). I initially saw the promotional video and was left quite perplexed, as it seemed like an exercise in creating a marketing video, filled with cliched statements and stock visuals of people in varying states of excitement, but zero information on what it was actually selling or revealing. Very odd.
 <!--more-->
-<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/ZbzZJVXK8Tg" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<iframe width="100%" height="50%" src="https://www.youtube-nocookie.com/embed/ZbzZJVXK8Tg" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope;" allowfullscreen></iframe>
 
 Thankfully the following presentation gave us something more tangible to understand and gather our thoughts over. So having let it swirl around my mind I thought it would be good to put down some thoughts and opinions on Stadia.
 NOTE: _These are just thoughts and reactions, some of my information might be incorrect or outdated by the time you read this._
 
-<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/nUih5C5rOrA" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<iframe width="100%" height="50%" src="https://www.youtube-nocookie.com/embed/nUih5C5rOrA" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 ## From Streaming Video to Streaming Interactive Entertainment
 At its core what Stadia is presenting is not a new idea nor is it the first of its kind. In the last decade, we've seen a number of services offer streaming gaming to a device the ones that come to mind are [Gaikai](https://en.wikipedia.org/wiki/Gaikai) and [OnLive](https://en.wikipedia.org/wiki/OnLive) The former was launched by Dave Perry, he of Earthworm Jim fame, that service was acquired by Sony in 2012 to become part of their PlayStation Now platform. Onlive, which started much earlier back in 2003 also ended up part of Sony's PlayStation Now platform after they acquired its patents.
