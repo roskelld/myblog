@@ -259,6 +259,18 @@ main {
     top: 14px;
 }
 
+ul.sidenav {
+    list-style-type: none !important;
+    padding-left: 0 !important;
+    background-color: inherit !important;
+}
+
+.sidenav li>a:hover {
+    /* list-style-type: none !important; */
+    /* padding-left: 0 !important; */
+    background-color: inherit !important;
+}
+
 @media screen and (min-width: 0px) {
     .logo {
         display: none;
