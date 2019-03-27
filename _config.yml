@@ -14,7 +14,7 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 title: Dean Roskell
-email: roskelld@protonmail.com
+email: hello@deanroskell.com
 description: >- # this means to ignore newlines until "baseurl:"
     Game/Software Developer since 1997. Dean has worked on 16 published games
     across all major platforms. He has recently been developing web-based

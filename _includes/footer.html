@@ -3,10 +3,10 @@
         <div class="col s12">
             <div class="center-align">
                 <!-- <div id="tippin-button" class="btn-flat soft-grey email soft-grey-text" data-dest="roskelld"></div>                 -->
-                <a href="https://twitter.com/roskelld" class="btn-flat" title="Twitter"><i class="soft-grey-text fab fa-twitter fa-2x"></i></a>
-                <a href="https://github.com/roskelld/" class="btn-flat" title="Github"><i class="soft-grey-text fab fa-github fa-2x"></i></a>
+                <a href="https://twitter.com/{{site.twitter_username}}" class="btn-flat" title="Twitter"><i class="soft-grey-text fab fa-twitter fa-2x"></i></a>
+                <a href="https://github.com/{{site.github_username}}/" class="btn-flat" title="Github"><i class="soft-grey-text fab fa-github fa-2x"></i></a>
                 <a href="https://stackoverflow.com/users/6126468/roskelld" class="btn-flat" title="Stack Exchange"><i class="soft-grey-text fab fa-stack-overflow fa-2x"></i></a>
-                <a href="mailto:roskelld@protonmail.com?subject=Hey Dean!" class="btn-flat email" title="email"><i class="soft-grey-text fas fa-envelope fa-2x"></i></a>
+                <a href="mailto:{{site.email}},?subject=Hey Dean!" class="btn-flat email" title="email"><i class="soft-grey-text fas fa-envelope fa-2x"></i></a>
             </div>
             <div class="center-align">
                 <span id="shhh" class="hover-gray-to-color">🍒</span> <span class="grey-text">© 2019 Dean Roskell</span>
@@ -17,8 +17,6 @@
 
     <!-- Scripts -->
     <script src="{{base}}/js/lib/materialize.min.js"></script>
-    <!-- <script src="./js/app.min.js"></script> -->
-    <!-- <script src="{{base}}/js/app.js"></script> -->
     <script src="{{base}}/js/utils.js"></script>
     <script src="{{base}}/js/onscreen.js"></script>
     <script src="{{base}}/js/site.js"></script>
@@ -26,6 +24,3 @@
     {% if page.cardpanel == true %}<script src="{{base}}/js/cardpanel.js"></script>{% endif %}
     {% if page.layout == post %}<script id="dsq-count-scr" src="//deanroskell.disqus.com/count.js" async></script>{% endif %}
 </footer>
-<!-- Beginning of tippin.me Button -->
-
-<!-- End of tippin.me Button -->

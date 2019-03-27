@@ -2,7 +2,7 @@
 /**
  * Website Framework
  * Copyright Dean Roskell 2019
- * @author Dean Roskell <deanroskell@protonmail.com>
+ * @author Dean Roskell <{{site.email}}>
  */
 // Use https://jscompress.com/
 class WebSite {
