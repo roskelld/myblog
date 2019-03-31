@@ -16,16 +16,16 @@ Tomorrow marks the end for Google's lesser known but incredible email applicatio
 
 ## Email is Great
 
-Since the early 90's email went from an interesting novelty to a useful tool, before sadly becoming the bane of peoples lives. Our inboxes became stuffed with junk mail, spam, newsletters and people wanting responses. We invented something that came to hate.
+Since the early 90's email went from an interesting novelty to a useful tool, before sadly becoming the bane of peoples lives. Our inboxes became stuffed with junk mail, spam, newsletters and people wanting responses. We invented something that we came to hate.
 
-As a protocol, email is a truly great thing that has helped the world communicate in an open way without needing to sign up to a centralised service. That's worth taking pause over, as annoyed as you might feel sometimes with email, remember that you can send a message to someone no matter what service they're signed up to or what brand of domain their address is connected to, your message will reach them. Think about that against other messaging services such as Facebook's Messenger, Whatsapp, Signal, and so on, to send and receive messages on those services, you need to create an account with that provider, give them your details (probably an email address) before they grant you with the blessing of being able to message others. What about when those services shut down? What about your contacts list, the addresses used to message them with, the software you run to message them on? With email, unless your address is tied to a service (Hotmail.com, gmail.com), then you can just move that address to another host or decide to host your own server. What if your favourite email software stops getting updated or removed from existence? That would never happen, right?
+As a protocol, email is a great thing that has helped the world communicate in an open way without needing to sign up to a centralised service. That's worth taking pause over, as annoyed as you might feel sometimes with email, remember that you can send a message to someone no matter what service they're signed up to or what brand of domain their address is connected to, your message will reach them. Think about that against other messaging services such as Facebook's Messenger, Whatsapp, Signal, and so on, to send and receive messages on those services you need to create an account with that provider give them your details (probably an email address) before they grant you with the blessing of being able to message others. What about when those services shut down? What about your contacts list, the addresses used to message them with, the software you run to message them on? With email, unless your address is tied to a service (Hotmail.com, gmail.com), then you can just move that address to another host or decide to host your own server. What if your favourite email software stops getting updated or removed from existence? That would never happen, right?
 
 ## Google and Email
 
 ![Gmail Logo](/assets/gmail-logo.png)
 
 Back in 2004, April 1st in fact, Google Launched [Gmail](https://en.wikipedia.org/wiki/History_of_Gmail) and techies everywhere started scrambling to get an invite code, myself included. Hotmail and Yahoo! Mail had been around for a while already, but Google was the hot and hip software developer that seemed to be able to bring some forward thinking to their design, and Gmail was looking to be the next exciting release to follow suit.
-Gmail launched with an inviting and easy to use UI, revolutionary UX thanks to its pioneering use of AJAX to allow for live page updates, and 1GB of storage, which eclipsed other services and their pitiful ~2-25MB.
+Gmail launched with an inviting and easy to use UI, a revolutionary UX thanks to its pioneering use of AJAX to allow for live page updates, and 1GB of storage, which eclipsed other services and their pitiful ~2-25MB.
 
 One of Gmail's key victories was its ability to tackle spam using content analysis across its servers to help predict which emails looked like spam, and what users flagged as spam. This lead to our inboxes looking a lot cleaner and nicer to use. Ten years on Gmail had increased its feature set and updated its design, and whilst it was still a good piece of software it was getting older and the world was changing. So Google decided to ask a question.
 
@@ -37,7 +37,7 @@ With a clean slate, Google looked at the landscape of the tech world, which was 
 * email served people with more than just message correspondence
 * People received a lot of emails and it was causing a notable negative effect their day.
 
-With an idea about the challenges to solve, Google set about building Inbox an entirely new email client from the ground-up for Web, iOS and Android.
+With an idea on which challenges to solve, Google set about building Inbox, an entirely new email client from the ground-up for Web, iOS and Android.
 
 ### Material Design
 
@@ -104,7 +104,7 @@ This approach really helped users work through emails and rid their world of tha
 
 ![Celebrate Email](/assets/inbox-sun-animation.gif)
 
-There was one final seemingly silly addition to this, but as someone who developers games I can tell you that there's nothing silly about it. Once the last email task is complete and the inbox clear, the user is presented with a reward animation. This is no different from the types of tricks used in video games, such as when a high score is exhibited, or a player finishes a level. We create fanfare, we celebrate the moment, and we share in the victory of the achievement. Another place to see this is in sports, we allow athletes time after scoring to perform a celebration dance, to cheer with the fans. It provides us with confirmation of doing well and a dopamine hit that chemically charges us.
+There was one final seemingly silly addition to this, but as someone who develops games I can tell you that there's nothing silly about it. Once the last email task is complete and the inbox clear, the user is presented with a reward animation/image. This is no different from the types of tricks used in video games, such as when a high score is exhibited, or a player finishes a level. We create fanfare, we celebrate the moment, and we share in the victory of the achievement. Another place to see this is in sports, we allow athletes time after scoring to perform a celebration dance, to cheer with the fans. It provides us with confirmation of doing well and a dopamine hit that chemically charges us.
 So why not celebrate ridding the inbox of that final email, that's as good as scoring the winning goal right? It sure feels it.
 
 
