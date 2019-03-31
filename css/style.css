@@ -968,10 +968,10 @@ code {
     font-size: 0.8em !important;
     color: rgb(228, 131, 2);
     font-family: monospace;
-    font-weight: bold !important;
-    background-color: rgb(85, 85, 85);
+    font-weight: bold !important;*/
+    background-color: rgb(233, 233, 233);
     border-radius: 0.5em;
-    padding: 2px 8px 2px 8px; */
+    padding: 2px 8px 2px 8px; 
 }
 
 .center-img {

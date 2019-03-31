@@ -9,6 +9,8 @@ tags: Apple iOS Life-Hacks App UX
 excerpt_separator: <!--more-->
 published: true
 ---
+![Apple Shortcuts App](/assets/apple-shortcuts-app.jpg)
+
 Like many people I use my iPhone for working out, there's a lot of apps that are great for tracking sessions, and it's able to tell you distances, footsteps and elevation. I don't have an Apple Watch, but I know that it can add more such as heart rate tracking.
 <!--more-->
 
@@ -24,7 +26,7 @@ Ok, so it's not too bad, but I found myself asking, why can't I just press one b
 
 ## The Solution
 
-![Apple Shortcuts App](/assets/apple-shortcuts-app.jpg)
+![Apple Shortcuts App](/assets/apple-shortcuts-screenshot.png)
 
 Welcome [Apple Shortcuts ](https://itunes.apple.com/us/app/shortcuts/id915249334?mt=8), so a few months ago after once again me starting my workout but forgetting to start my music, causing me to cancel, load the music then restart my workout, I cracked. I figured there had to be a way to set up something so I searched online and found a link to Shortcuts.
 

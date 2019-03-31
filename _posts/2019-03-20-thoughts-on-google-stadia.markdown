@@ -8,6 +8,7 @@ tags: Google Stadia Console Thoughts
 excerpt_separator: <!--more-->
 published: true
 ---
+![Stadia](/assets/stadia-cloud.png)
 
 _EDIT: This ended up way longer and more rambling than I expected, but hey it was my stream of thoughts and I don't have much control over them. I'll improve my process in time._
 
