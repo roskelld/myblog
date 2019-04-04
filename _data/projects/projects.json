@@ -14,6 +14,7 @@
   "work": ["Presenting", "Management", "Social Media", "Organizer"],
   "trailer": "",
   "website": "https://edmontonbitcoin.org",
+  "link": "",
   "description": "<p>In January 2017 a meetup group was formed to bring people together in Edmonton to talk about Bitcoin. Since that time the <a href=\"https://www.meetup.com/yegbitcoin\">Meetup.com</a> group has grown to over 700 members.</p><p>The core organizers decided that to help improve the setup we would form a company structure to allow us to create a more formalized approach to the meetup, extending the number of monthly events, adding more content, and bringing in a wider range of guest speakers.</p><p>We currently host a range of education, networking and technical growth events per month, covering the complete beginner-to-advanced range of experience levels.</p>"
 },
 {
@@ -32,6 +33,7 @@
   "work": [],
   "trailer": "",
   "link": "",
+  "website": "https://github.com/roskelld/NodeStrikePay",
   "description": "<p>A few years ago I built a small Arcade Cabinet based on the RaspberryPi and custom MAME software <a href=\"https://retropie.org.uk/\">RetroPie</a>, and recently have started modifying it to add a payment system using the Bitcoin <a href=\"https://lightning.network/\">Lightning Network protocol</a>.</p><p>Attached to the machine is a <a href=\"https://www.nodemcu.com/index_en.html\">NODE MCU ESP8266</a> Microcontroller unit (MCU) with WiFi and an <a href=\"https://www.waveshare.com/1.54inch-e-paper-module.htm\">e-Paper screen</a>. The MCU connects to <a href=\"https://acinq.co/\">ACINQ Strike</a> and requests a Lightning Network Invoice, then generates a QR code for the e-Paper screen. A User can then use their own LN enabled Wallet on a phone and scan the QR code. Once a payment signal has been received a credit is issued to MAME.</p>"
 }, {
   "type": "projects",
@@ -48,7 +50,8 @@
   "role": ["Lead Designer", "Programmer"],
   "work": ["Programming", "Locomotion", "Systems"],
   "trailer": "https://www.youtube.com/watch?v=vHKVKo0JcFA&",
-  "link": "/projects/wolf3d",
+  "link": "https://roskelld.github.io/Wolf3DVR/",
+  "website": "",
   "description": "<p>I made this test project whilst I was exploring the possibilities of WebVR tech. This was the second project I worked on and I wanted to test out things like collision, interaction, sound. The idea of using Wolfenstein 3D came about because I wanted something I was familiar with so I could test my results against the existing game. Plus I wanted to see what it felt like to walk around the first FPS game I ever played but in VR.</p><p>This was an interesting experiment. The A-Frame library allows you to create 3D VR enabled spaces using HTML markup, which is great fun though due to it relying on the DOM to create worlds it's not performant for use for spaces which can't be held comfortably in memory at one time; I believe that Wolfenstein 3D could well work as the levels are simple and small enough.</p><a href=\"https://aframe.io/\">A-Frame</a>"
 }, {
  "type": "projects",
@@ -66,6 +69,7 @@
  "work": ["Programming", "Animation", "Audio", "Art", "Design"],
  "trailer": "https://www.youtube.com/watch?v=1udX_m3nE2s",
  "images": [""],
+ "website": "",
  "link": "",
  "description": "<p>After the release of the iPhone and iPod Touch I began to explore the platform and I develop a number of game ideas designed around the touch screen. The goal with most of them was to try and play to the strengths of the device rather than mimic a traditional pad control.</p><p>Bubblefall is one of the ideas that I produced, and prior to developing it on the iPhone I experimented by creating a quick animatic in Flash, to help me figure out the motion and the assets I'd need for the game.</p><p>I also elected to use the Gameboy color palette of green tones, partly because the screen was much nicer than the old Gameboy screen so I wanted to see how a game in that style would look, and also I wanted to make sure I was focusing on the gameplay experience and not getting sidetracked by the graphics.</p><h5>Gameplay</h5><p>The premise of Bubble Fall is to get a high score by collecting the coins which appear on the screen in random waves. To do this the player must place bubbles into the level in order to direct the Hero character. The game finishes if the Hero lands on the ground or gets hit by any of the hazards that spawn in the level. Hazards will also pop bubbles if they touch. The difficulty of the game increases over time as more hazards take up space on the level, making it more challenging to place bubbles and guide the Hero to the coins. Directing the Hero comes from the angle he lands on the Bubble, the positioning of the Bubble and its size. This aspect of the game requires some learning in order to be able to perfect directing the Hero to the coins and navigating the hazards.</p>"
 }]

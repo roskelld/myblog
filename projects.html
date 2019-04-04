@@ -162,6 +162,18 @@ cardpanel: true
                     </div>
                 </div>
                 {% endif %}
+                {% if p.link != '' %}
+                <div class="col s6 padding-left-0 padding-right-0">
+                    <div class="col s12 m6">
+                        <div class="soft-grey-text detail-header right-on-med-and-up">
+                            Launch:
+                        </div>
+                    </div>
+                    <div class="col s12 m6">
+                        <a href="{{ base }}{{ p.link }}" target="_none"><i class="fas fa-rocket fa-2x"></i></a>
+                    </div>
+                </div>
+                {% endif %}
             </div>
 
             {% if p.description != '' %}
