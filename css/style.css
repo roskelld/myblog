@@ -971,7 +971,7 @@ code {
     font-weight: bold !important;*/
     background-color: rgb(233, 233, 233);
     border-radius: 0.5em;
-    padding: 2px 8px 2px 8px; 
+    padding: 2px 8px 2px 8px;
 }
 
 .center-img {
@@ -1399,6 +1399,14 @@ p a:hover:before, a:focus:before, a:active:before {
         opacity: 1;
     }
 }
+
+/******************************************************/
+/*  Coin  */
+/******************************************************/
+
+
+
+
 
 /******************************************************/
 /*  FadeInOnScreen */

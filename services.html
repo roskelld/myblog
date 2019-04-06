@@ -2,7 +2,8 @@
 layout: page
 permalink: /services/
 title: Dean Roskell - Video Game Development Consultant and Design Services
-description: Let's level up your game's design and give player's something to get excited about! Dean Roskell brings nearly 20 years of Game Design experience from some of the worlds biggest AAA games and global brands.
+description: Video Game Design Consultant bringing nearly 20 years of experience to game developers, indie devs, and publishers to create better games and overcome challenges.
+<!-- description: Let's level up your game's design and give player's something to get excited about! Dean Roskell brings nearly 20 years of Game Design experience from some of the worlds biggest AAA games and global brands. -->
 order: 2
 ---
 <div class="wide karla-font">
@@ -36,7 +37,7 @@ order: 2
 
     <section class="flex-row anaglyph-box fadeInOnScreen">
         <div class="box-text">
-            Book my services by email. <a href="mailto:{{site.email}}?&subject=Services Enquiry&body=%0A%0AGame Genre: %0APlatform(s): %0ATarget Market: %0APlanned Release Window: %0ATeam Size: %0ATeam Setup: [Local / Remote]%0ALocation/Timezone: %0AMeeting Avaliablity:%0A%0A%0A%0A" class="flat-btn email" title="email"><i class="coral-reef-text fas fa-envelope spaced fa-2x"></i></a>
+            Get in Touch! <a  href="#service-request" class="flat-btn email" title="email"><i class="coral-reef-text fas fa-arrow-down spaced fa-2x"></i></a>
         </div>
     </section>
 
@@ -73,21 +74,16 @@ order: 2
 
     </section>
 
-    <section class="flex-row">
+    <!-- <section class="flex-row">
         <div class="flex-column fadeInOnScreen">
-            <h5>1. Setup a call</h5>
-            <p>Send me an email outlining the basics of your project:</p>
-            <ul class="browser-default">
-                <li>Genre / Platform(s) / Target Market</li>
-                <li>Planned Release Window</li>
-                <li>Team Size / Structure (Office, Remote)</li>
-            </ul>
-            <p>Include your location time/zone and avaliablity options.</p>
+            <h5>1. Get in touch.</h5>
+            <p>Fill in and submit the contact form below.</p>
+            <p>I'll respond to schedule a time for a Skype call.</p>
         </div>
         <div class="flex-column fadeInOnScreen">
             <h5>2. We talk about your project.</h5>
             <p>During 0.5-1 hour call we'll talk over the project, the team, and the challenges.</p>
-            <p>From this I can start to develop an idea of the work load and we can decide on the best way we can work together to build a solution.</p>
+            <p>We can then start to develop an idea of the work load and the best way we can work together to build a solution.</p>
         </div>
         <div class="flex-column fadeInOnScreen">
             <h5>3. We'll build a plan to success.</h5>
@@ -95,11 +91,64 @@ order: 2
             <p>Work can be scheduled with time breaks to allow for changes to be done before testing the results.</p>
         </div>
 
-    </section>
+    </section> -->
 
-    <section class="flex-row anaglyph-box fadeInOnScreen">
-        <div class="box-text">
-            Book my services by email. <a href="mailto:{{site.email}}?&subject=Services Enquiry&body=%0A%0AGame Genre: %0APlatform(s): %0ATarget Market: %0APlanned Release Window: %0ATeam Size: %0ATeam Setup: [Local / Remote]%0ALocation/Timezone: %0AMeeting Avaliablity:%0A%0A%0A%0A" class="flat-btn email" title="email"><i class="coral-reef-text fas fa-envelope spaced fa-2x"></i></a>
+    <section class="fadeInOnScreen">
+        <div class="row">
+            <div class="col s12">
+                <h2 class="">Get in touch!</h2>
+                <ul class="browser-default">
+                    <li>First hour Skype meeting is a free introduction.</li>
+                    <li>I like to make sure I'm the right fit for the team, no pressure to commit.</li>
+                </ul>
+            </div>
+        </div>
+        <div class="row">
+            <form id="service-request" class="col s12" action="https://formspree.io/hello@deanroskell.com" method="POST">
+                <div class="row">
+                    <div class="input-field col s12 m6">
+                        <input id="first_name" type="text" class="validate" name="name">
+                        <label class="grey-text text-darken-2" for="first_name">Contact Name</label>
+                    </div>
+                    <div class="input-field col s12 m6">
+                        <input id="email" type="email" class="validate" name="email">
+                        <label class="grey-text text-darken-2" for="email">Email</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s6">
+                        <input class="grey-text" id="company" type="text" class="validate" name="company">
+                        <label class="grey-text text-darken-2" for="company">Company Name</label>
+                    </div>
+                    <div class="input-field col s6">
+                        <input id="location" type="text" class="validate" name="location">
+                        <label class="grey-text text-darken-2" for="location">Location (City / Country)</label>
+                    </div>
+                </div>
+                <!-- <div class="row">
+                    <div class="input-field col s6">
+                        <input class="grey-text" id="game_genre" type="text" class="validate" name="genre">
+                        <label class="grey-text text-darken-2" for="game_genre">Game Genre</label>
+                    </div>
+                    <div class="input-field col s6">
+                        <input id="platform" type="text" class="validate" name="platform">
+                        <label class="grey-text text-darken-2" for="platform">Platform(s)</label>
+                    </div>
+                </div> -->
+                <div class="row">
+                    <div class="input-field col s12">
+                        <textarea id="text-area" class="materialize-textarea"></textarea>
+                        <label class="grey-text text-darken-2" for="text-area">Message</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s12">
+                        <a class="waves-effect waves-light btn" onclick="document.querySelector('#service-request').submit()">Let's Talk!</a>
+                    </div>
+                </div>
+
+
+            </form>
         </div>
     </section>
 </div>
