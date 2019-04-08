@@ -444,6 +444,12 @@ ul.sidenav {
 /* GRID */
 /* ****************************************************************************/
 
+.v-wide {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 1em;
+}
+
 .wide {
     max-width: 960px;
     margin: 0 auto;
@@ -487,7 +493,7 @@ ul.sidenav {
     }
     .head-title {
         /* background-color: cyan; */
-        height: 70vh;
+        height: 50vh;
         align-items: flex-end;
         vertical-align: baseline;
         margin: 0 0 0 0;
@@ -670,26 +676,43 @@ p.caption {
 
 @media only screen and (min-width: 0px) {
     h1.welcome {
-        font-size: 1em !important;
-        line-height: 1.5em !important;
-        margin: 0.8rem 1rem 1.68rem 1rem !important;
+        /* font-size: 1em !important; */
+        /* line-height: 1.5em !important; */
+        /* margin: 0.8rem 1rem 1.68rem 1rem !important; */
+
+
+        margin-top: 40px !important;
+        font-size: 25px !important;
+        line-height: 35px !important;
+
+        /* margin: 2.8rem 0 1.68rem 0 !important;
+        max-width: 1040px !important;
+        margin-left: 50px !important;
+        margin-top: 57px !important;
+        margin-right: 50px !important; */
 
     }
 }
 
-@media only screen and (min-width: 500px) {
+@media only screen and (min-width: 600px) {
     h1.welcome {
-        font-size: 1em !important;
-        line-height: 1.5em !important;
-        margin: 0.2rem 0 0.5rem 2em !important;
+        /* font-size: 1em !important;
+        line-height: 1.5em !important; */
+        /* margin: 0.2rem 0 0.5rem 2em !important; */
+        margin-top: 80px !important;
+        font-size: 30px !important;
+        line-height: 50px !important;
     }
 }
 
 @media only screen and (min-width: 750px) {
     h1.welcome {
-        font-size: 2em !important;
+        /* font-size: 2em !important;
         line-height: 1.5em !important;
-        margin: 2.8rem 0 1.68rem 0 !important;
+        margin: 2.8rem 0 1.68rem 0 !important; */
+
+        font-size: 44px !important;
+        line-height: 78px !important;
     }
 }
 
