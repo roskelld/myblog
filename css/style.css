@@ -1822,4 +1822,5 @@ input:not([type]), input[type="text"]:not(.browser-default), input[type="passwor
     /* text-align: center; */
     min-height: 100vh;
     background-attachment: fixed;
+    overflow: hidden;
 }
