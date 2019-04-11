@@ -1663,66 +1663,68 @@ h4.services-offered-header {
 }
 
 
+@media only screen and (min-width: 1000px) {
+    .bg-shape-1 {
+        top: 0vh;
+        left: 50%;
+        height: 130vh;
+        width: 100vw;
+        position: absolute;
+        z-index: -5;
+    }
 
-.bg-shape-1 {
-    width: 2000px;
-    left: calc(100% * 4/12 + (200px / 12));
-    top: -30vh;
-    height: 130vh;
-    position: absolute;
-    z-index: -5;
-}
+    .bg-shape-2 {
+        top: 75vh;
+        left: 5%;
+        border-radius: 50%;
+        height: 150vh;
+        width: 150vh;
+        overflow: hidden;
+        position: absolute;
+        z-index: -5;
+    }
 
-.bg-shape-2 {
-    left: calc(40% * 2/12 + (100px / 12));
-    border-radius: 50%;
-    top: 80vh;
-    height: 100vh;
-    width: 100vh;
-    overflow: hidden;
-    position: absolute;
-    z-index: -5;
-}
+    .bg-shape-3 {
+        top: 190vh;
+        left: 0;
+        height: 200vh;
+        width: 100vw;
+        overflow: hidden;
+        position: absolute;
+        z-index: -5;
+    }
 
-.bg-shape-3 {
-    left: 0;
-    top: 190vh;
-    height: 100vh;
-    width: 100%;
-    overflow: hidden;
-    position: absolute;
-    z-index: -5;
-}
+    .bg-shape-4 {
+        top: 360vh;
+        left: calc(40% * 2/12 + (100px / 12));
+        border-radius: 50%;
+        height: 150vh;
+        width: 150vh;
+        overflow: hidden;
+        position: absolute;
+        z-index: -5;
+    }
 
-.bg-shape-4 {
-    left: calc(40% * 2/12 + (100px / 12));
-    border-radius: 50%;
-    top: 290vh;
-    height: 100vh;
-    width: 100vh;
-    overflow: hidden;
-    position: absolute;
-    z-index: -5;
-}
+    .bg-shape-5 {
+        top: 400vh;
+        left: 0;
+        height: 270vh;
+        width: 100%;
+        overflow: hidden;
+        position: absolute;
+        z-index: -6;
+    }
 
-.bg-shape-5 {
-    left: 0;
-    top: 370vh;
-    height: 270vh;
-    width: 100%;
-    overflow: hidden;
-    position: absolute;
-    z-index: -4;
-}
-
-.bg-shape-6 {
-    width: 2000px;
-    left: calc(100% * 4/12 + (200px / 12));
-    transform: rotate(45deg);
-    top: 660vh;
-    height: 130vh;
-    position: absolute;
-    z-index: -5;
+    .bg-shape-6 {
+        top: 600vh;
+        width: 200vh;
+        right: 0;
+        transform: rotate(45deg);
+        height: 80vh;
+        position: absolute;
+        z-index: -5;
+        overflow: hidden;
+    }
 }
 
 /* ****************************************************************************/
@@ -1822,5 +1824,9 @@ input:not([type]), input[type="text"]:not(.browser-default), input[type="passwor
     /* text-align: center; */
     min-height: 100vh;
     background-attachment: fixed;
+    overflow: hidden;
+}
+
+.circle {
     overflow: hidden;
 }
