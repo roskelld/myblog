@@ -1817,13 +1817,13 @@ input:not([type]), input[type="text"]:not(.browser-default), input[type="passwor
 }
 
 .fixed {
+    background-image: url('{{base}}/assets/mass-effect-andromeda-1.jpg');
     background-color: black;
     position: relative;
     background-position: center center;
     background-repeat: no-repeat;
-    /* text-align: center; */
     min-height: 100vh;
-    background-attachment: fixed;
+    /* background-attachment: fixed; */
     overflow: hidden;
 }
 
