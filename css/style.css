@@ -1829,4 +1829,5 @@ input:not([type]), input[type="text"]:not(.browser-default), input[type="passwor
 
 .circle {
     overflow: hidden;
+    max-width: 100%;
 }
