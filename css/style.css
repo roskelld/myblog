@@ -1823,7 +1823,7 @@ input:not([type]), input[type="text"]:not(.browser-default), input[type="passwor
     background-position: center center;
     background-repeat: no-repeat;
     min-height: 100vh;
-    /* background-attachment: fixed; */
+    background-attachment: fixed;
     overflow: hidden;
 }
 
