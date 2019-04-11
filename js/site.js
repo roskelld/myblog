@@ -8,4 +8,6 @@ document.addEventListener( 'DOMContentLoaded', function() {
     sideNavBtn.addEventListener( 'click', () => {
         sideNav[0].open();
     }, false );
+
+    AOS.init();
 }, false );
