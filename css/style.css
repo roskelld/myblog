@@ -1801,15 +1801,6 @@ input:not([type]), input[type="text"]:not(.browser-default), input[type="passwor
     font-size: 3em !important;
 }
 
-.full-image {
-    min-height: 100vh;
-    /* min-height: 100%; */
-    background-repeat: no-repeat;
-    /* background: 100vh; */
-    background-position: center top;
-    /* background-attachment: fixed; */
-    position: relative;
-}
 
 .layered-image {
     /* position: relative; */
@@ -1824,8 +1815,9 @@ input:not([type]), input[type="text"]:not(.browser-default), input[type="passwor
 }
 
 .fixed {
+    background-color: black;
     position: relative;
-    background-position: center top;
+    background-position: center center;
     background-repeat: no-repeat;
     /* text-align: center; */
     min-height: 100vh;
