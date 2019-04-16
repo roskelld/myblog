@@ -1,0 +1,50 @@
+[{
+    "header": "Web Dev Resources",
+    "links": {
+        "title": "Electron Build Web Apps",
+        "link": "https://electronjs.org/",
+        "favicon": "data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAZ5JREFUOI2lk7+K8lAQxX+ISCxsbAIiWGVBG415hbyFIOmt8yJ5ARuLlC4IFmItBK9uYWFlIXbL4iJpjMj5Gg276BYfHrhc5jJn5tz5A4/oAwvgC7jeztftrf/E/xc+fN9XkiQ6n8+6I8syJUki3/cFfPxF/hwOh5IkY4zCMBQgQGEYyhgjSRoOhwI+HzLfyUEQCJDjOHJdV67rynEcAQqC4GeQXEnf9/2cbNu2PM9Tq9XKFdTrdQGybTsPcvtOH2CRJImMMQLkeZ6q1ap6vZ6MMTocDoqiSKvVKg9ojFGSJAIWBeCt0+kQxzGO43A8HhkMBoxGI4rFIvP5nGaziW3bADiOQxzHtNttgDeAqyQBcl1XgE6nk0ajUZ5xu91qMpnIsqzc58a5Fp61o1KpMJvNcrvRaLBer6nVag++BeD7crkQhiFpmgKwXq+JoojxeMx+v8eyLDabDeVymTRNCcOQLMsAvh+K2O12BWg6nWq32+n9/V3L5VKe5+XyfxbxaRu73a5KpZKA/HZd9882vjxId7w0yrmSV5bpjv9a539I3oLWiqgX/AAAAABJRU5ErkJggg==",
+    },
+    "header": "Web Dev Resources",
+    "links": {
+        "title": "Google Fonts",
+        "link": "https://fonts.google.com/",
+        "favicon": "data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAh1JREFUOI1tkc9OFEEQh7+q7p1llo38i8YDGhMlQfGE3rlzIirwDhzRiCeVxAsvIPEB9ID4KMR4gIvGgxw4KXHZXZbpmS4Ps7O7BDupdHWnv/r9ukpsc5NLK0nmaLff0uk8xmwWMzA7Jk0PSNM3OPcDs8Fzsa2tIXxx8YVW6wl5Xp5jpF9gmDeb+0xNrRIjAJ5OB0QghCN6vftlWSkfj+5VnJ09o9c7ZHJyATM8eQ4i+wMY4Py8jFEHIjAxAaqQZQ9otfbwfs2T5/fI86cDuNslbGwQlpbQ/pUB5DlxeZnxmZmyWK+3Spre8STJNlk2tGsGWYYCJ58+lrQILgSk5vFFQV21dFcU7zzt9mIpM+wsZgjwe/c9kwZeFWk2SRvjtGOBmJGIQJYtesxuXxpjv7sxRuZ2P+BF0CShvbODO/2DiHIeC0QdNbjlK2BUvVohFgQDUSVYJEEQDIcQYqQmknjgFzA/WsDMEFVOXjznugnOCWONJuIUFw0VQWMEke+eEA7wfn6gPOLAN5ok3uFES+UKNsOJAHxT4PWVL9RqAKReEeMKrFCOOMZXYisrUK/vIbJaqcdul9PWX3R6BqeCMy7BTgSFPUTWFe8hz9eAo8qBNhpM37iJU0H/Dx8isg6guAjeQC4WgM/VKAXjmjocoDHioMxV92n4h4wpjCmeZLz/eQFsjRDukmXbqD7CbDaFOqo/ce4r3r9E9Zg4bPQ/N5T4ptlZog0AAAAASUVORK5CYII=",
+    },
+    "header": "Web Dev Resources",
+    "links": {
+        "title": "Materialize CSS",
+        "link": "https://materializecss.com",
+        "favicon": "data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAA3NCSVQICAjb4U/gAAAAb1BMVEVHcEz3n6rzjZjueoH3oa34prH+ytP3pq7sbXT0n6Te4f/1n6r2oKzvh5ftcnrugonsanHtdn7scnn2nqvpeHz3oq75tL/sdn3sZm3xk5fwcHj2cHj+qbT2bXXtbXT8pa/zgYr4lJ3sanHtdX7ydHznWAVpAAAAGnRSTlMA/Pjh0c9EWsZHEcmpIO2Rue2Tu3HxwfK0eGJXBsYAAABvSURBVBiVrc9LFoIwEETRAgJJQEX8AHZ3Ogmy/zUK5+AOqNm7swLOmQ38BDiUf7jTV/AhFX9ARUnaedPuAFpiHCvNYva6WksMiUrevF/uARRZB5hiYXSycgPUiRzqrBN83BS4cOjRJHZoy3A75ccPsmoHKZazawAAAAAASUVORK5CYII="
+    },
+    "header": "Web Dev Resources",
+    "links": {
+        "title": "",
+        "link": "",
+        "favicon": ""
+    },
+    "header": "Javascript",
+    "links": {
+        "title": "Getting creative with the Console API!",
+        "link": "https://areknawo.com/getting-creative-with-the-console-api/",
+        "favicon": "data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAZ5JREFUOI2lk7+K8lAQxX+ISCxsbAIiWGVBG415hbyFIOmt8yJ5ARuLlC4IFmItBK9uYWFlIXbL4iJpjMj5Gg276BYfHrhc5jJn5tz5A4/oAwvgC7jeztftrf/E/xc+fN9XkiQ6n8+6I8syJUki3/cFfPxF/hwOh5IkY4zCMBQgQGEYyhgjSRoOhwI+HzLfyUEQCJDjOHJdV67rynEcAQqC4GeQXEnf9/2cbNu2PM9Tq9XKFdTrdQGybTsPcvtOH2CRJImMMQLkeZ6q1ap6vZ6MMTocDoqiSKvVKg9ojFGSJAIWBeCt0+kQxzGO43A8HhkMBoxGI4rFIvP5nGaziW3bADiOQxzHtNttgDeAqyQBcl1XgE6nk0ajUZ5xu91qMpnIsqzc58a5Fp61o1KpMJvNcrvRaLBer6nVag++BeD7crkQhiFpmgKwXq+JoojxeMx+v8eyLDabDeVymTRNCcOQLMsAvh+K2O12BWg6nWq32+n9/V3L5VKe5+XyfxbxaRu73a5KpZKA/HZd9882vjxId7w0yrmSV5bpjv9a539I3oLWiqgX/AAAAABJRU5ErkJggg=="
+    },
+    "header": "Javascript",
+    "links": {
+        "title": "",
+        "link": "",
+        "favicon": ""
+    },
+    "header": "Javascript",
+    "links": {
+        "title": "",
+        "link": "",
+        "favicon": ""
+    },
+    "header": "Javascript",
+    "links": {
+        "title": "",
+        "link": "",
+        "favicon": ""
+    },
+}]
