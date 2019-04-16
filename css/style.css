@@ -1060,9 +1060,7 @@ h5 {
     font-size: 2em;
     -webkit-font-smoothing: antialiased;
     text-shadow: 1px 1px 1px rgba(0,0,0,0.004);
-    /* font-kerning: none; */
-    /* width: 10em; */
-    width: 8.5em;
+    min-width: 8em;
 }
 
 a.active {
@@ -1668,7 +1666,7 @@ h4.services-offered-header {
         top: 0vh;
         left: 50%;
         height: 130vh;
-        width: 100vw;
+        width: 50vw;
         position: absolute;
         z-index: -5;
     }
@@ -1716,7 +1714,7 @@ h4.services-offered-header {
     }
 
     .bg-shape-6 {
-        top: 600vh;
+        top: 615vh;
         width: 200vh;
         right: 0;
         transform: rotate(45deg);
