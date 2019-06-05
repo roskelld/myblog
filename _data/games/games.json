@@ -141,7 +141,7 @@
   "role": ["Senior Level Designer"],
   "work": ["Level Design", "Combat Design", "Level Scripting", "Boss Fight", "Contract Pitching"],
   "trailer": "https://www.youtube.com/watch?v=dbpi8GIcmGQ",
-  "description": "Employed to redevelop and script fifteen of the game's seventeen levels after the title was picked up by Silverback Studios after the fall of the company Acclaim. <br>The work involved freshening up the level designs to improve quality, and to adapt level design into the rewritten storyline, as well as meeting with prospective publishers and giving presentations of the game prior to it being signed. <br>Core tasks included using the in-house editor for enemy placement, AI scripting, objective triggers, cutscene design/scripting, boss fight design and implementation, sound effect recording and performing, as well as liaising with the art team on any environmental changes and programming team on control and gameplay improvements."
+  "description": "Employed to redevelop and script fifteen of the game's seventeen levels. The games was originally developed by Accliam before they went out of business, and picked up to be completed by Silverback Studios. <br>The work involved freshening up the level designs to improve quality, and to adapt level design into the rewritten storyline, as well as meeting with prospective publishers and giving presentations of the game prior to it being signed. <br>Core tasks included using the in-house editor for enemy placement, AI scripting, objective triggers, cutscene design/scripting, boss fight design and implementation, sound effect recording and performing, as well as liaising with the art team on any environmental changes and programming team on control and gameplay improvements."
 }, {
 
   "id": "nak",
@@ -256,7 +256,7 @@
 }, {
 
   "id": "li2",
-  "title": "LEGO Island 2: Brickster\"s Revenge",
+  "title": "LEGO Island 2: Brickster's Revenge",
   "platforms": ["Gameboy Advance"],
   "genre": "Action",
   "technology": ["In-house"],
@@ -300,7 +300,7 @@
   "role": ["Tester"],
   "work": ["Front-End Testing", "UI Testing", "Multiplayer Testing"],
   "trailer": "https://www.youtube.com/watch?v=S5AJLvEUPGE",
-  "description": "Originally developed by Silicon Dreams as Michael Owen\"s World League Soccer, the game was converted for a North American audience. My role was to help test out the build in preperation for submitting to Nintendo for certification."
+  "description": "Originally developed by Silicon Dreams as Michael Owen's World League Soccer, the game was converted for a North American audience. My role was to help test out the build in preperation for submitting to Nintendo for certification."
 }, {
 
   "id": "ucl",

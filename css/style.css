@@ -1803,9 +1803,7 @@ input:not([type]), input[type="text"]:not(.browser-default), input[type="passwor
 
 
 .layered-image {
-    /* position: relative; */
     bottom: 500px;
-    /* right: -40px; */
 }
 
 .overlay {
