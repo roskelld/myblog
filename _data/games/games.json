@@ -188,7 +188,24 @@
   "role": ["Senior Designer"],
   "work": ["Level Design", "Gameplay Design", "Game Controls", "UX Design"],
   "trailer": "https://www.youtube.com/watch?v=8mDgSg4hH60",
-  "description": ""
+  "description": "Warthog had decided to take a number of original concepts and demos to e3 2004 in hope of securing a publishing deal and building a new IP. A number of game ideas were worked on, one of which was Momma Can I Mow the Lawn.</p>
+<img src=\"/img/product/mom/mom-concept_027.png\">
+  <p>
+Devised by designer <a href=\"http://www.davetimperley.com/Computer-Game-Content/Momma-can-I-mow-the-lawn\" target=\"_blank\">Dave Timperley </a>, the concept depicted a teenager who had discovered his father's modified lawn mower in the home garage which had the power to convert grass cuttings into fuel. This idea created the basis of the game loop in which the player's goal was to race the mower around a variety of 3D levels finding grass to mow and convert it into fuel enabling the player to travel further. Running out of fuel ended the level, so any time the player found themselves riding over grassless spaces meant that they were spending fuel and not gaining. </p>
+<img src=\"/img/product/mom/mom-render_004.png\">
+<p>
+Beyond the core game loop, there was a number of other challenges, obstacles to help complicated and increase the action, such as other vehicles, angry people (you never asked if you could cut the grass, or destroy their well-tended flower beds). </p><p>
+The game was presented in a very cartoonish and colourful manner, with over-the-top action, sounds and easy to grasp gameplay.<br>
+I joined the team after the initial concept was laid out, to help turn it from paper into playable. Because this was intended as a prototype with a goal to get it to e3 I worked to cut corners and focus on building out the core idea as efficiently as possible. Much of the codebase came from Looney Tunes Back In Action, which gave us a solid work base for a 3D world complete with tools that enabled us to populate the space with NPC characters, vehicles, collision, collectables and reactionary objects. If I remember correctly the main character Kurt and his Mower were adapted from Daffy Duck one of the main protagonists of Back In Action. We converted his move set and model over to Kurt, changing the locomotion from a walking character into a moving vehicle with acceleration, and steering, but keeping parts like jump and collision. </p>
+<img src=\"/img/product/mom/mom-render_002.png\">
+<p>
+The level design, game structure and UI were swapped out for the newly built components all created using the same tools and methods we used on Back in Action. The one final piece of technology that was needed for the concept was the grass cutting, which was an advanced idea for the era. We elected to create the demo for the Xbox console which gave access to the stencil shaders of the GPU, allowing to paint a mask on the surface of the level with areas where grass should grow, and in realtime let the mower edit that mask to remove the grass giving the effect a realistic and expected experience for the player.</p><p>
+The demo came together really well, the team created a very playable, fun experience that helped show off the concept and leaving little to the imagination to what the full game would eventually be. </p><p>
+Sadly it didn't get picked up by a publisher at e3 2004 despite the strong positive feedback. I think it's fair to say that the idea, name, and subject matter were outside of the norm, especially for a western game in 2004 where the market was heavily weighted towards licenced games. My hope was that it might have found a route to Xbox Live Arcade which at the time had just recently launched, though it wasn't a well-understood platform and had heavy restrictions on what it could handle, mainly the game sizes were limited to 170MB download size, which meant that it started more as a space for old arcade games and puzzlers thanks to how small in size they are and less of a financial risk.</p><p>
+The game became somewhat infamous in the years following as it was publicised as one of the titles in development for the Gizmondo console and used the trailer created from the Xbox build to promote it. No work was ever done on converting to the Gizmondo, however despite what has been said or believed. After the game failed to find a publishing deal the project was shelved.</p>
+<img src=\"/img/product/mom/mom-concept_028.png\">
+<p>
+Maybe one day Kurt will attempt to fire up the engine again and take another shot at getting that lawn mowed."
 }, {
 
   "id": "ani",
