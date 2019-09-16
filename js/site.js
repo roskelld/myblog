@@ -9,5 +9,7 @@ document.addEventListener( 'DOMContentLoaded', function() {
         sideNav[0].open();
     }, false );
 
+    // const materialboxedEls = document.querySelectorAll( '.materialboxed' );
+    // const materialboxed = M.Materialbox.init(materialboxedEls, {});
     AOS.init();
 }, false );
