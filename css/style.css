@@ -1720,7 +1720,6 @@ h4.services-offered-header {
         top: 615vh;
         width: 200vh;
         right: 0;
-        transform: rotate(45deg);
         height: 80vh;
         position: absolute;
         z-index: -5;
