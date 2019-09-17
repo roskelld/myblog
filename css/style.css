@@ -1839,3 +1839,9 @@ input:not([type]), input[type="text"]:not(.browser-default), input[type="passwor
     overflow: hidden;
     width: 100%;
 }
+
+.calendly-inline-widget {
+    position: inherit !important;
+    height: 691px;
+    overflow-y: inherit !important;
+}
