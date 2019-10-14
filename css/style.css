@@ -340,6 +340,9 @@ ul.sidenav {
     }
 }
 
+.full-width {
+    width: 100%;
+}
 
 .pad-1 {
     padding: 1em;
