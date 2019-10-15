@@ -1458,6 +1458,10 @@ p a:hover:before, a:focus:before, a:active:before {
     transition-timing-function: cubic-bezier(0.52, 1.64, 0.37, 0.66);
 }
 
+.large-text {
+    font-size: 30px !important;
+}
+
 /* ****************************************************************************/
 /* ANIMATIONS */
 /* ****************************************************************************/
@@ -1725,6 +1729,16 @@ h4.services-offered-header {
         right: 0;
         height: 80vh;
         position: absolute;
+        z-index: -5;
+        overflow: hidden;
+    }
+
+    .bg-shape-7 {
+        top: 0;
+        width: 100vw;
+        right: 0;
+        height: 100vh;
+        position: fixed;
         z-index: -5;
         overflow: hidden;
     }

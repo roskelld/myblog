@@ -15,19 +15,19 @@ order: 2
 	<section class="flex-row">
 		<time class="spanish-grey-text">{{ p.date | date: "%-d %B %Y" }}</time>
 		<article class="article-card">
-			<h2 class="hvr-bounce-to-top hvr-overdraw">
-				<a class="soft-grey-text-2" href="{{ p.url }}">{{ p.title }}</a>
+			<h2 class="coral-reef-text">
+				{{ p.title }}
 			</h2>
-			{{ p.excerpt }}
 			<div>
-				<a class="full-width right hvr-bounce-to-top hvr-overdraw" href="{{ p.url }}">Read Article</a>
-			</div>
-			<div>
-				{% for c in p.tags %}
-				<div class="chip">{{ c }}</div>
-				{% endfor %}
+				{{ p.excerpt }}
+				<a class="right hvr-bounce-to-top hvr-overdraw" href="{{ p.url }}">[Read...]</a>
 			</div>
 		</article>
+		<div>
+			{% for c in p.tags %}
+			<div class="chip">{{ c }}</div>
+			{% endfor %}
+		</div>
 
     </section>
 	{% endfor %}
