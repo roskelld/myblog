@@ -6,6 +6,7 @@ image: "/assets/apple-shortcuts-app.jpg"
 description: "I recently discovered the Apple Shortcuts app which is great for creating combining apps into a single button."
 date:   2019-03-21 08:00:20 -0700
 tags: Apple iOS Life-Hacks App UX
+image: /assets/apple-shortcuts-app.jpg
 excerpt_separator: <!--more-->
 published: true
 ---

@@ -5,6 +5,7 @@ title:  "Selecting Pixels in Sparkshot"
 description: "I step through our Sparkshot development journey where I take the idea of pixel selection from functional to fun."
 date:   2019-10-15 11:00:20 -0700
 tags: Sparkshot.io UI UX Art
+image: /assets/sparkshot/alpha-sparkshot.io.png
 excerpt_separator: <!--more-->
 published: true
 ---

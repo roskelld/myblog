@@ -5,6 +5,7 @@ title:  "Thoughts on the Google Stadia Announcement"
 description: "Google announced their video game console-like service named Stadia. Here are my thoughts."
 date:   2019-03-20 22:00:20 -0700
 tags: Google Stadia Console Thoughts
+image: /assets/stadia-cloud.png
 excerpt_separator: <!--more-->
 published: true
 ---

@@ -5,6 +5,7 @@ title:  "More thoughts on Google Stadia"
 description: "After a few days of letting it sink in, I've gathered more thoughts on Google's not-console console. (Yes more!)"
 date:   2019-03-24 15:00:20 -0700
 tags: Google Stadia Console Thoughts
+image: /assets/stadia-logo.png
 excerpt_separator: <!--more-->
 published: true
 ---
