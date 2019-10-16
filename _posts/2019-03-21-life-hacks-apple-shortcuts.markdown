@@ -1,6 +1,6 @@
 ---
 layout: post
-type: blog
+type: article
 title:  "Life Hacks: Apple Shortcuts"
 image: "/assets/apple-shortcuts-app.jpg"
 description: "I recently discovered the Apple Shortcuts app which is great for creating combining apps into a single button."

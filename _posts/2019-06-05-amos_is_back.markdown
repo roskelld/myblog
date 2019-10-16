@@ -1,6 +1,6 @@
 ---
 layout: post
-type: blog
+type: article
 title:  "AMOS is back"
 description: "AMOS was a basic programming language released for the Commodore Amiga, so why talk about that in 2019?."
 date:   2019-06-05 11:00:20 -0700

@@ -1,6 +1,6 @@
 ---
 layout: post
-type: blog
+type: article
 title:  "Farewell Inbox, You'll be Missed"
 description: "Tomorrow marks the end for Google's lesser known but incredible email application. Time to say farewell."
 date:   2019-03-30 15:00:20 -0700

@@ -1,6 +1,6 @@
 ---
 layout: post
-type: blog
+type: article
 title:  "Selecting Pixels in Sparkshot"
 description: "Journey through the development of Sparkshot's pixel selection feature."
 date:   2019-10-15 11:00:20 -0700
