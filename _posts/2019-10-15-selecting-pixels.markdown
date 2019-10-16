@@ -2,7 +2,7 @@
 layout: post
 type: article
 title:  "Selecting Pixels in Sparkshot"
-description: "Join me as I dive into the development journey of Sparkshot.io's pixel selection feature, which forms the basis of our interaction loop for the application."
+description: "Join me as I walk through the journey of developing the Sparkshot.io pixel selection feature. Stepping through each build and showing how the feature went from simple prototype to a polished and fun experience."
 date:   2019-10-15 11:00:20 -0700
 tags: Sparkshot.io UI UX Art
 image: /assets/sparkshot/alpha-sparkshot.io.png
