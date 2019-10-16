@@ -2,7 +2,7 @@
 layout: post
 type: article
 title:  "Selecting Pixels in Sparkshot"
-description: "Journey through the development of Sparkshot's pixel selection feature."
+description: "Join me as I dive into the development journey of Sparkshot.io's pixel selection feature, which forms the basis of our interaction loop for the application."
 date:   2019-10-15 11:00:20 -0700
 tags: Sparkshot.io UI UX Art
 image: /assets/sparkshot/alpha-sparkshot.io.png
@@ -12,7 +12,8 @@ published: true
 
 ![Sparkshot.io Alpha](/assets/sparkshot/alpha-sparkshot.io.png)
 
-[Sparkshot.io](https://sparkshot.io) is all about grabbing pixels to reveal the hidden art, but we don't just want to create a functional application, we want to build something fun and engaging.
+Our Web App [Sparkshot.io](https://sparkshot.io) is all about grabbing pixels to reveal the hidden art, but we don't just want to create a functional application, we want to build something fun and engaging.
+
 So how did we make the act of selecting pixels on a grid interesting?
 <!--more-->
 
@@ -23,6 +24,8 @@ Our goal is to make the UX fun and responsive but not at the cost of functionali
 Sparkshot gives users the freedom to choose the number of pixels and where on the canvas to select them, we want to encourage the user to experiment and respond to them through small feedback loops to react to what they do, and wherever we can provide an informative response to reinforce the process.
 
 ## The Journey
+
+In this article I walk through each of the major iteration of the feature, showing what it looked like at the time and describing our thoughts on the development process.
 
 ### Humble Beginnings
 
@@ -35,10 +38,9 @@ When our team spots an issue or comes up with an idea, we talk it through, sleep
 
 Sparkshot as an application is centred around this concept of selecting pixels, so we needed to jump on this feature right at the start and get something functioning that we could build around.
 
-So we fired up our tools, which in this case is the web browser, Javascript and HTML canvas and wrote a prototype.
+We fired up our tools: [Atom](https://atom.io/) to write the HTML and Javascript, a web browser to test, and started building.
 
-The prototype achieved our goal of being able to select pixels on a canvas, sure it was far from fun and lacked any strong feedback.
-However, it was something we could start building around, and it allowed us to start to work on other features and push towards the full application loop of being able to select, buy and reveal the hidden art.
+The prototype achieved our goal of being able to select pixels on a HTML canvas, sure it was far from fun and pretty clunky, but it was something we could start building around. Once it was up and running we could start to work on other features and push towards building out the full application loop of being able to select, buy and reveal the hidden art.
 
 
 ### Early Indications
@@ -50,7 +52,7 @@ However, it was something we could start building around, and it allowed us to s
 
 Once we'd added more surrounding features to the core loop of the application it rewarded us with the time to go back for a second iteration on the pixel selection feature, polishing up the accuracy of the selection as well as adding in a new UI highlighter that tracked the mouse movement and informed the user of exactly which pixel they'd be selected if they clicked.
 
-This was an important UX step as we didn't want the user to have uncertainty about which pixel would be selected when clicking; also a feature of Sparkshot is the ability to zoom in-and-out of the art, meaning that pixel selection isn't always up close and easy to judge.
+This was an important UX step as we didn't want the user to have any uncertainty about which pixel they were about to select when clicking. Also Sparkshot allows the user to zoom in-and-out of the art, which means that pixel selection isn't always up close and easy to judge.
 
 The UI highlighter was the first step in helping select pixels at greater zoom levels and something we'd spend more time improving in future updates.
 
@@ -63,15 +65,15 @@ The UI highlighter was the first step in helping select pixels at greater zoom l
 
 One of the features we have for artists on Sparkshot is that they can set the price for each pixel, which is useful information for the user to know so that they can be clear on what they need to pay.
 
-Just like with the UI highlighter feature, we wanted to report this information before selecting a pixel. So with this update, we added a new price UI element that appears when the user hovers their mouse over a pixel.
+Just like with the UI highlighter feature, we wanted to give this information before selecting a pixel. So with this update, we added a new price UI element that appears when the user hovers the cursor over a pixel.
 
-Another major part of this update was to better define selected pixels, which previously filled the entire cell with a single colour making it hard to differentiate the individual parts of a group selection.
+Another major part of this update was to improve the visuals of selected pixels, which previously just filled the entire cell with a single colour making it hard to differentiate each selected pixel from its neighbour.
 
 The way that Sparkshot renders the image isn't always at a 1-to-1 pixel ratio because we allow the user to zoom in-and-out of the image. So when zoomed in close a single selectable pixel is, in reality, a square of many pixels, this gives us the freedom to add detail into that space.
 
 With this update, we shrank the selected pixel icon leaving a clear border around it to help differentiate it from its neighbours. We also added a two-tone effect to the green to add a little style, admittedly only a little though.
 
-With this update, things started to take form, with the UX becoming stronger and the application easier to use even when zoomed out of the image.
+Now things were starting to take shape, the UX was becoming stronger and the application easier to use even when zoomed out of the image.
 
 ### Style and Motion
 
@@ -80,17 +82,18 @@ With this update, things started to take form, with the UX becoming stronger and
   <source src="/assets/sparkshot/4th.mp4" type="video/mp4">
 </video>
 
-Now that many of the core parts of the application were functioning we were able to get a good feeling of the overall experience. This complete picture gave us the idea of the time given to pixel selection and where we could add some of that playful UX.
+At this point many of the core parts of the application were functioning we were able to get a good feeling of the overall experience. This more complete picture gave us the idea of the amount of time users spent selecting pixels and the pace of the interaction, allowing us to see where we could add some of that playful UX.
 
-Sparkshot at its core is about pixels, sure the artist's work is the endpoint of the journey, but we have to loop through the act of selecting and revealing pixels many times to get there.
+Sparkshot at its core is about pixels, it's true that the endpoint of the journey is to see an artist's work in all its glory, but to get to that point we have to loop through the act of selecting and revealing pixels many over.
 
-Being mindful of the final state where art is displayed on the screen, we cannot conflict with what draws the eye; the art must win. For the most part, Sparkshot takes a back seat with its neutral colour palette UI. There is one area where we knew that we weren't going to compete with the artist, which is on the empty pixels, here we want the application to pop to help users track their selected pixels within the multitude of colours from the art itself.
+Being mindful of the final state where art is displayed on the screen, we don't want to conflict with what draws the eye: _the art must win!_
+So we designed Sparkshot's colour palette to be neutral so it sits back against the pop of the art. There is one area where we knew that we weren't going to compete with the artist, which is on the empty pixels, in fact here we want the application to pop to help users track their selected pixels within the multitude of colours from the art itself.
 
 To help reinforce the theme of the pixel we took the green selection icon and changed it into a more stylish pixel gem sprite, evoking the nature of the application and using a gem concept to represent the idea of value.
 
 Gems are something which has become a sort of meme for value in the digital entertainment world thanks to its connected roots in video games where it's been common for games to use fantastical currencies such as gold, gems, rings and such. In the more modern era of microtransactions, we see many games have their currencies based on ideas like gems.
 
-The final piece in this update was to add some animation to the loop, pushing the UX more into that playful state of taking the act of selecting pixels from functional to fun with an animated response to user input.
+To further differentiate between the selected pixels and the static art pixels we also added in some animation to the loop, pushing the UX more into that playful state of taking the act of selecting pixels from functional to fun with an animated response to user input.
 
 ### Many Pixels all at once
 
@@ -99,7 +102,7 @@ The final piece in this update was to add some animation to the loop, pushing th
   <source src="/assets/sparkshot/6th.mp4" type="video/mp4">
 </video>
 
-This update was interesting as it was something we'd talked about for a while but resisted adding. The feature in question was to allow users to speed up the act of selecting more than one pixel, often requested as some sort of fill tool, or box select, and up until this point users needed to click on each pixel individually to select it or deselect it.
+This update was interesting as it was something we'd talked about for a while but resisted adding without going through some careful consideration. The feature in question was to allow users to speed up the act of selecting more than one pixel, often requested as some sort of fill tool, or box select, and up until this point users needed to click on each pixel individually to select or deselect them.
 
 We had just entered an early alpha stage and begun to invite users to come on board and test the application out live, and we expected and certainly heard the requests come in to allow a quicker way to select many pixels quickly.
 
@@ -107,11 +110,13 @@ As I said we expected this, so why hadn't we already added the feature?
 
 Well, it was a philosophical thing really, when we set out to build this application we talked about trying to create the smallest meaningful transaction loop possible, which in our case was a single pixel.
 
-Our goal was to build around this concept and see if we could achieve it or at least see how close we could get. We pushed to make selecting a pixel a fun experience, and felt that if we added multi-select early on then we would focus on creating an application where users were expected to select many pixels to get achieve any fun, and while this ultimately might be true, we wanted to push our idea as much as possible before we opened the pixel selection flood gates.
+Our goal was to build around this concept and see if we could achieve it or at least see how close we could get. We pushed to make selecting a pixel a fun experience, with the grand idea of seeing it as part of a multi-user space where each individual user might only make a small contribution, but everyone achieves the final output, and in Sparkshot's case that's individual pixels leading to a complete piece of art.
 
-Another reason for resisting this feature is based around the art uploaded by artists, which represents the other side of Sparkshot. The act of selecting and revealing pixels needs to be fun, but it needs to lead to great art, and what is good art on Sparkshot?
+We felt that if we added multi-select early on then we would focus on creating an application where users were expected to select many pixels to get achieve any fun, and while this ultimately might be true on some level, we wanted to push our idea as much as possible before we opened the pixel selection flood gates.
 
-Before I derail this with a topic that requires an article of its own, I can cover a few points that concern this feature.
+Another reason for resisting this feature is based around the art uploaded by artists, which represents the other side of Sparkshot. The act of selecting and revealing pixels needs to be fun, but it needs to lead to great art, and what is good art on Sparkshot? We're on the journey to finding the answer to that.
+
+Before I derail this with a topic that requires a full article of its own, I can cover a few points that concern this feature.
 
 One reason why users might feel that they want to select a lot of pixels is that there's a lot of pixels to select, meaning the artist has uploaded a large piece of art. Sparkshot supports up to 1000x1000 resolution images, which consist of 1,000,000 pixels. That's a lot of clicks. So perhaps there's a solution in finding good art at smaller resolutions, requiring fewer clicks and less of a feeling to need to select a lot of pixels gain a reward. We don't want to make any clear claims as of yet, but we do want to support Sparkshot through a stage where we let artists and users seek some form of balance between their needs and we'll happily support what works for both.
 
@@ -119,7 +124,7 @@ Anyway, back to this update. After working through to UX to this point and being
 - Left Click - Select/Deselect
 - Left Click & Hold + Drag - Multi-Select/Deselect
 - Mouse Wheel - Zoom
-- Right Click & Hold + Drag - Pan Art
+- Right Click & Hold + Drag - Move camera
 
 We also updated the gem sprite with a new 3D rotation animation to help increase the motion and response of the interactions.
 The new animation felt good on the single click select, but we also found that when drag selecting multiple pixels it created a fun ripple motion effect which felt encouraging, adding an extra layer to the feedback loop.
@@ -152,7 +157,7 @@ First, we scrapped the last update of adding the mode to the UI highlighter and 
 
 What we did add to the UI highlighter was contextual colour based on the current select mode, which compliments the change to the mouse cursor.
 
-We reworked the gem from scratch adding more frames of animation, more pixel detail and lighting to help it pop on the screen.
+We reworked the gem sprite from scratch adding more frames of animation, more pixel detail and lighting to help it pop on the screen.
 
 Finally, there's a new UI element to round off the feedback, which confirms to the user of the price adjustment based on the selected or deselected pixels. An animated text element floats upward after the user completes an interaction loop (releases the mouse button), which can be a one or more pixels sequence.
 
@@ -170,17 +175,19 @@ A pixel delete animation was added too for extra polish and to hopefully make re
   <source src="/assets/sparkshot/10th.mp4" type="video/mp4">
 </video>
 
-A final piece of flair was added to the interaction loop. Given that we had all the frames of animation to rotate the gem sprite, it felt like having them react to the mouse cursor passing over them would be both a fun thing to do as well as suggest to the user that it is possible to interact with an already selected pixel, which currently is to remove it from selection, but perhaps we might add other functions in the future, who knows?
+A final piece of flair was added to the interaction loop. Given that we had all the frames of animation to rotate the gem sprite, it felt like having them react to the cursor passing over would be both a fun thing to interact with as well as suggest to the user that selected pixels can be further interacted with. So the UX there works to suggest to the user that there's more based on very low friction input.
 
 <video autoplay="autoplay" loop="loop" width="100%" height="auto">
   <source src="/assets/sparkshot/11th.webm" type="video/webm">
   <source src="/assets/sparkshot/11th.mp4" type="video/mp4">
 </video>
 
-Just to prove what I said earlier, even when zoomed out of the art selecting pixels is clear and as easy as it is zoomed in, sure you don't get the nice detailed animation (maybe we'll find a way to fix that in the future), but you can see the mode, and know what pixel you're going to select next.
+Finally, just to prove what I said earlier, even when zoomed out of the art selecting pixels is clear and as easy as it is zoomed in, sure you don't get the nice detailed animation (maybe we'll find a way to fix that up in the future), but you can see the current mode, and know what pixel you're going to select next.
 
 ### Conclusion
 
-This brings us to where Sparkshot currently stands. We know we've got a long way to go as the application continues to grow, but we've already learned a lot of lessons, built a lot of technology, and given that this article just concerns one facet have much more to say in future articles.
+This brings us to where Sparkshot currently stands. This feature will continue to be a big focus as the application continues to grow, in fact I held off writing this for a while as I kept wanted to get another iteration complete before I felt it was ready to talk about, but I guess the length of this proves I was wrong there.
 
-If you'd like to try Sparkshot for yourself as an artist a user or both then please join our [Telegram group](https://t.me/sparkshot), we look forward to seeing you there.
+We're going to bring more articles about other areas of the application in the near future, so keep an eye out for when they get posted.
+
+If you'd like to try Sparkshot for yourself as an artist a user or both then please join our [Telegram group](https://t.me/sparkshot) or checkout our website [Sparkshot.io](https://sparkshot.io), we look forward to seeing you there.
