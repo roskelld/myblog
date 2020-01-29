@@ -1,4 +1,19 @@
 [{
+	"id":	"hfw",
+  "title": "Huddle For Warmth",
+  "platforms": ["Unnancounced"],
+  "genre": "Co-operative Survival",
+  "technology": ["Crayta", "Unreal4", "Photoshop"],
+  "release": "2020",
+  "company": "Double Blit Games",
+  "publisher": "Double Blit Games / PrimeVR / Crayta",
+  "team_size": 2,
+  "dev_time": "2 months",
+  "role": ["Designer", "Programmer", "Artist", "Open World Design" ],
+  "work": ["Concept", "Game Design", "Technical Design", "Level Design", "Gameplay Systems", "Level Art", "Game Controls", "UI System", "Game Loop", "Game Balancing", "Testing"],
+  "trailer": "",
+  "description": "A fun co-op survival-light experience where players explore a sprawling landscape to find and destroy air conditioning units that have gone awry and are freezing over the environment! True to its name, by staying in proximity to one another, players can generate enough heat to survive more dangerous and rewarding areas."
+},{
 	"id":	"ddr",
   "title": "Dash Dash Run!",
   "platforms": ["HTC Vive", "Oculus Rift", "Google Daydream"],
@@ -13,8 +28,7 @@
   "work": ["Game Design", "Level Layouts", "Level Art", "Textures", "Game Controls", "Locomotion", "UI System", "Game Loop", "Game Balancing", "Testing", "Sound", "Animation", "3D Models"],
   "trailer": "https://www.youtube.com/watch?v=3lWZAOnabWw",
   "description": "Our team wanted to take on the challenge of producing a fun game that gave an experience unique to VR.<br> The concept of using the physical motion of movings ones arms to simulate running became the basis of the title."
-},
- {
+},{
  "id": "mea",
   "title": "Mass Effect Andromeda",
   "platforms": ["PC", "PS4", "Xbox One"],

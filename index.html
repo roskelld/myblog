@@ -125,7 +125,7 @@ order:
                     <p class="no-vertical-margin soft-grey-text-1">Great for quick validating tasks and talking ideas over video chat.</p>
                 </div>
                 <div class="col s4">
-                    <h3 class="bold">$100</h3>
+                    <h3 class="bold">{{ site.price_hour }}</h3>
                 </div>
             </div>
 
@@ -138,7 +138,7 @@ order:
                     <p class="no-vertical-margin soft-grey-text-1">Reviewing documentation, checking updates and short reports.</p>
                 </div>
                 <div class="col s4">
-                    <h3 class="bold">$300</h3>
+                    <h3 class="bold">{{ site.price_day }}</h3>
                 </div>
             </div>
 
@@ -153,7 +153,7 @@ order:
                     </p>
                 </div>
                 <div class="col s4">
-                    <h3 class="bold">$5k</h3>
+                    <h3 class="bold">{{ site.price_month }}</h3>
                 </div>
             </div>
 
@@ -165,7 +165,7 @@ order:
                     <p class="no-vertical-margin soft-grey-text-1">Ongoing work, interacting with the team on a daily basis.</p>
                 </div>
                 <div class="col s4">
-                    <h3 class="bold">$CALL</h3>
+                    <h3 class="bold">{{ site.price_contract }}</h3>
                 </div>
             </div>
 
@@ -181,12 +181,34 @@ order:
 
 <section class="height-20"></section>
 
+<!-- IMAGE -->
+<section class="fixed" style="background-image: url('{{base}}/assets/hfw-ss-1.png')">
+    <section class="height-10"></section>
+    <div class="row">
+        <div class="col s12 m1"></div>
+        <div class="col s12 m4">
+            <div class="center">
+                <img class="" src="{{base}}/assets/hfw_logo.png" alt="Huddle For Warmth">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s12 m1"></div>
+        <div class="col s12 m4 shade-off-white">
+            <h3>Developer (2020)</h3>
+            <p>Concept, Programming, Level Design, Gameplay Systems, UI, Balancing, and Graphic Design.</p>
+        </div>
+    </div>
+</section>
+
+<section class="height-10"></section>
+
 <!-- CLIENTS -->
 <section>
     <div class="row">
         <div class="col s1 m2"></div>
         <div class="col s10 m6">
-            <h3 class="services-title soft-grey-text"   >Working with <br><span class="coral-reef-text">developers</span> from across the globe.</h3>
+            <h3 class="services-title soft-grey-text">Working with <br><span class="coral-reef-text">developers</span> from across the globe.</h3>
         </div>
         <div class="col s1 m4"></div>
     </div>
