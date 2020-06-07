@@ -384,15 +384,6 @@ order:
                     }
 
                     // Add Funcionality
-                    this.fields.url.addEventListener( "input", () => {
-                        this.ad.url.textContent = this.fields.url.value.toLowerCase();
-
-                        if ( this.fields.url.value === "" ) {
-                            this.ad.url.textContent = 'google.com'
-                            helper-text
-                        }
-                    }, false );
-
                     this.fields.headline.forEach((field, i) => {
                         field.addEventListener( "input", () => {
                             this.ad.headline[i].textContent = field.value;
@@ -407,6 +398,7 @@ order:
                             }
                         }, false );
                         M.CharacterCounter.init(field);
+                        field.focus();
                     });
 
                     this.fields.description.forEach((field, i) => {
@@ -426,7 +418,18 @@ order:
                             }
                         }, false );
                         M.CharacterCounter.init(field);
+                        field.focus();
                     });
+
+                    this.fields.url.addEventListener( "input", () => {
+                        this.ad.url.textContent = this.fields.url.value.toLowerCase();
+
+                        if ( this.fields.url.value === "" ) {
+                            this.ad.url.textContent = 'google.com'
+                            helper-text
+                        }
+                    }, false );
+                    this.fields.url.focus();
 
                 }
             }
