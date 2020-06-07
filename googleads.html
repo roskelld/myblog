@@ -104,6 +104,27 @@ order:
 
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
     <style media="screen">
+        .character-counter {
+            position: absolute;
+            right: 11px;
+            top: 36px;
+        }
+
+        .helper-text {
+            line-height: 3px;
+        }
+
+        input {
+            font-size: 14px !important;
+            height: 2.3rem !important;
+        }
+
+        .input-field {
+            margin-top: 0.3rem;
+            margin-bottom: 0.3rem;
+            /* height: 3.5rem; */
+            font-size: 14px;
+        }
         /* label color */
         .input-field label {
             color: rgba(0,0,0,.54);
@@ -308,6 +329,7 @@ order:
                                 <span class="helper-text" data-error="Shorten your description to 90 characters, max" data-field="description-error"></span>
                             </div>
 
+                            <div class="col s12"><h4></h4></div>
                         </div>
 
                         <div class="col s12 l6">
@@ -413,7 +435,7 @@ order:
                                 this.fields.description_error[i].dataset.error = "Enter a description";
                                 field.classList.add('invalid');
                             } else {
-                                this.fields.description_error[i].dataset.error = "Shorten your description to 90 characters, max";
+                                this.fields.description_error[i].dataset.error = `Shorten your description to 90 characters, max`;
                                 field.classList.remove('invalid');
                             }
                         }, false );
