@@ -338,6 +338,36 @@ order:
 
                     this.form = document.querySelector( `#form-${this.index}` );
 
+                    this.submit = new Event("submit", {
+                        'view':         window,
+                        'bubbles':      true,
+                        'cancelable':   true,
+                    });
+
+                    this.form.addEventListener("submit", e => {
+                        e.preventDefault();
+
+                        //
+                        const url = "https://formspree.io/hello@deanroskell.com";
+                        const formData = new FormData(e.target)
+                        const jsonFormData = this.formDataToJson(formData);
+                        fetch(url, {
+                            method: 'POST',
+                            body: jsonFormData,
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        })
+                        .catch(e => {
+                            // Some error handling you should probably be doing... again, if you're a weenie
+                        })
+                        .then(r => r.json())
+                        .then(response => {
+                            if (response.success === 'email sent') { console.log(response); }
+                        });
+
+                        // name="ad-preview-form" accept-charset="utf-8" action="https://formspree.io/hello@deanroskell.com" method="post"
+                    }, false);
                     // Fields
                     this.fields = {
                         url:                this.html.querySelector( '[data-field="url-input"]' ),
@@ -410,7 +440,7 @@ order:
                     const section = document.createElement( 'section' );
                     section.classList.add('ad-container');
                     section.innerHTML =
-                        `<form id="form-${this.index}" name="ad-preview-form" accept-charset="utf-8" action="https://formspree.io/hello@deanroskell.com" method="post">
+                        `<form id="form-${this.index}">
                         <div class="row">
                             <div class="s12 l6 z-depth-1">
 
@@ -495,13 +525,28 @@ order:
                     this.parent.appendChild( this.html );
                 }
 
+                formDataToJson(formData) {
+                   const entries = formData.entries();
+
+                   const dataObj = Array.from(entries).reduce( (data, [key, value]) => {
+                     data[key] = value;
+                     if (key === 'email') {
+                       data._replyTo = value;
+                     }
+                     return data;
+                   }, {});
+
+                   return JSON.stringify(dataObj);
+                 };
+
                 // Check that all fields are not empty and submit form
                 readyToSubmit() {
                     let ready = true;
                     if ( this.fields.url.value === "" ) { ready = false; }
                     this.fields.headline.forEach( field => { if (field.value === "") { ready = false; } });
                     this.fields.description.forEach( field => { if (field.value === "") { ready = false; } });
-                    if (ready) { this.form.submit(); }
+                    // if (ready) { this.form.submit(); }
+                    if (ready) { this.form.dispatchEvent( this.submit ); }
                 }
             }
             const ADD_BUTTON = document.querySelector('#add-ad');
