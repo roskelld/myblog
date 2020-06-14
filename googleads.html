@@ -104,6 +104,13 @@ order:
 
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
     <style media="screen">
+        .controls {
+            position: relative;
+            display: block;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+        }
         .character-counter {
             position: absolute;
             right: 11px;
@@ -165,6 +172,9 @@ order:
             box-shadow: 0 1px 0 0 #1a73e8;
         }
 
+        .btn-floating-icon {
+            margin-top: 0.8rem;
+        }
 
         .no-padding {
             padding: 0;
@@ -289,84 +299,16 @@ order:
         </section>
 
         <!-- GOOGLE ADS PANEL -->
+        <section id="ad-list">
+
+        </section>
+
         <section class="ad-container">
-            <div id="ad-preview-one" class="row">
-                <div class="s12 l6 z-depth-1">
-
-                    <!-- form -->
-                    <div class="section">
-
-                    </div>
-                    <div class="row">
-                        <div class="col s12 l6">
-                            <div class="input-field col s12">
-                                <input id="url" placeholder="google.com" type="text" class="validate ad-input-field" data-length="30" data-field="url-input">
-                                <label for="url">Ad Domain Link</label>
-                            </div>
-                            <div class="input-field col s12">
-                                <input id="headline_one" type="text" class="validate ad-input-field" data-length="30" data-field="headline-input">
-                                <label for="headline_one">Headline 1</label>
-                                <span class="helper-text" data-error="Shorten your headline to 30 characters, max" data-field="headline-error"></span>
-                            </div>
-
-                            <div class="input-field col s12">
-                                <input id="headline_two" type="text" class="validate ad-input-field" data-length="30" data-field="headline-input">
-                                <label for="headline_two">Headline 2</label>
-                                <span class="helper-text" data-error="Shorten your headline to 30 characters, max" data-field="headline-error"></span>
-                            </div>
-
-                            <div class="input-field col s12">
-                                <input id="headline_three" type="text" class="validate ad-input-field" data-length="30" data-field="headline-input">
-                                <label for="headline_three">Headline 3</label>
-                                <span class="helper-text" data-error="Shorten your headline to 30 characters, max" data-field="headline-error"></span>
-                            </div>
-
-                            <div class="input-field col s12">
-                                <input id="description_one" type="text" class="validate ad-input-field" data-length="90" data-field="description-input">
-                                <label for="description_one">Description 1</label>
-                                <span class="helper-text" data-error="Shorten your description to 90 characters, max" data-field="description-error"></span>
-                            </div>
-
-                            <div class="input-field col s12">
-                                <input id="description_two" type="text" class="validate ad-input-field" data-length="90" data-field="description-input">
-                                <label for="description_two">Description 2</label>
-                                <span class="helper-text" data-error="Shorten your description to 90 characters, max" data-field="description-error"></span>
-                            </div>
-
-                            <div class="col s12"><h4></h4></div>
-                        </div>
-
-                        <div class="col s12 l6">
-                            <div class="card">
-                                <div class="card-content no-padding">
-                                    <span class="card-title">
-                                        <h6>Ad Preview</h6>
-                                    </span>
-                                    <div class="ad-preview">
-                                        <div class="ad-widget">
-                                            <div class="ad-headline-and-url">
-                                                <div class="ad-headline">
-                                                    <span data-field="headline-output">Headline 1</span> | <span data-field="headline-output">Headline 2</span> | <span data-field="headline-output">Headline 3</span>
-                                                </div>
-                                                <div class="ad-contact">
-                                                    <span class="ad-badge">Ad</span>
-                                                    <span class="ad-url" data-field="url-output">google.com</span>
-                                                    <span><i class="fas fa-caret-down ad-caret" data-fa-transform="shrink-2"></i></span>
-                                                </div>
-                                            </div>
-                                            <div class="ad-text">
-                                                <span data-field="description-output">Description 1</span> <span data-field="description-output">Description 2</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card-action">
-                                    <!-- <a href="#">This is a link</a> -->
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
+            <div class="row">
+                <div class="col s12">
+                    <a id="add-ad" class="right btn-floating btn-large waves-effect waves-light blue lighten-1 tooltipped" data-position="top" data-tooltip="Add New Ad Preview">
+                        <i class="btn-floating-icon fas fa-plus white-text fa-2x"></i>
+                    </a>
                 </div>
             </div>
         </section>
@@ -378,35 +320,39 @@ order:
         document.addEventListener('DOMContentLoaded', () => {
             M.AutoInit();
 
-            // const TEXT_INPUTS = document.querySelectorAll(`.validate`);
-            //
-            // TEXT_INPUTS.forEach(text => {
-            //     console.log(text.dataset.length);
-            //     text.characterCounter();
-            // });
-
-
             class GoogleAdPreview {
                 constructor( parentID ) {
                     this.parent = document.querySelector( `#${parentID}` );
 
+                    // generate index
+                    this.index = this.parent.childElementCount;
+
                     // Create fields if not placed
+                    // Inject HTML
+                    this.addHTML();
+
+                    this.close = document.querySelector( `#remove-ad-${this.index}`);
+                    this.close.addEventListener("click", () => {
+                        this.html.innerHTML = "";
+                    }, false);
+
+                    this.form = document.querySelector( `#form-${this.index}` );
 
                     // Fields
                     this.fields = {
-                        url:                this.parent.querySelector( '[data-field="url-input"]' ),
-                        headline:           this.parent.querySelectorAll( '[data-field="headline-input"]' ),
-                        headline_error:     this.parent.querySelectorAll( '[data-field="headline-error"]' ),
-                        description:        this.parent.querySelectorAll( '[data-field="description-input"]' ),
-                        description_error:  this.parent.querySelectorAll( '[data-field="description-error"]' ),
+                        url:                this.html.querySelector( '[data-field="url-input"]' ),
+                        headline:           this.html.querySelectorAll( '[data-field="headline-input"]' ),
+                        headline_error:     this.html.querySelectorAll( '[data-field="headline-error"]' ),
+                        description:        this.html.querySelectorAll( '[data-field="description-input"]' ),
+                        description_error:  this.html.querySelectorAll( '[data-field="description-error"]' ),
                     }
 
 
                     // Ad Elements
                     this.ad = {
-                        headline: this.parent.querySelectorAll( '[data-field="headline-output"]' ),
-                        url: this.parent.querySelector( '[data-field="url-output"]' ),
-                        description: this.parent.querySelectorAll( '[data-field="description-output"]' ),
+                        headline: this.html.querySelectorAll( '[data-field="headline-output"]' ),
+                        url: this.html.querySelector( '[data-field="url-output"]' ),
+                        description: this.html.querySelectorAll( '[data-field="description-output"]' ),
                     }
 
                     // Add Funcionality
@@ -425,14 +371,12 @@ order:
                         }, false );
                         M.CharacterCounter.init(field);
                         field.focus();
+                        field.addEventListener( "blur", () => { this.readyToSubmit() }, false );
                     });
 
                     this.fields.description.forEach((field, i) => {
                         field.addEventListener( "input", e => {
                             this.ad.description[i].textContent = field.value;
-
-                            if ( field.value === "" ) {
-                            }
 
                             if ( field.value === "" ) {
                                 this.ad.description[i].textContent = `Description ${i + 1}`;
@@ -445,22 +389,128 @@ order:
                         }, false );
                         M.CharacterCounter.init(field);
                         field.focus();
+                        field.addEventListener( "blur", () => { this.readyToSubmit() }, false );
                     });
 
                     this.fields.url.addEventListener( "input", () => {
                         this.ad.url.textContent = this.fields.url.value.toLowerCase();
 
                         if ( this.fields.url.value === "" ) {
-                            this.ad.url.textContent = 'google.com'
-                            helper-text
+                            this.ad.url.textContent = 'google.com';
                         }
                     }, false );
                     this.fields.url.focus();
+                    this.fields.url.addEventListener( "blur", () => { this.readyToSubmit() }, false );
+                }
 
+                // Add all the form HTML
+                addHTML() {
+
+
+                    const section = document.createElement( 'section' );
+                    section.classList.add('ad-container');
+                    section.innerHTML =
+                        `<form id="form-${this.index}" name="ad-preview-form" accept-charset="utf-8" action="https://formspree.io/hello@deanroskell.com" method="post">
+                        <div class="row">
+                            <div class="s12 l6 z-depth-1">
+
+                                <!-- form -->
+                                <div class="row">
+                                    <div class="col s12">
+                                        <a id="remove-ad-${this.index}" class="right btn-flat waves-effect waves-light lighten-1 tooltipped" data-position="top" data-tooltip="Remove Ad">
+                                            <i class="btn-floating-icon fas fa-times grey-text"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col s12 l6">
+                                        <div class="input-field col s12">
+                                            <input id="url-${this.index}" placeholder="google.com" type="text" class="validate ad-input-field" data-length="30" data-field="url-input" name="01_url">
+                                            <label for="url-${this.index}">Ad Domain Link</label>
+                                        </div>
+                                        <div class="input-field col s12">
+                                            <input id="headline_one-${this.index}" type="text" class="validate ad-input-field" data-length="30" data-field="headline-input" name="02_headline_one">
+                                            <label for="headline_one-${this.index}">Headline 1</label>
+                                            <span class="helper-text" data-error="Shorten your headline to 30 characters, max" data-field="headline-error"></span>
+                                        </div>
+
+                                        <div class="input-field col s12">
+                                            <input id="headline_two-${this.index}" type="text" class="validate ad-input-field" data-length="30" data-field="headline-input" name="03_headline_two">
+                                            <label for="headline_two-${this.index}">Headline 2</label>
+                                            <span class="helper-text" data-error="Shorten your headline to 30 characters, max" data-field="headline-error"></span>
+                                        </div>
+
+                                        <div class="input-field col s12">
+                                            <input id="headline_three-${this.index}" type="text" class="validate ad-input-field" data-length="30" data-field="headline-input" name="04_headline_three">
+                                            <label for="headline_three-${this.index}">Headline 3</label>
+                                            <span class="helper-text" data-error="Shorten your headline to 30 characters, max" data-field="headline-error"></span>
+                                        </div>
+
+                                        <div class="input-field col s12">
+                                            <input id="description_one-${this.index}" type="text" class="validate ad-input-field" data-length="90" data-field="description-input" name="05_descrption_one">
+                                            <label for="description_one-${this.index}">Description 1</label>
+                                            <span class="helper-text" data-error="Shorten your description to 90 characters, max" data-field="description-error"></span>
+                                        </div>
+
+                                        <div class="input-field col s12">
+                                            <input id="description_two-${this.index}" type="text" class="validate ad-input-field" data-length="90" data-field="description-input" name="06_descrption_two">
+                                            <label for="description_two-${this.index}">Description 2</label>
+                                            <span class="helper-text" data-error="Shorten your description to 90 characters, max" data-field="description-error"></span>
+                                        </div>
+                                        <div class="col s12"><h4></h4></div>
+                                    </div>
+
+                                    <div class="col s12 l6">
+                                        <div class="card">
+                                            <div class="card-content no-padding">
+                                                <span class="card-title">
+                                                    <h6>Ad Preview</h6>
+                                                </span>
+                                                <div class="ad-preview">
+                                                    <div class="ad-widget">
+                                                        <div class="ad-headline-and-url">
+                                                            <div class="ad-headline">
+                                                                <span data-field="headline-output">Headline 1</span> | <span data-field="headline-output">Headline 2</span> | <span data-field="headline-output">Headline 3</span>
+                                                            </div>
+                                                            <div class="ad-contact">
+                                                                <span class="ad-badge">Ad</span>
+                                                                <span class="ad-url" data-field="url-output">google.com</span>
+                                                                <span><i class="fas fa-caret-down ad-caret" data-fa-transform="shrink-2"></i></span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="ad-text">
+                                                            <span data-field="description-output">Description 1</span> <span data-field="description-output">Description 2</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="card-action">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`;
+                    this.html = section;
+                    this.parent.appendChild( this.html );
+                }
+
+                // Check that all fields are not empty and submit form
+                readyToSubmit() {
+                    let ready = true;
+                    if ( this.fields.url.value === "" ) { ready = false; }
+                    this.fields.headline.forEach( field => { if (field.value === "") { ready = false; } });
+                    this.fields.description.forEach( field => { if (field.value === "") { ready = false; } });
+                    if (ready) { this.form.submit(); }
                 }
             }
+            const ADD_BUTTON = document.querySelector('#add-ad');
+            ADD_BUTTON.addEventListener("click", () => {
+                new GoogleAdPreview( "ad-list" );
+                M.Tooltip.getInstance(ADD_BUTTON).close();
+            }, false );
 
-            const ad = new GoogleAdPreview( "ad-preview-one" );
+            new GoogleAdPreview( "ad-list" );
 
 
 
