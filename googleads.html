@@ -98,192 +98,191 @@ order:
     })(window,document,'script','dataLayer','GTM-MC7X7QQ');</script>
     <!-- End Google Tag Manager -->
 
-    <script defer src="https://use.fontawesome.com/releases/v5.7.2/js/all.js" integrity="sha384-0pzryjIRos8mFBWMzSSZApWtPl/5++eIfzYmTgBBmXYdhvxPc+XcFEk+zJwDgWbP" crossorigin="anonymous"></script>
-    <!-- <link rel="stylesheet" href="{{base}}/js/lib/materialize.min.css"> -->
+    <!-- <script defer src="https://use.fontawesome.com/releases/v5.7.2/js/all.js" integrity="sha384-0pzryjIRos8mFBWMzSSZApWtPl/5++eIfzYmTgBBmXYdhvxPc+XcFEk+zJwDgWbP" crossorigin="anonymous"></script> -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-
-    <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
+    <!-- <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet"> -->
     <style media="screen">
-        .controls {
-            position: relative;
-            display: block;
-            width: 100%;
-            margin: 0;
-            padding: 0;
-        }
-        .character-counter {
-            position: absolute;
-            right: 11px;
-            top: 36px;
-        }
+    .page-footer {
+        padding-top: inherit !important;
+        color: inherit !important;
+        background-color: inherit !important;
+    }
 
-        .helper-text {
-            line-height: 3px;
-        }
+    .bold {
+        font-weight: bold;
+    }
+    .controls {
+        position: relative;
+        display: block;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+    .character-counter {
+        position: absolute !important;
+        right: 11px !important;
+        top: 36px !important;
+    }
 
-        input {
-            font-size: 14px !important;
-            height: 2.3rem !important;
-        }
+    .helper-text {
+        line-height: 3px !important;
+    }
 
-        .input-field {
-            margin-top: 0.3rem;
-            margin-bottom: 0.3rem;
-            /* height: 3.5rem; */
-            font-size: 14px;
-        }
-        /* label color */
-        .input-field label {
-            color: rgba(0,0,0,.54);
-        }
-        /* label focus color */
-        .input-field input[type=text]:focus + label {
-            color: #000;
-        }
-        /* label underline focus color */
-        .input-field input[type=text]:focus {
-            border-bottom: 1px solid #000;
-            box-shadow: 0 1px 0 0 #000;
-        }
-        /* valid color */
-        .input-field input[type=text].valid {
-            border-bottom: 1px solid #c6c6c6;
-            box-shadow: 0 1px 0 0 #c6c6c6;
-        }
-        /* invalid color */
-        .input-field input[type=text].invalid {
-            border-bottom: 1px solid #000;
-            box-shadow: 0 1px 0 0 #000;
-        }
-        /* icon prefix focus color */
-        .input-field .prefix.active {
-            color: #000;
-        }
+    input {
+        font-size: 14px !important;
+        height: 2.3rem !important;
+    }
 
-        input:not([type]):focus:not([readonly]) + label, input[type="text"]:not(.browser-default):focus:not([readonly]) + label, input[type="password"]:not(.browser-default):focus:not([readonly]) + label, input[type="email"]:not(.browser-default):focus:not([readonly]) + label, input[type="url"]:not(.browser-default):focus:not([readonly]) + label, input[type="time"]:not(.browser-default):focus:not([readonly]) + label, input[type="date"]:not(.browser-default):focus:not([readonly]) + label, input[type="datetime"]:not(.browser-default):focus:not([readonly]) + label, input[type="datetime-local"]:not(.browser-default):focus:not([readonly]) + label, input[type="tel"]:not(.browser-default):focus:not([readonly]) + label, input[type="number"]:not(.browser-default):focus:not([readonly]) + label, input[type="search"]:not(.browser-default):focus:not([readonly]) + label, textarea.materialize-textarea:focus:not([readonly]) + label
-        {
-            color: #1a73e8;
-        }
+    .input-field {
+        margin-top: 0.3rem !important;
+        margin-bottom: 0.3rem !important;
+        font-size: 14px !important;
+    }
+    /* label color */
+    .input-field label {
+        color: rgba(0,0,0,.54) !important;
+    }
+    /* label focus color */
+    .input-field input[type=text]:focus + label {
+        color: #000 !important;
+    }
+    /* label underline focus color */
+    .input-field input[type=text]:focus {
+        border-bottom: 1px solid #000 !important;
+        box-shadow: 0 1px 0 0 #000 !important;
+    }
+    /* valid color */
+    .input-field input[type=text].valid {
+        border-bottom: 1px solid #c6c6c6 !important;
+        box-shadow: 0 1px 0 0 #c6c6c6 !important;
+    }
+    /* invalid color */
+    .input-field input[type=text].invalid {
+        border-bottom: 1px solid #000 !important;
+        box-shadow: 0 1px 0 0 #000 !important;
+    }
+    /* icon prefix focus color */
+    .input-field .prefix.active {
+        color: #000 !important;
+    }
 
-        input:not([type]):focus:not([readonly]), input[type="text"]:not(.browser-default):focus:not([readonly]), input[type="password"]:not(.browser-default):focus:not([readonly]), input[type="email"]:not(.browser-default):focus:not([readonly]), input[type="url"]:not(.browser-default):focus:not([readonly]), input[type="time"]:not(.browser-default):focus:not([readonly]), input[type="date"]:not(.browser-default):focus:not([readonly]), input[type="datetime"]:not(.browser-default):focus:not([readonly]), input[type="datetime-local"]:not(.browser-default):focus:not([readonly]), input[type="tel"]:not(.browser-default):focus:not([readonly]), input[type="number"]:not(.browser-default):focus:not([readonly]), input[type="search"]:not(.browser-default):focus:not([readonly]), textarea.materialize-textarea:focus:not([readonly])
-        {
-            border-bottom: 1px solid #1a73e8;
-            -webkit-box-shadow: 0 1px 0 0 #1a73e8;
-            box-shadow: 0 1px 0 0 #1a73e8;
-        }
+    input:not([type]):focus:not([readonly]) + label, input[type="text"]:not(.browser-default):focus:not([readonly]) + label, input[type="password"]:not(.browser-default):focus:not([readonly]) + label, input[type="email"]:not(.browser-default):focus:not([readonly]) + label, input[type="url"]:not(.browser-default):focus:not([readonly]) + label, input[type="time"]:not(.browser-default):focus:not([readonly]) + label, input[type="date"]:not(.browser-default):focus:not([readonly]) + label, input[type="datetime"]:not(.browser-default):focus:not([readonly]) + label, input[type="datetime-local"]:not(.browser-default):focus:not([readonly]) + label, input[type="tel"]:not(.browser-default):focus:not([readonly]) + label, input[type="number"]:not(.browser-default):focus:not([readonly]) + label, input[type="search"]:not(.browser-default):focus:not([readonly]) + label, textarea.materialize-textarea:focus:not([readonly]) + label
+    {
+        color: #1a73e8 !important;
+    }
 
-        .btn-floating-icon {
-            margin-top: 0.8rem;
-        }
+    input:not([type]):focus:not([readonly]), input[type="text"]:not(.browser-default):focus:not([readonly]), input[type="password"]:not(.browser-default):focus:not([readonly]), input[type="email"]:not(.browser-default):focus:not([readonly]), input[type="url"]:not(.browser-default):focus:not([readonly]), input[type="time"]:not(.browser-default):focus:not([readonly]), input[type="date"]:not(.browser-default):focus:not([readonly]), input[type="datetime"]:not(.browser-default):focus:not([readonly]), input[type="datetime-local"]:not(.browser-default):focus:not([readonly]), input[type="tel"]:not(.browser-default):focus:not([readonly]), input[type="number"]:not(.browser-default):focus:not([readonly]), input[type="search"]:not(.browser-default):focus:not([readonly]), textarea.materialize-textarea:focus:not([readonly])
+    {
+        border-bottom: 1px solid #1a73e8 !important;
+        -webkit-box-shadow: 0 1px 0 0 #1a73e8 !important;
+        box-shadow: 0 1px 0 0 #1a73e8 !important;
+    }
 
-        .no-padding {
-            padding: 0;
-        }
+    .no-padding {
+        padding: 0 !important;
+    }
 
-        .card {
-            margin: 1rem;
-        }
+    .no-margin-bottom {
+        margin-bottom: 0 !important;
+    }
 
-        .card-title {
-            padding: 1rem 0 0 1rem;
-        }
+    .card {
+        margin: 1rem !important;
+    }
 
-        /* GOOGLE AD STYLE */
-        .ad-container {
-            max-width: 960px;
-            margin: 0 auto;
-        }
-        .ad-preview {
-            background-color: #f9f9f9;
-            padding: 12px 16px;
-            border-top: solid #dadce0 1px;
-            border-bottom: solid #dadce0 1px;
-        }
+    .card-title {
+        padding: 1rem 0 0 1rem !important;
+    }
 
-        .ad-widget {
-            font-family: 'Roboto', sans-serif !important;
-            color: #545454;
-            display: inline-block;
-            font-size: 14px;
-            line-height: normal;
-            text-align: left;
-            width: 100%;
-        }
+    /* GOOGLE AD STYLE */
+    .gl-ad-container {
+        max-width: 960px;
+        margin: 0 auto;
+        font-weight: 400;
+    }
+    .gl-ad-preview {
+        background-color: #f9f9f9;
+        padding: 12px 16px;
+        border-top: solid #dadce0 1px;
+        border-bottom: solid #dadce0 1px;
+    }
 
-        .ad-headline-and-url {
+    .gl-ad-widget {
+        font-family: 'Roboto', sans-serif !important;
+        color: #545454;
+        display: inline-block;
+        font-size: 14px;
+        line-height: normal;
+        text-align: left;
+        width: 100%;
+    }
 
-        }
+    .gl-ad-headline {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        text-overflow: -o-ellipsis-lastline;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        max-height: 66px;
+        white-space: normal;
+        color: #1a0dab;
+        font-size: 18px;
+        line-height: 22px;
+        margin-bottom: 3px;
+        padding-right: 20px;
+    }
 
-        .ad-headline {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            text-overflow: -o-ellipsis-lastline;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            max-height: 66px;
-            white-space: normal;
-            color: #1a0dab;
-            font-size: 18px;
-            line-height: 22px;
-            margin-bottom: 3px;
-            padding-right: 20px;
-        }
+    .gl-ad-contact {
+        display: flex;
+        height: auto;
+        margin-bottom: 3px;
+        overflow: hidden;
+        width: 100%;
+    }
 
-        .ad-contact {
-            display: flex;
-            height: auto;
-            margin-bottom: 3px;
-            overflow: hidden;
-            width: 100%;
-        }
+    .gl-ad-badge {
+        flex: 0 0 auto;
+        display: inline-block;
+        border-radius: 2px;
+        border: 1px solid #006621;
+        color: #006621;
+        padding: 0 2px;
+        font-size: 12px;
+        line-height: 14px;
+        vertical-align: baseline;
+        margin-right: 5px;
+    }
 
-        .ad-badge {
-            flex: 0 0 auto;
-            display: inline-block;
-            border-radius: 2px;
-            border: 1px solid #006621;
-            color: #006621;
-            padding: 0 2px;
-            font-size: 12px;
-            line-height: 14px;
-            vertical-align: baseline;
-            margin-right: 5px;
-        }
+    .gl-ad-url {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        flex: 0 1 auto;
+        color: #006621;
+        display: inline-block;
+        max-width: calc(100% - 3ch - 8px);
+        vertical-align: bottom;
+    }
 
-        .ad-url {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            flex: 0 1 auto;
-            color: #006621;
-            display: inline-block;
-            max-width: calc(100% - 3ch - 8px);
-            vertical-align: bottom;
-        }
+    .gl-ad-text {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        text-overflow: -o-ellipsis-lastline;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        max-height: 60px;
+        white-space: normal;
+        font-size: 14px;
+        line-height: 20px;
+        padding-right: 20px;
+        word-wrap: break-word;
+    }
 
-        .ad-text {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            text-overflow: -o-ellipsis-lastline;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            max-height: 60px;
-            white-space: normal;
-            font-size: 14px;
-            line-height: 20px;
-            overflow: hidden;
-            padding-right: 20px;
-            word-wrap: break-word;
-        }
-
-        .ad-caret {
-            color: #006621;
-        }
-        .error {
-            color:
-        }
+    .gl-ad-caret {
+        color: #006621;
+    }
     </style>
 </head>
 
@@ -299,11 +298,11 @@ order:
         </section>
 
         <!-- GOOGLE ADS PANEL -->
-        <section id="ad-list">
+        <section id="gl-ad-list">
 
         </section>
 
-        <section class="ad-container">
+        <section class="gl-ad-container">
             <div class="row">
                 <div class="col s12">
                     <a id="add-ad" class="right btn-floating btn-large waves-effect waves-light blue lighten-1 tooltipped" data-position="top" data-tooltip="Add New Ad Preview">
@@ -312,253 +311,474 @@ order:
                 </div>
             </div>
         </section>
-    </main>
-    <footer></footer>
-    <!-- <script src="{{base}}/js/lib/materialize.min.js"></script> -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            M.AutoInit();
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
 
-            class GoogleAdPreview {
-                constructor( parentID ) {
-                    this.parent = document.querySelector( `#${parentID}` );
 
-                    // generate index
-                    this.index = this.parent.childElementCount;
+                class GoogleAdPreview {
+                    constructor( parentID ) {
+                        this.parent = document.querySelector( `#${parentID}` );
 
-                    // Create fields if not placed
-                    // Inject HTML
-                    this.addHTML();
 
-                    this.close = document.querySelector( `#remove-ad-${this.index}`);
-                    this.close.addEventListener("click", () => {
-                        this.html.innerHTML = "";
-                    }, false);
+                        // generate index
+                        this.index = this.parent.childElementCount;
 
-                    this.form = document.querySelector( `#form-${this.index}` );
+                        this.sent = false;
 
-                    this.submit = new Event("submit", {
-                        'view':         window,
-                        'bubbles':      true,
-                        'cancelable':   true,
-                    });
+                        // Create fields if not placed
+                        // Inject HTML
+                        this.addHTML();
 
-                    this.form.addEventListener("submit", e => {
-                        e.preventDefault();
+                        M.AutoInit();
 
-                        //
-                        const url = "https://formspree.io/hello@deanroskell.com";
-                        const formData = new FormData(e.target)
-                        const jsonFormData = this.formDataToJson(formData);
-                        fetch(url, {
-                            method: 'POST',
-                            body: jsonFormData,
-                            headers: {
-                                'Content-Type': 'application/json'
-                            }
-                        })
-                        .catch(e => {
-                            // Some error handling you should probably be doing... again, if you're a weenie
-                        })
-                        .then(r => r.json())
-                        .then(response => {
-                            if (response.success === 'email sent') { console.log(response); }
+                        this.close = document.querySelector( `#remove-gl-ad-${this.index}`);
+                        this.close.addEventListener("click", () => {
+                            this.html.innerHTML = "";
+                        }, false);
+
+                        this.form = document.querySelector( `#form-${this.index}` );
+
+                        this.submit = new Event("ad-gl-submit", {
+                            'view':         window,
+                            'bubbles':      true,
+                            'cancelable':   true,
                         });
 
-                        // name="ad-preview-form" accept-charset="utf-8" action="https://formspree.io/hello@deanroskell.com" method="post"
-                    }, false);
-                    // Fields
-                    this.fields = {
-                        url:                this.html.querySelector( '[data-field="url-input"]' ),
-                        headline:           this.html.querySelectorAll( '[data-field="headline-input"]' ),
-                        headline_error:     this.html.querySelectorAll( '[data-field="headline-error"]' ),
-                        description:        this.html.querySelectorAll( '[data-field="description-input"]' ),
-                        description_error:  this.html.querySelectorAll( '[data-field="description-error"]' ),
-                    }
+                        this.form.addEventListener("ad-gl-submit", e => {
+                            if (this.sent) { return; }
+                            this.sent = true;
+                            e.preventDefault();
+                            const url = "https://liveformhq.com/form/e75c2a47-05e1-4802-8e25-1cc04dd9c254";
+                            const formData = new FormData(e.target)
+                            const jsonFormData = this.formDataToJson(formData);
+                            fetch(url, {
+                                method: 'POST',
+                                body: jsonFormData,
+                                headers: {
+                                    'Content-Type': 'application/json;charset=utf-8'
+                                }
+                            })
+                            .catch(e => {});
 
-
-                    // Ad Elements
-                    this.ad = {
-                        headline: this.html.querySelectorAll( '[data-field="headline-output"]' ),
-                        url: this.html.querySelector( '[data-field="url-output"]' ),
-                        description: this.html.querySelectorAll( '[data-field="description-output"]' ),
-                    }
-
-                    // Add Funcionality
-                    this.fields.headline.forEach((field, i) => {
-                        field.addEventListener( "input", () => {
-                            this.ad.headline[i].textContent = field.value;
-
-                            if ( field.value === "" ) {
-                                this.ad.headline[i].textContent = `Headline ${i + 1}`;
-                                this.fields.headline_error[i].dataset.error = "Enter a headline";
-                                field.classList.add('invalid');
-                            } else {
-                                this.fields.headline_error[i].dataset.error = "Shorten your headline to 30 characters, max";
-                                field.classList.remove('invalid');
-                            }
-                        }, false );
-                        M.CharacterCounter.init(field);
-                        field.focus();
-                        field.addEventListener( "blur", () => { this.readyToSubmit() }, false );
-                    });
-
-                    this.fields.description.forEach((field, i) => {
-                        field.addEventListener( "input", e => {
-                            this.ad.description[i].textContent = field.value;
-
-                            if ( field.value === "" ) {
-                                this.ad.description[i].textContent = `Description ${i + 1}`;
-                                this.fields.description_error[i].dataset.error = "Enter a description";
-                                field.classList.add('invalid');
-                            } else {
-                                this.fields.description_error[i].dataset.error = `Shorten your description to 90 characters, max`;
-                                field.classList.remove('invalid');
-                            }
-                        }, false );
-                        M.CharacterCounter.init(field);
-                        field.focus();
-                        field.addEventListener( "blur", () => { this.readyToSubmit() }, false );
-                    });
-
-                    this.fields.url.addEventListener( "input", () => {
-                        this.ad.url.textContent = this.fields.url.value.toLowerCase();
-
-                        if ( this.fields.url.value === "" ) {
-                            this.ad.url.textContent = 'google.com';
+                        }, false);
+                        // Fields
+                        this.fields = {
+                            url:                this.html.querySelector( '[data-field="url-input"]' ),
+                            input:              this.html.querySelectorAll( '[data-field="gl-ad-input"]' ),
+                            snippet:            this.html.querySelector( '[data-field="gl-ad-dropdown"]' ),
+                            special:            this.html.querySelector( '[data-field="special"]' ),
                         }
-                    }, false );
-                    this.fields.url.focus();
-                    this.fields.url.addEventListener( "blur", () => { this.readyToSubmit() }, false );
-                }
 
-                // Add all the form HTML
-                addHTML() {
+                        // Ad Elements
+                        this.ad = {
+                            output: this.html.querySelectorAll( '[data-field="gl-ad-output"]' ),
+                            snippet: this.html.querySelector( '[data-field="gl-ad-snippet-output"]' ),
+                            url: this.html.querySelector( '[data-field="url-output"]' ),
+                        }
+
+                        // Add Funcionality
+                        this.fields.input.forEach((field, i) => {
+                            field.addEventListener( "click", () => { if (field.value === "" )  this.ad.output[i].textContent = ""; },false);
+                            field.addEventListener( "input", () => {
+                                this.ad.output[i].textContent = (field.dataset.pre) ? `${field.dataset.pre} ${field.value}` : field.value;
+                                if ( field.value === "" ) {
+                                    this.ad.output[i].textContent = "";
+                                }
+                            }, false );
+                            field.addEventListener( "keydown", e => {
+                                if (field.value === "" )  this.ad.output[i].textContent = "";
+                                this.sent = false;
+                            }, false);
+                            M.CharacterCounter.init(field);
+                            field.focus();
+                        });
+
+                        this.fields.url.addEventListener( "input", () => {
+                            this.ad.url.textContent = this.fields.url.value.toLowerCase();
+
+                            if ( this.fields.url.value === "" ) {
+                                this.ad.url.textContent = 'google.com';
+                            }
+                        }, false );
+                        this.fields.url.addEventListener( "keydown", e => {this.sent = false;}, false);
+                        this.fields.url.focus();
+                        this.fields.url.addEventListener( "blur", () => { this.readyToSubmit() }, false );
+
+                        this.fields.snippet.addEventListener( "change", () => {
+                            this.ad.snippet.textContent = `${this.fields.snippet[this.fields.snippet.selectedIndex].text}: `;
+                        }, false );
 
 
-                    const section = document.createElement( 'section' );
-                    section.classList.add('ad-container');
-                    section.innerHTML =
-                        `<form id="form-${this.index}">
-                        <div class="row">
-                            <div class="s12 l6 z-depth-1">
+                        // Select First entry when opening collapsible
+                        this.collapsible = M.Collapsible.init(document.querySelectorAll('.collapsible'), {
+                            onOpenEnd: e => { e.children[1].querySelector('input').focus(); },
+                        });
 
-                                <!-- form -->
-                                <div class="row">
-                                    <div class="col s12">
-                                        <a id="remove-ad-${this.index}" class="right btn-flat waves-effect waves-light lighten-1 tooltipped" data-position="top" data-tooltip="Remove Ad">
-                                            <i class="btn-floating-icon fas fa-times grey-text"></i>
-                                        </a>
+                        window.addEventListener('beforeunload', () => {
+                            this.readyToSubmit();
+                        }, false);
+                    }
+
+
+
+                    // Add all the form HTML
+                    addHTML() {
+                        const section = document.createElement( 'section' );
+                        section.classList.add('gl-ad-container', 'z-depth-1')
+                        section.innerHTML =
+                            `<form id="form-${this.index}">
+                            <div class="row">
+                                <div class="col s12">
+
+                                    <!-- form -->
+                                    <div class="row">
+                                        <div class="col s12">
+                                            <a id="remove-gl-ad-${this.index}" class="right btn-flat waves-effect waves-light lighten-1 tooltipped" data-position="top" data-tooltip="Remove Ad">
+                                                <i class="btn-floating-icon fas fa-times grey-text"></i>
+                                            </a>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col s12 l6">
-                                        <div class="input-field col s12">
-                                            <input id="url-${this.index}" placeholder="google.com" type="text" class="validate ad-input-field" data-length="30" data-field="url-input" name="01_url">
-                                            <label for="url-${this.index}">Ad Domain Link</label>
-                                        </div>
-                                        <div class="input-field col s12">
-                                            <input id="headline_one-${this.index}" type="text" class="validate ad-input-field" data-length="30" data-field="headline-input" name="02_headline_one">
-                                            <label for="headline_one-${this.index}">Headline 1</label>
-                                            <span class="helper-text" data-error="Shorten your headline to 30 characters, max" data-field="headline-error"></span>
-                                        </div>
 
-                                        <div class="input-field col s12">
-                                            <input id="headline_two-${this.index}" type="text" class="validate ad-input-field" data-length="30" data-field="headline-input" name="03_headline_two">
-                                            <label for="headline_two-${this.index}">Headline 2</label>
-                                            <span class="helper-text" data-error="Shorten your headline to 30 characters, max" data-field="headline-error"></span>
-                                        </div>
-
-                                        <div class="input-field col s12">
-                                            <input id="headline_three-${this.index}" type="text" class="validate ad-input-field" data-length="30" data-field="headline-input" name="04_headline_three">
-                                            <label for="headline_three-${this.index}">Headline 3</label>
-                                            <span class="helper-text" data-error="Shorten your headline to 30 characters, max" data-field="headline-error"></span>
-                                        </div>
-
-                                        <div class="input-field col s12">
-                                            <input id="description_one-${this.index}" type="text" class="validate ad-input-field" data-length="90" data-field="description-input" name="05_descrption_one">
-                                            <label for="description_one-${this.index}">Description 1</label>
-                                            <span class="helper-text" data-error="Shorten your description to 90 characters, max" data-field="description-error"></span>
-                                        </div>
-
-                                        <div class="input-field col s12">
-                                            <input id="description_two-${this.index}" type="text" class="validate ad-input-field" data-length="90" data-field="description-input" name="06_descrption_two">
-                                            <label for="description_two-${this.index}">Description 2</label>
-                                            <span class="helper-text" data-error="Shorten your description to 90 characters, max" data-field="description-error"></span>
-                                        </div>
-                                        <div class="col s12"><h4></h4></div>
-                                    </div>
-
-                                    <div class="col s12 l6">
-                                        <div class="card">
-                                            <div class="card-content no-padding">
-                                                <span class="card-title">
-                                                    <h6>Ad Preview</h6>
-                                                </span>
-                                                <div class="ad-preview">
-                                                    <div class="ad-widget">
-                                                        <div class="ad-headline-and-url">
-                                                            <div class="ad-headline">
-                                                                <span data-field="headline-output">Headline 1</span> | <span data-field="headline-output">Headline 2</span> | <span data-field="headline-output">Headline 3</span>
+                                    <div class="row">
+                                        <div class="col s12">
+                                            <div class="card">
+                                                <div class="card-content no-padding">
+                                                    <span class="card-title">
+                                                        <h6>Ad Preview</h6>
+                                                    </span>
+                                                    <div class="gl-ad-preview">
+                                                        <div class="gl-ad-widget">
+                                                            <div class="gl-ad-headline-and-url">
+                                                                <div class="gl-ad-headline">
+                                                                    <span data-field="gl-ad-output">Headline 1</span><span data-field="gl-ad-output"> | Headline 2</span><span data-field="gl-ad-output"> | Headline 3</span>
+                                                                </div>
+                                                                <div class="gl-ad-contact">
+                                                                    <span class="gl-ad-badge">Ad</span>
+                                                                    <span class="gl-ad-url" data-field="url-output">google.com</span>
+                                                                    <span><i class="fas fa-caret-down gl-ad-caret" data-fa-transform="shrink-2"></i></span>
+                                                                </div>
                                                             </div>
-                                                            <div class="ad-contact">
-                                                                <span class="ad-badge">Ad</span>
-                                                                <span class="ad-url" data-field="url-output">google.com</span>
-                                                                <span><i class="fas fa-caret-down ad-caret" data-fa-transform="shrink-2"></i></span>
+                                                            <div class="gl-ad-text">
+                                                                <span data-field="gl-ad-output">Description 1</span> <span data-field="gl-ad-output">Description 2</span>
                                                             </div>
-                                                        </div>
-                                                        <div class="ad-text">
-                                                            <span data-field="description-output">Description 1</span> <span data-field="description-output">Description 2</span>
+                                                            <div class="gl-ad-text">
+                                                                <span data-field="gl-ad-output"></span><span data-field="gl-ad-output"></span><span data-field="gl-ad-output"></span>
+                                                            </div>
+                                                            <div class="gl-ad-text">
+                                                                <span data-field="gl-ad-snippet-output"></span><span data-field="gl-ad-output"></span><span data-field="gl-ad-output"></span><span data-field="gl-ad-output"></span>
+                                                            </div>
+                                                            <div class="section">
+                                                                <div class="row">
+                                                                    <div class="col s12 m1"></div>
+                                                                    <div class="col s6 m5">
+                                                                        <div class="gl-ad-headline">
+                                                                            <span data-field="gl-ad-output"></span>
+                                                                        </div>
+                                                                        <div class="gl-ad-text">
+                                                                            <span data-field="gl-ad-output"></span> <span data-field="gl-ad-output"></span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col s6 m5">
+                                                                        <div class="gl-ad-headline">
+                                                                            <span data-field="gl-ad-output"></span>
+                                                                        </div>
+                                                                        <div class="gl-ad-text">
+                                                                            <span data-field="gl-ad-output"></span> <span data-field="gl-ad-output"></span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col s12 m1"></div>
+                                                                    <div class="col s6 m5">
+                                                                        <div class="gl-ad-headline">
+                                                                            <span data-field="gl-ad-output"></span>
+                                                                        </div>
+                                                                        <div class="gl-ad-text">
+                                                                            <span data-field="gl-ad-output"></span> <span data-field="gl-ad-output"></span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col s6 m5">
+                                                                        <div class="gl-ad-headline">
+                                                                            <span data-field="gl-ad-output"></span>
+                                                                        </div>
+                                                                        <div class="gl-ad-text">
+                                                                            <span data-field="gl-ad-output"></span> <span data-field="gl-ad-output"></span>
+                                                                        </div>
+                                                                        <div class="gl-ad-text">
+                                                                            <span data-field="gl-ad-output"></span> <span data-field="gl-ad-output"></span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="card-action">
-                                            </div>
+                                            <div class="card-action"></div>
+                                        </div>
+                                        <div class="col s12">
+                                            <ul class="collapsible z-depth-0">
+                                                <li class="active">
+                                                    <div class="collapsible-header blue lighten-1 white-text bold"><h6><i class="fas fa-ad white-text"></i> Main Ad</h6></div>
+                                                    <div class="collapsible-body">
+                                                        <div class="row">
+                                                            <div class="input-field col s12">
+                                                                <input id="url-${this.index}" placeholder="google.com" type="text" class="validate gl-ad-input-field" data-length="30" data-field="url-input" name="01_url">
+                                                                <label for="url-${this.index}">Ad Domain Link</label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row no-margin-bottom">
+                                                            <div class="input-field col s12">
+                                                                <input id="headline_one-${this.index}" type="text" class="validate gl-ad-input-field" data-length="30" data-type="headline" data-field="gl-ad-input" name="02_headline_one">
+                                                                <label for="headline_one-${this.index}">Headline 1</label>
+                                                                <span class="helper-text" data-error="Shorten your headline to 30 characters, max" data-field="headline-error"></span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row no-margin-bottom">
+                                                            <div class="input-field col s12">
+                                                                <input id="headline_two-${this.index}" type="text" class="validate gl-ad-input-field" data-length="30" data-type="headline" data-pre=" | " data-field="gl-ad-input" name="03_headline_two">
+                                                                <label for="headline_two-${this.index}">Headline 2</label>
+                                                                <span class="helper-text" data-error="Shorten your headline to 30 characters, max" data-field="headline-error"></span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row no-margin-bottom">
+                                                            <div class="input-field col s12">
+                                                                <input id="headline_three-${this.index}" type="text" class="validate gl-ad-input-field" data-length="30" data-type="headline" data-pre=" | " data-field="gl-ad-input" name="04_headline_three">
+                                                                <label for="headline_three-${this.index}">Headline 3</label>
+                                                                <span class="helper-text" data-error="Shorten your headline to 30 characters, max" data-field="headline-error"></span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row no-margin-bottom">
+                                                            <div class="input-field col s12">
+                                                                <input id="description_one-${this.index}" type="text" class="validate gl-ad-input-field" data-length="90" data-type="description" data-field="gl-ad-input" name="05_description_one">
+                                                                <label for="description_one-${this.index}">Description 1</label>
+                                                                <span class="helper-text" data-error="Shorten your description to 90 characters, max" data-field="description-error"></span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row no-margin-bottom">
+                                                            <div class="input-field col s12">
+                                                                <input id="description_two-${this.index}" type="text" class="validate gl-ad-input-field" data-length="90" data-type="description" data-field="gl-ad-input" name="06_description_two">
+                                                                <label for="description_two-${this.index}">Description 2</label>
+                                                                <span class="helper-text" data-error="Shorten your description to 90 characters, max" data-field="description-error"></span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row no-margin-bottom"><div class="col s1 hide"><input id="special-${this.index}" type="text" class="gl-ad-input-field hide" data-field="special"></div></div>
+
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="collapsible-header blue lighten-1 white-text bold"><h6><i class="fas fa-bullhorn white-text"></i> Callouts</h6></div>
+                                                    <div class="collapsible-body">
+                                                        <div class="row no-margin-bottom">
+                                                            <div class="input-field col s12">
+                                                                <input id="callout_1-${this.index}" type="text" class="validate gl-ad-input-field" data-length="25" data-field="gl-ad-input" name="01_callout_1">
+                                                                <label for="callout_1-${this.index}">Callout 1</label>
+                                                                <span class="helper-text" data-error="Shorten your callout to 25 characters, max" data-field="callout-value-error"></span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row no-margin-bottom">
+                                                            <div class="input-field col s12">
+                                                                <input id="callout_2-${this.index}" type="text" class="validate gl-ad-input-field" data-length="25" data-pre=" · " data-field="gl-ad-input" name="02_callout_2">
+                                                                <label for="callout_2-${this.index}">Callout 2</label>
+                                                                <span class="helper-text" data-error="Shorten your callout to 25 characters, max" data-field="callout-value-error"></span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row no-margin-bottom">
+                                                            <div class="input-field col s12">
+                                                                <input id="callout_3-${this.index}" type="text" class="validate gl-ad-input-field" data-length="25" data-pre=" · " data-field="gl-ad-input" name="03_callout_3">
+                                                                <label for="callout_3-${this.index}">Callout 3</label>
+                                                                <span class="helper-text" data-error="Shorten your callout to 25 characters, max" data-field="callout-value-error"></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="collapsible-header blue lighten-1 white-text bold"><h6><i class="fas fa-cut white-text"></i> Structured Snippets</h6></div>
+                                                    <div class="collapsible-body">
+                                                        <div class="row no-margin-bottom">
+                                                            <div class="input-field col s12">
+                                                              <select data-field="gl-ad-dropdown" name="01_snippet_header">
+                                                                <option value="" disabled selected>Header</option>
+                                                                <option value="01">Amenities</option>
+                                                                <option value="02">Brands</option>
+                                                                <option value="03">Courses</option>
+                                                                <option value="04">Degree programs</option>
+                                                                <option value="05">Destinations</option>
+                                                                <option value="06">Featured hotels</option>
+                                                                <option value="07">Insurance coverage</option>
+                                                                <option value="08">Models</option>
+                                                                <option value="09">Neighborhoods</option>
+                                                                <option value="10">Service catalog</option>
+                                                                <option value="11">Shows</option>
+                                                                <option value="12">Styles</option>
+                                                                <option value="13">Types</option>
+                                                              </select>
+                                                              <label>Header</label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row no-margin-bottom">
+                                                            <div class="input-field col s12">
+                                                                <input id="snippet_value_1-${this.index}" type="text" class="validate gl-ad-input-field" data-length="25" data-field="gl-ad-input" name="01_snippet_value_1">
+                                                                <label for="snippet_value_1-${this.index}">Value 1</label>
+                                                                <span class="helper-text" data-error="Shorten your value to 25 characters, max" data-field="snippet-value-error"></span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row no-margin-bottom">
+                                                            <div class="input-field col s12">
+                                                                <input id="snippet_value_2-${this.index}" type="text" class="validate gl-ad-input-field" data-length="25" data-pre=", " data-field="gl-ad-input" name="02_snippet_value_2">
+                                                                <label for="snippet_value_2-${this.index}">Value 2</label>
+                                                                <span class="helper-text" data-error="Shorten your value to 25 characters, max" data-field="snippet-value-error"></span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row no-margin-bottom">
+                                                            <div class="input-field col s12">
+                                                                <input id="snippet_value_3-${this.index}" type="text" class="validate gl-ad-input-field" data-length="25" data-pre=", " data-field="gl-ad-input" name="03_snippet_value_3">
+                                                                <label for="snippet_value_3-${this.index}">Value 3</label>
+                                                                <span class="helper-text" data-error="Shorten your value to 25 characters, max" data-field="snippet-value-error"></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="collapsible-header blue lighten-1 white-text bold"><h6><i class="fas fa-link white-text"></i> Site Links</h6></div>
+                                                    <div class="collapsible-body">
+                                                        <div class="row no-margin-bottom"><div class="col s12"><h6 class="bold grey-text darken-1">Site Link 1</h6></div></div>
+                                                        <div class="row no-margin-bottom">
+                                                            <div class="input-field col s12">
+                                                                <input id="site_link_one_headline-${this.index}" type="text" class="validate gl-ad-input-field" data-length="25" data-field="gl-ad-input" name="01_site_link_one_headline">
+                                                                <label for="site_link_one_headline-${this.index}">Headline 1</label>
+                                                                <span class="helper-text" data-error="Shorten your headline to 25 characters, max" data-field="headline-error"></span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row no-margin-bottom">
+                                                            <div class="input-field col s12">
+                                                                <input id="site_link_one_description_one-${this.index}" type="text" class="validate gl-ad-input-field" data-length="35" data-field="gl-ad-input" name="02_site_link_one_description_one">
+                                                                <label for="site_link_one_description_one-${this.index}">Description 1</label>
+                                                                <span class="helper-text" data-error="Shorten your description to 35 characters, max" data-field="description-error"></span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row no-margin-bottom">
+                                                            <div class="input-field col s12">
+                                                                <input id="site_link_one_description_two-${this.index}" type="text" class="validate gl-ad-input-field" data-length="35" data-field="gl-ad-input" name="03_site_link_one_description_two">
+                                                                <label for="site_link_one_description_two-${this.index}">Description 2</label>
+                                                                <span class="helper-text" data-error="Shorten your description to 35 characters, max" data-field="description-error"></span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row no-margin-bottom"><div class="col s12"><h6 class="bold grey-text darken-1">Site Link 2</h6></div></div>
+                                                        <div class="row no-margin-bottom">
+                                                            <div class="input-field col s12">
+                                                                <input id="site_link_two_headline-${this.index}" type="text" class="validate gl-ad-input-field" data-length="25" data-field="gl-ad-input" name="01_site_link_two_headline">
+                                                                <label for="site_link_two_headline-${this.index}">Headline 2</label>
+                                                                <span class="helper-text" data-error="Shorten your headline to 25 characters, max" data-field="headline-error"></span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row no-margin-bottom">
+                                                            <div class="input-field col s12">
+                                                                <input id="site_link_two_description_one-${this.index}" type="text" class="validate gl-ad-input-field" data-length="35" data-field="gl-ad-input" name="02_site_link_two_description_one">
+                                                                <label for="site_link_two_description_one-${this.index}">Description 1</label>
+                                                                <span class="helper-text" data-error="Shorten your description to 35 characters, max" data-field="description-error"></span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row no-margin-bottom">
+                                                            <div class="input-field col s12">
+                                                                <input id="site_link_two_description_two-${this.index}" type="text" class="validate gl-ad-input-field" data-length="35" data-field="gl-ad-input" name="02_site_link_two_description_two">
+                                                                <label for="site_link_two_description_two-${this.index}">Description 2</label>
+                                                                <span class="helper-text" data-error="Shorten your description to 35 characters, max" data-field="description-error"></span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row no-margin-bottom"><div class="col s12"><h6 class="bold grey-text darken-1">Site Link 3</h6></div></div>
+                                                        <div class="row no-margin-bottom">
+                                                            <div class="input-field col s12">
+                                                                <input id="site_link_three_headline-${this.index}" type="text" class="validate gl-ad-input-field" data-length="25" data-field="gl-ad-input" name="01_site_link_three_headline">
+                                                                <label for="site_link_three_headline-${this.index}">Headline 3</label>
+                                                                <span class="helper-text" data-error="Shorten your headline to 25 characters, max" data-field="headline-error"></span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row no-margin-bottom">
+                                                            <div class="input-field col s12">
+                                                                <input id="site_link_three_description_one-${this.index}" type="text" class="validate gl-ad-input-field" data-length="35" data-field="gl-ad-input" name="02_site_link_three_description_one">
+                                                                <label for="site_link_three_description_one-${this.index}">Description 1</label>
+                                                                <span class="helper-text" data-error="Shorten your description to 35 characters, max" data-field="description-error"></span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row no-margin-bottom">
+                                                            <div class="input-field col s12">
+                                                                <input id="site_link_three_description_two-${this.index}" type="text" class="validate gl-ad-input-field" data-length="35" data-field="gl-ad-input" name="02_site_link_three_description_two">
+                                                                <label for="site_link_three_description_two-${this.index}">Description 2</label>
+                                                                <span class="helper-text" data-error="Shorten your description to 35 characters, max" data-field="description-error"></span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row no-margin-bottom"><div class="col s12"><h6 class="bold grey-text darken-1">Site Link 4</h6></div></div>
+                                                        <div class="row no-margin-bottom">
+                                                            <div class="input-field col s12">
+                                                                <input id="site_link_four_headline-${this.index}" type="text" class="validate gl-ad-input-field" data-length="25" data-field="gl-ad-input" name="01_site_link_four_headline">
+                                                                <label for="site_link_four_headline-${this.index}">Headline 4</label>
+                                                                <span class="helper-text" data-error="Shorten your headline to 25 characters, max" data-field="headline-error"></span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row no-margin-bottom">
+                                                            <div class="input-field col s12">
+                                                                <input id="site_link_four_description_one-${this.index}" type="text" class="validate gl-ad-input-field" data-length="35" data-field="gl-ad-input" name="02_site_link_four_description_one">
+                                                                <label for="site_link_four_description_one-${this.index}">Description 1</label>
+                                                                <span class="helper-text" data-error="Shorten your description to 35 characters, max" data-field="description-error"></span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row no-margin-bottom">
+                                                            <div class="input-field col s12">
+                                                                <input id="site_link_four_description_two-${this.index}" type="text" class="validate gl-ad-input-field" data-length="35" data-field="gl-ad-input" name="02_site_link_four_description_two">
+                                                                <label for="site_link_four_description_two-${this.index}">Description 2</label>
+                                                                <span class="helper-text" data-error="Shorten your description to 35 characters, max" data-field="description-error"></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                            <h4></h4>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>`;
-                    this.html = section;
-                    this.parent.appendChild( this.html );
+                            </form>
+
+                            `;
+                        this.html = section;
+                        this.parent.appendChild( this.html );
+                    }
+
+                    formDataToJson(formData) {
+                       const entries = formData.entries();
+
+                       const dataObj = Array.from(entries).reduce( (data, [key, value]) => {
+                         data[key] = value;
+                         if (key === 'email') {
+                           data._replyTo = value;
+                         }
+                         return data;
+                       }, {});
+                       return JSON.stringify(dataObj);
+                     };
+
+                    // Check that all fields are not empty and submit form
+                    readyToSubmit() {
+                        let ready = true;
+                        if ( this.fields.special.value !== "" ) { console.log("bad form", this.fields); ready = false; }
+                        if ( this.fields.url.value === "" ) { ready = false; }
+                        // if ( this.fields.snippet[this.fields.snippet.selectedIndex].value === "" ) { ready = false; }
+                        // this.fields.input.forEach( field => { if (field.value === "") { ready = false; } });
+                        if (ready) { this.form.dispatchEvent( this.submit ); }
+                    }
                 }
+                const ADD_BUTTON = document.querySelector('#add-ad');
+                ADD_BUTTON.addEventListener("click", () => {
+                    new GoogleAdPreview( "gl-ad-list" );
+                    M.Tooltip.getInstance(ADD_BUTTON).close();
+                }, false );
 
-                formDataToJson(formData) {
-                   const entries = formData.entries();
+                new GoogleAdPreview( "gl-ad-list" );
 
-                   const dataObj = Array.from(entries).reduce( (data, [key, value]) => {
-                     data[key] = value;
-                     if (key === 'email') {
-                       data._replyTo = value;
-                     }
-                     return data;
-                   }, {});
+            }, false);
+        </script>
 
-                   return JSON.stringify(dataObj);
-                 };
-
-                // Check that all fields are not empty and submit form
-                readyToSubmit() {
-                    let ready = true;
-                    if ( this.fields.url.value === "" ) { ready = false; }
-                    this.fields.headline.forEach( field => { if (field.value === "") { ready = false; } });
-                    this.fields.description.forEach( field => { if (field.value === "") { ready = false; } });
-                    // if (ready) { this.form.submit(); }
-                    if (ready) { this.form.dispatchEvent( this.submit ); }
-                }
-            }
-            const ADD_BUTTON = document.querySelector('#add-ad');
-            ADD_BUTTON.addEventListener("click", () => {
-                new GoogleAdPreview( "ad-list" );
-                M.Tooltip.getInstance(ADD_BUTTON).close();
-            }, false );
-
-            new GoogleAdPreview( "ad-list" );
-
-
-
-        }, false);
-    </script>
+        <script defer src="https://use.fontawesome.com/releases/v5.7.2/js/all.js" integrity="sha384-0pzryjIRos8mFBWMzSSZApWtPl/5++eIfzYmTgBBmXYdhvxPc+XcFEk+zJwDgWbP" crossorigin="anonymous"></script>
 </body>
