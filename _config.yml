@@ -26,8 +26,8 @@ twitter_username: roskelld
 github_username:  roskelld
 
 # Prices
-price_hour: "US$150"
-price_day: "US$750"
+price_hour: "US$100"
+price_day: "US$500"
 price_month: "US$7k"
 price_contract: "$Call"
 
