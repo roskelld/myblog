@@ -1046,6 +1046,10 @@ h5 {
 
 }
 
+.carousel-item.active {
+    background-color: #ffdfdf !important;
+}
+
 .content-panel {
     /* opacity: 0 !important; */
     animation: fader 0.4s cubic-bezier(.91, .01, .65, 1) forwards;
@@ -1754,6 +1758,16 @@ h4.services-offered-header {
 
 nav {
     background-color: inherit !important;
+}
+
+.card-row {
+    display: flex;
+    align-items: center;
+}
+
+.card-row > .card {
+    max-width: 14%;
+    display: inline-block;
 }
 
 .card {

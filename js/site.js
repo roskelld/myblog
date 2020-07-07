@@ -1,4 +1,7 @@
 document.addEventListener( 'DOMContentLoaded', function() {
+
+    // const utils = new Utils();
+
     // .....................................................................
     // INITIALIZE MATERIALIZE
     const sideNavEls = document.querySelectorAll( '.sidenav' );
@@ -11,5 +14,9 @@ document.addEventListener( 'DOMContentLoaded', function() {
 
     // const materialboxedEls = document.querySelectorAll( '.materialboxed' );
     // const materialboxed = M.Materialbox.init(materialboxedEls, {});
+    const carousel = document.querySelectorAll('.carousel');
+    const carouseleOptions = {};
+    const carouselInstaces = M.Carousel.init(carousel, this.carouseleOptions);
+
     AOS.init();
 }, false );
