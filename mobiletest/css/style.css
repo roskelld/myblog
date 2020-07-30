@@ -15,3 +15,11 @@ body {
 .no-margin {
     margin: 0;
 }
+
+footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    left: 0;
+    height: 30px;
+}

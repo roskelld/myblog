@@ -6,6 +6,8 @@ class Mobile {
         this._heightPad			 = document.getElementsByTagName('header')[0];
 		this._footerPad			 = document.getElementsByTagName('footer')[0];
 
+        // Debug
+        this.debugEl             = document.querySelector( '#debug' );
 
         this._canvas = document.createElement('canvas');
         this._canvas.oncontextmenu = () => false; // Block context menu
@@ -17,10 +19,25 @@ class Mobile {
 
         this._dirty = true;
 
+        // LISTENERS
+        this._canvas.addEventListener("touchstart", e => {
+            e.preventDefault();
+        }, {passive: false} );
+
+        this._canvas.addEventListener('touchmove', e => {
+            if (e.cancelable) {
+                e.preventDefault();
+            }
+            this.touchMove(e);
+        }, true );
+    }
+
+    touchMove( e ) {
+        console.log( this );
+        this.writeDebug( `POS: ${e.touches[0].screenX} : ${e.touches[0].screenY}` );
     }
 
     open() {
-        console.log( 'open');
         this.app.appendChild( this._canvas );
 
         // Start Position
@@ -116,8 +133,15 @@ class Mobile {
         this._ctx.fillRect( 0, 0, this._canvas.width, this._canvas.height );
     }
 
+    // *************************************************************************
+    // UPDATE LOOP
+    // *************************************************************************
+
+    writeDebug( text ) {
+        this.debugEl.textContent = text;
+    }
+
     drawDebugBox() {
-		// DRAW DEBUG FRAMES
 		// outer frame
 		const percentHeight = this._canvas.width / 100;
 		const percentWidth = this._canvas.width / 100;
