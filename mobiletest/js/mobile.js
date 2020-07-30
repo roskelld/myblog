@@ -16,6 +16,7 @@ class Mobile {
         // Background Style
         this.background = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWMQdAr5DwACtgGnAVZaJgAAAABJRU5ErkJggg==';
 
+        this._lastTouchDistance = 0;
 
         this._dirty = true;
 
@@ -33,15 +34,32 @@ class Mobile {
     }
 
     touchMove( e ) {
-        // console.log( e );
-        let text = "> ";
+
+        let text = "";
+        let dist = 0;
+        if ( e.touches.length > 1 ) {
+            dist = Math.hypot(
+                e.touches[0].screenX - e.touches[1].screenX,
+                e.touches[0].screenY - e.touches[1].screenY
+            );
+        } else {
+            dist = Math.hypot(
+                e.touches[0].screenX,
+                e.touches[0].screenY
+            );
+        }
+
+
+
         // build position text
         for ( const touch in e.touches ) {
             if ( e.touches.hasOwnProperty(touch) ) {
-                text = `${text} || ${e.touches[touch].screenX} : ${e.touches[touch].screenY}`;                
+                text = `${text} || ${e.touches[touch].screenX} : ${e.touches[touch].screenY}`;
             }
         };
 
+        text = `${dist.toFixed(2)} :: ${(dist - this._lastTouchDistance).toFixed(2)} :: ${text}`
+        this._lastTouchDistance = dist;
 
         this.writeDebug( text );
     }
