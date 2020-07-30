@@ -13,9 +13,16 @@ class Mobile {
         this._canvas.oncontextmenu = () => false; // Block context menu
         this._ctx = this._canvas.getContext('2d');
 
-        // Background Style
-        this.background = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWMQdAr5DwACtgGnAVZaJgAAAABJRU5ErkJggg==';
+        this.image = new Image();
+        this.image.src = '/mobiletest/img/road.png';
+        this.image.onload = () => {
+            this._dirty = true;
+        }
 
+
+        this._lastX = 0;
+        this._lastY = 0;
+        this._dragStart = null;
         this._lastTouchDistance = 0;
 
         this._dirty = true;
@@ -23,6 +30,7 @@ class Mobile {
         // LISTENERS
         this._canvas.addEventListener("touchstart", e => {
             e.preventDefault();
+            this.touchDown( e );
         }, {passive: false} );
 
         this._canvas.addEventListener('touchmove', e => {
@@ -33,8 +41,19 @@ class Mobile {
         }, true );
     }
 
-    touchMove( e ) {
+    touchDown( e ) {
+        console.log( e );
+        // Setup drag
+        if ( e.touches.length === 1 ) {
+            this._lastX = e.targetTouches[0].pageX;
+            this._lastY = e.targetTouches[0].pageY;
+            this._dragStart = this._ctx.transformedPoint( this._lastX, this._lastY );
+        }
+    }
 
+    touchMove( e ) {
+        console.log( 0 );
+        // DEBUGTEXT
         let text = "";
         let dist = 0;
         if ( e.touches.length > 1 ) {
@@ -49,8 +68,6 @@ class Mobile {
             );
         }
 
-
-
         // build position text
         for ( const touch in e.touches ) {
             if ( e.touches.hasOwnProperty(touch) ) {
@@ -62,6 +79,22 @@ class Mobile {
         this._lastTouchDistance = dist;
 
         this.writeDebug( text );
+
+        // MOVE CODE
+        this._x = e.targetTouches[0].pageX;
+        this._y = e.targetTouches[0].pageY;
+
+        this._lastX = this._x;
+        this._lastY = this._y;
+
+        // One Finger Touch therefore pan image
+        if ( e.touches.length === 1 ) {
+            const pt = this._ctx.transformedPoint( this._lastX, this._lastY );
+			this._ctx.translate( pt.x - this._dragStart.x, pt.y - this._dragStart.y );
+            this._dirty = true;
+        }
+
+
     }
 
     open() {
@@ -147,17 +180,14 @@ class Mobile {
     }
 
     drawImage() {
-        this.drawBackground();
-
+        const p1 = this._ctx.transformedPoint( 0, 0 );
+		const p2 = this._ctx.transformedPoint( this._canvas.width, this._canvas.height );
+		this._ctx.clearRect( p1.x, p1.y, p2.x - p1.x, p2.y - p1.y );
+        
         // Draw current art state
-        this._ctx.drawImage( this._canvas, 0, 0 );
+        this._ctx.drawImage( this.image, 0, 0 );
 
         this.drawDebugBox();
-    }
-
-    drawBackground() {
-        this._ctx.fillStyle = this.background;
-        this._ctx.fillRect( 0, 0, this._canvas.width, this._canvas.height );
     }
 
     // *************************************************************************
