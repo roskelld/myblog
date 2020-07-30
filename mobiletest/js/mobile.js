@@ -33,8 +33,17 @@ class Mobile {
     }
 
     touchMove( e ) {
-        console.log( this );
-        this.writeDebug( `POS: ${e.touches[0].screenX} : ${e.touches[0].screenY}` );
+        // console.log( e );
+        let text = "> ";
+        // build position text
+        for ( const touch in e.touches ) {
+            if ( e.touches.hasOwnProperty(touch) ) {
+                text = `${text} || ${e.touches[touch].screenX} : ${e.touches[touch].screenY}`;                
+            }
+        };
+
+
+        this.writeDebug( text );
     }
 
     open() {
