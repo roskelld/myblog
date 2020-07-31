@@ -255,10 +255,11 @@ class Mobile {
         ( this._canvas.height / this.image.height ) * zoom );
 
     // Are we at max zoom?
-    // if ( trans > 0 && scale > MAX_PIXEL_WIDTH ) {
-    //     this._ctx.setTransform( restore.a, restore.b, restore.c, restore.d, restore.e, restore.f );
-    //     return false;
-    // }
+    if ( trans > 0 && scale > MAX_PIXEL_WIDTH ) {
+        this._ctx.setTransform( restore.a, restore.b, restore.c, restore.d, restore.e, restore.f );
+        this._dirty = true;
+        return false;
+    }
     //
     // if ( trans < 1 && scale < MIN_PIXEL_WIDTH ) {
     //     this._ctx.setTransform( restore.a, restore.b, restore.c, restore.d, restore.e, restore.f );
