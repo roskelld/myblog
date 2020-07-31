@@ -96,15 +96,18 @@ class Mobile {
         } else {
             const amount = (dist - this._lastTouchDistance);
             this.writeDebug( `ZOOM: ${amount} : ${dist}` );
-            if ( dist > 10  ) {
-                this.zoomCanvas( amount / 10 );
+            if ( dist > 100  ) {
+
+                if ( amount > 0 ) {
+                    this.zoomCanvas( 0.5 );
+                } else {
+                    this.zoomCanvas( -0.5 );
+                }
             }
         }
 
 
         this._lastTouchDistance = dist;
-
-
     }
 
     open() {
@@ -115,7 +118,7 @@ class Mobile {
 
         this.setCanvasSize();
 
-        this.writeDebug( `10:54pm` );
+        this.writeDebug( `11:09pm` );
     }
 
     setCanvasSize() {
