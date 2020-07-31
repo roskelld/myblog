@@ -39,7 +39,7 @@ class Mobile {
 
         this._canvas.addEventListener("touchend", e => {
             e.preventDefault();
-            this._dragStart = null;
+            // this._dragStart = null;
         }, {passive: false} );
 
         this._canvas.addEventListener('touchmove', e => {
@@ -126,7 +126,7 @@ class Mobile {
 
         this.setCanvasSize();
 
-        this.writeDebug( `11:40pm` );
+        this.writeDebug( `12:00am` );
     }
 
     setCanvasSize() {
@@ -260,15 +260,12 @@ class Mobile {
         this._dirty = true;
         return false;
     }
-    //
-    // if ( trans < 1 && scale < MIN_PIXEL_WIDTH ) {
-    //     this._ctx.setTransform( restore.a, restore.b, restore.c, restore.d, restore.e, restore.f );
-    //     return false;
-    // }
 
-    // Make sure cursor gets updated
-
-    this._dirty = true;
+    if ( trans < 1 && scale < MIN_PIXEL_WIDTH ) {
+        this._ctx.setTransform( restore.a, restore.b, restore.c, restore.d, restore.e, restore.f );
+        this._dirty = true;
+        return false;
+    }
 
     return true;
 }
