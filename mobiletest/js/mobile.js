@@ -92,6 +92,7 @@ class Mobile {
             this._dirty = true;
         } else {
             this.zoomCanvas( this._lastTouchDistance );
+            this.writeDebug( `ZOOM: ${this._lastTouchDistance}` );
         }
 
 
