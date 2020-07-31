@@ -12,6 +12,8 @@ class Mobile {
         this._canvas = document.createElement('canvas');
         this._canvas.oncontextmenu = () => false; // Block context menu
         this._ctx = this._canvas.getContext('2d');
+        this._ctx.imageSmoothingEnabled = false;
+		this._ctx.webkitImageSmoothingEnabled = false;
 
         this.image = new Image();
         this.image.src = '/mobiletest/img/road.png';
@@ -50,8 +52,6 @@ class Mobile {
             this._lastY = e.targetTouches[0].pageY;
             this._dragStart = this._ctx.transformedPoint( this._lastX, this._lastY );
         }
-
-        this.zoomCanvas( 0.1 );
     }
 
     touchMove( e ) {
@@ -94,9 +94,11 @@ class Mobile {
 			this._ctx.translate( pt.x - this._dragStart.x, pt.y - this._dragStart.y );
             this._dirty = true;
         } else {
-            const amount = (dist - this._lastTouchDistance) / 10;
-            this.writeDebug( `ZOOM: ${amount}` );
-            this.zoomCanvas( amount );
+            const amount = (dist - this._lastTouchDistance);
+            this.writeDebug( `ZOOM: ${amount} : ${amount}` );
+            if ( dist > 10  ) {
+                this.zoomCanvas( amount / 10 );
+            }
         }
 
 
@@ -113,7 +115,7 @@ class Mobile {
 
         this.setCanvasSize();
 
-        this.writeDebug( `10:40pm` );
+        this.writeDebug( `10:54pm` );
     }
 
     setCanvasSize() {
