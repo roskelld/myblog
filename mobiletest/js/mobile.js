@@ -109,7 +109,7 @@ class Mobile {
             this._dragStart = null;
             const amount = (dist - this._lastTouchDistance);
             this.writeDebug( `ZOOM: ${amount} : ${dist}` );
-            if ( dist > 100  ) {
+            if ( dist > 100 && Math.abs(amount) > 0.2 ) {
 
                 if ( amount > 0 ) {
                     this.zoomCanvas( 0.5 );
@@ -131,7 +131,7 @@ class Mobile {
 
         this.setCanvasSize();
 
-        this.writeDebug( `12:12am` );
+        this.writeDebug( `12:15am` );
     }
 
     setCanvasSize() {
