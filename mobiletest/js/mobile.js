@@ -37,6 +37,11 @@ class Mobile {
             this.touchDown( e );
         }, {passive: false} );
 
+        this._canvas.addEventListener("touchend", e => {
+            e.preventDefault();
+            this._dragStart = null;
+        }, {passive: false} );
+
         this._canvas.addEventListener('touchmove', e => {
             if (e.cancelable) {
                 e.preventDefault();
@@ -121,7 +126,7 @@ class Mobile {
 
         this.setCanvasSize();
 
-        this.writeDebug( `11:32pm` );
+        this.writeDebug( `11:40pm` );
     }
 
     setCanvasSize() {
