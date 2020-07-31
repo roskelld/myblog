@@ -96,6 +96,7 @@ class Mobile {
 			this._ctx.translate( pt.x - this._dragStart.x, pt.y - this._dragStart.y );
             this._dirty = true;
         } else {
+            this._dragStart = null;
             const amount = (dist - this._lastTouchDistance);
             this.writeDebug( `ZOOM: ${amount} : ${dist}` );
             if ( dist > 100  ) {
@@ -120,7 +121,7 @@ class Mobile {
 
         this.setCanvasSize();
 
-        this.writeDebug( `11:09pm` );
+        this.writeDebug( `11:32pm` );
     }
 
     setCanvasSize() {
