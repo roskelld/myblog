@@ -107,6 +107,8 @@ class Mobile {
 		this._trackTransforms( this._ctx );
 
         this.setCanvasSize();
+
+        this.writeDebug( `10:37pm` );
     }
 
     setCanvasSize() {
