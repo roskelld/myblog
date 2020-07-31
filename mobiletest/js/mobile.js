@@ -76,7 +76,7 @@ class Mobile {
         text = `${e.touches.length} | ${dist.toFixed(2)} :: ${(dist - this._lastTouchDistance).toFixed(2)} :: ${text}`
         this._lastTouchDistance = dist;
 
-        this.writeDebug( text );
+        // this.writeDebug( text );
 
         // MOVE CODE
         this._x = e.targetTouches[0].pageX;
