@@ -90,8 +90,8 @@ class Mobile {
 			this._ctx.translate( pt.x - this._dragStart.x, pt.y - this._dragStart.y );
             this._dirty = true;
         } else {
-            // this.zoomCanvas( this._lastTouchDistance );
             this.writeDebug( `ZOOM: ${dist - this._lastTouchDistance}` );
+            this.zoomCanvas( dist - this._lastTouchDistance );
         }
 
 
@@ -108,7 +108,7 @@ class Mobile {
 
         this.setCanvasSize();
 
-        this.writeDebug( `10:37pm` );
+        this.writeDebug( `10:40pm` );
     }
 
     setCanvasSize() {
