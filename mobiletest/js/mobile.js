@@ -25,6 +25,8 @@ class Mobile {
         this._dragStart = null;
         this._lastTouchDistance = 0;
 
+        this._scaleFactor = 1.1;
+
         this._dirty = true;
 
         // LISTENERS
@@ -48,6 +50,8 @@ class Mobile {
             this._lastY = e.targetTouches[0].pageY;
             this._dragStart = this._ctx.transformedPoint( this._lastX, this._lastY );
         }
+
+        this.zoomCanvas( 0.1 );
     }
 
     touchMove( e ) {
@@ -197,8 +201,8 @@ class Mobile {
 
     getZoom() {
 		const ratio = Math.min(
-			( this._canvas.width / this.data.width ),
-			( this._canvas.height / this.data.height ) );
+			( this._canvas.width / this.image.width ),
+			( this._canvas.height / this.image.height ) );
 		return Number((this._ctx.getTransform().a / ratio));
 	}
 
@@ -233,8 +237,8 @@ class Mobile {
 
     const zoom = this.getZoom();
     const scale = Math.min(
-        ( this._canvas.width / this.data.width ) * zoom,
-        ( this._canvas.height / this.data.height ) * zoom );
+        ( this._canvas.width / this.image.width ) * zoom,
+        ( this._canvas.height / this.image.height ) * zoom );
 
     // Are we at max zoom?
     if ( trans > 0 && scale > MAX_PIXEL_WIDTH ) {
