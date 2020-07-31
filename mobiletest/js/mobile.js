@@ -95,7 +95,7 @@ class Mobile {
             this._dirty = true;
         } else {
             const amount = (dist - this._lastTouchDistance);
-            this.writeDebug( `ZOOM: ${amount} : ${amount}` );
+            this.writeDebug( `ZOOM: ${amount} : ${dist}` );
             if ( dist > 10  ) {
                 this.zoomCanvas( amount / 10 );
             }
@@ -244,15 +244,15 @@ class Mobile {
         ( this._canvas.height / this.image.height ) * zoom );
 
     // Are we at max zoom?
-    if ( trans > 0 && scale > MAX_PIXEL_WIDTH ) {
-        this._ctx.setTransform( restore.a, restore.b, restore.c, restore.d, restore.e, restore.f );
-        return false;
-    }
-
-    if ( trans < 1 && scale < MIN_PIXEL_WIDTH ) {
-        this._ctx.setTransform( restore.a, restore.b, restore.c, restore.d, restore.e, restore.f );
-        return false;
-    }
+    // if ( trans > 0 && scale > MAX_PIXEL_WIDTH ) {
+    //     this._ctx.setTransform( restore.a, restore.b, restore.c, restore.d, restore.e, restore.f );
+    //     return false;
+    // }
+    //
+    // if ( trans < 1 && scale < MIN_PIXEL_WIDTH ) {
+    //     this._ctx.setTransform( restore.a, restore.b, restore.c, restore.d, restore.e, restore.f );
+    //     return false;
+    // }
 
     // Make sure cursor gets updated
 
