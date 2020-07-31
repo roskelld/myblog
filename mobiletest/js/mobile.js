@@ -267,6 +267,7 @@ class Mobile {
         return false;
     }
 
+    this._dirty = true;
     return true;
 }
 
