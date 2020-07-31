@@ -74,7 +74,6 @@ class Mobile {
         };
 
         text = `${e.touches.length} | ${dist.toFixed(2)} :: ${(dist - this._lastTouchDistance).toFixed(2)} :: ${text}`
-        this._lastTouchDistance = dist;
 
         // this.writeDebug( text );
 
@@ -92,10 +91,11 @@ class Mobile {
             this._dirty = true;
         } else {
             // this.zoomCanvas( this._lastTouchDistance );
-            this.writeDebug( `ZOOM: ${this._lastTouchDistance}` );
+            this.writeDebug( `ZOOM: ${dist - this._lastTouchDistance}` );
         }
 
 
+        this._lastTouchDistance = dist;
 
 
     }
