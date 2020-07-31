@@ -91,7 +91,7 @@ class Mobile {
 			this._ctx.translate( pt.x - this._dragStart.x, pt.y - this._dragStart.y );
             this._dirty = true;
         } else {
-            this.zoomCanvas( this._lastTouchDistance );
+            // this.zoomCanvas( this._lastTouchDistance );
             this.writeDebug( `ZOOM: ${this._lastTouchDistance}` );
         }
 
