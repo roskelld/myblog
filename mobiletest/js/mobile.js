@@ -51,6 +51,8 @@ class Mobile {
             this._lastX = e.targetTouches[0].pageX;
             this._lastY = e.targetTouches[0].pageY;
             this._dragStart = this._ctx.transformedPoint( this._lastX, this._lastY );
+        } else {
+            this._dragStart = null;
         }
     }
 
@@ -89,7 +91,7 @@ class Mobile {
         this._lastY = this._y;
 
         // One Finger Touch therefore pan image
-        if ( e.touches.length === 1 ) {
+        if ( e.touches.length === 1 && this._dragStart != null ) {
             const pt = this._ctx.transformedPoint( this._lastX, this._lastY );
 			this._ctx.translate( pt.x - this._dragStart.x, pt.y - this._dragStart.y );
             this._dirty = true;
