@@ -42,7 +42,6 @@ class Mobile {
     }
 
     touchDown( e ) {
-        console.log( e );
         // Setup drag
         if ( e.touches.length === 1 ) {
             this._lastX = e.targetTouches[0].pageX;
@@ -52,7 +51,6 @@ class Mobile {
     }
 
     touchMove( e ) {
-        console.log( 0 );
         // DEBUGTEXT
         let text = "";
         let dist = 0;
@@ -92,7 +90,11 @@ class Mobile {
             const pt = this._ctx.transformedPoint( this._lastX, this._lastY );
 			this._ctx.translate( pt.x - this._dragStart.x, pt.y - this._dragStart.y );
             this._dirty = true;
+        } else {
+            this.zoomCanvas( this._lastTouchDistance );
         }
+
+
 
 
     }
@@ -183,12 +185,71 @@ class Mobile {
         const p1 = this._ctx.transformedPoint( 0, 0 );
 		const p2 = this._ctx.transformedPoint( this._canvas.width, this._canvas.height );
 		this._ctx.clearRect( p1.x, p1.y, p2.x - p1.x, p2.y - p1.y );
-        
+
         // Draw current art state
         this._ctx.drawImage( this.image, 0, 0 );
 
         this.drawDebugBox();
     }
+
+    getZoom() {
+		const ratio = Math.min(
+			( this._canvas.width / this.data.width ),
+			( this._canvas.height / this.data.height ) );
+		return Number((this._ctx.getTransform().a / ratio));
+	}
+
+    zoomCanvas( amount, x, y ) {
+    // Define scale based on screen setup
+    const MAX_PIXEL_WIDTH = 100;
+    const MIN_PIXEL_WIDTH = 1;
+
+    // Store Transform in case needed
+    const restore = this._ctx.getTransform();
+
+    // Set center point of zoom
+    if ( typeof x === 'undefined' || x === -1 ) {
+        x = (this._canvas.width / 2);
+    }
+    if ( typeof y === 'undefined' || y === -1 ) {
+        y = (this._canvas.height / 2);
+    }
+
+    let factor = Math.pow( this._scaleFactor, amount );
+    const pt = this._ctx.transformedPoint( x, y );
+
+    // Perform the translation
+    this._ctx.translate( pt.x, pt.y );
+
+    this._ctx.scale( factor, factor );
+
+    this._ctx.translate( -pt.x, -pt.y );
+
+    // Check to see if it crossed the boundaries and then set to max or min
+    const trans = this._ctx.getTransform().a;
+
+    const zoom = this.getZoom();
+    const scale = Math.min(
+        ( this._canvas.width / this.data.width ) * zoom,
+        ( this._canvas.height / this.data.height ) * zoom );
+
+    // Are we at max zoom?
+    if ( trans > 0 && scale > MAX_PIXEL_WIDTH ) {
+        this._ctx.setTransform( restore.a, restore.b, restore.c, restore.d, restore.e, restore.f );
+        return false;
+    }
+
+    if ( trans < 1 && scale < MIN_PIXEL_WIDTH ) {
+        this._ctx.setTransform( restore.a, restore.b, restore.c, restore.d, restore.e, restore.f );
+        return false;
+    }
+
+    // Make sure cursor gets updated
+
+    this._dirty = true;
+
+    return true;
+}
 
     // *************************************************************************
     // UPDATE LOOP
