@@ -100,7 +100,7 @@ class Mobile {
             const pt = this._ctx.transformedPoint( this._lastX, this._lastY );
 			this._ctx.translate( pt.x - this._dragStart.x, pt.y - this._dragStart.y );
             this._dirty = true;
-        } else {
+        } else if ( e.touches.length > 1 ){
             this._dragStart = null;
             const amount = (dist - this._lastTouchDistance);
             this.writeDebug( `ZOOM: ${amount} : ${dist}` );
