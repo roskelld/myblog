@@ -39,6 +39,11 @@ class Mobile {
 
         this._canvas.addEventListener("touchend", e => {
             e.preventDefault();
+            if ( e.touches.length === 1 ) {
+                this._lastX = e.targetTouches[0].pageX;
+                this._lastY = e.targetTouches[0].pageY;
+                this._dragStart = this._ctx.transformedPoint( this._lastX, this._lastY );
+            }
             // this._dragStart = null;
         }, {passive: false} );
 
