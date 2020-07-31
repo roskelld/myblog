@@ -73,7 +73,7 @@ class Mobile {
             }
         };
 
-        text = `${dist.toFixed(2)} :: ${(dist - this._lastTouchDistance).toFixed(2)} :: ${text}`
+        text = `${e.touches.length} | ${dist.toFixed(2)} :: ${(dist - this._lastTouchDistance).toFixed(2)} :: ${text}`
         this._lastTouchDistance = dist;
 
         this.writeDebug( text );
