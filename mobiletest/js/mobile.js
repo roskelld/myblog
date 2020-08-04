@@ -348,7 +348,8 @@ class Mobile {
 		this._ctx.strokeRect( ix, iy, innerWidth, innerHeight );
 		this._ctx.strokeStyle = "green";
 		this._ctx.lineWidth = "4";
-		const pixel = - this._ctx.getTransform().a;
+		const pixel = - this._ctx.getTransform().e;
+        console.log( this._ctx.getTransform() );
 		this._ctx.strokeRect( this._canvas.width / 2 - ( pixel / 2 ), this._canvas.height / 2 - ( pixel / 2), pixel, pixel );
 	}
 
