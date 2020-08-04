@@ -80,7 +80,16 @@ class Mobile {
                 this._dragStart = this._ctx.transformedPoint( this._lastX, this._lastY );
             }
 
-            if (e.target.tagName === "CANVAS" ) this._canvas_touch--;
+            // if (e.target.tagName === "CANVAS" ) this._canvas_touch--;
+
+            // Set Canvas Touch
+            let num = 0;
+            for ( const touch in e.touches ) {
+                if ( e.touches.hasOwnProperty(touch) ) {
+                    if (e.touches[touch].target.tagName === "CANVAS" ) num++;
+                }
+            };
+            this._canvas_touch = num;
 
             // this._dragStart = null;
             this.writeDebug( this._canvas_touch );
@@ -97,13 +106,14 @@ class Mobile {
     touchDown( e ) {
         console.log( e );
         // Set Canvas Touch
-        // for ( const touch in e.touches ) {
-        //     if ( e.touches.hasOwnProperty(touch) ) {
-        //         if (e.touches[touch].target.tagName === "CANVAS" ) this._canvas_touch++;
-        //     }
-        // };
-
-        if ( e.target.tagName === "CANVAS" ) this._canvas_touch++;
+        let num = 0;
+        for ( const touch in e.touches ) {
+            if ( e.touches.hasOwnProperty(touch) ) {
+                if (e.touches[touch].target.tagName === "CANVAS" ) num++;
+            }
+        };
+        this._canvas_touch = num;
+        // if ( e.target.tagName === "CANVAS" ) this._canvas_touch++;
 
         // Setup drag
         if ( e.touches.length === 1 ) {
