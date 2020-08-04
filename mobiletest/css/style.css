@@ -19,9 +19,7 @@ body {
 main {
     margin: 0;
     padding: 0;
-    height: 80%;
-    width: 100%;
-    position: relative;
+    position: fixed;
     display: flex;
 }
 
@@ -30,7 +28,7 @@ footer {
     bottom: 0;
     width: 100%;
     left: 0;
-    height: 50px;
+    height: 7%;
     display: flex;
     border: 1px solid orange;
     background: darkgrey;
@@ -60,7 +58,10 @@ footer > div {
     border: 2px white solid;
     position: fixed;
     display: inline-block;
-    height: 80%;
+    height: 92%;
+    width: 100%;
+    left: 0;
+    top: 0;
 }
 
 canvas {

@@ -28,6 +28,7 @@ class Mobile {
         this._lastX = 0;
         this._lastY = 0;
         this._dragStart = null;
+        this._canvas_touch = 0;
         this._lastTouchDistance = 0;
 
         this._scaleFactor = 1.1;
@@ -60,13 +61,15 @@ class Mobile {
             this._deselect_pixels = false;
             this._select_pixels = false;
 
-            this.writeDebug("")
+            this.writeDebug( e.touches.length );
         }, false);
 
 
         this._canvas.addEventListener("touchstart", e => {
             e.preventDefault();
             this.touchDown( e );
+
+            this.writeDebug( this._canvas_touch );
         }, {passive: false} );
 
         this._canvas.addEventListener("touchend", e => {
@@ -76,7 +79,11 @@ class Mobile {
                 this._lastY = e.targetTouches[0].pageY;
                 this._dragStart = this._ctx.transformedPoint( this._lastX, this._lastY );
             }
+
+            if (e.target.tagName === "CANVAS" ) this._canvas_touch--;
+
             // this._dragStart = null;
+            this.writeDebug( this._canvas_touch );
         }, {passive: false} );
 
         this._canvas.addEventListener('touchmove', e => {
@@ -88,6 +95,13 @@ class Mobile {
     }
 
     touchDown( e ) {
+        // Set Canvas Touch
+        for ( const touch in e.touches ) {
+            if ( e.touches.hasOwnProperty(touch) ) {
+                if (e.touches[touch].target.tagName === "CANVAS" ) this._canvas_touch++;
+            }
+        };
+
         // Setup drag
         if ( e.touches.length === 1 ) {
             this._lastX = e.targetTouches[0].pageX;
@@ -117,6 +131,7 @@ class Mobile {
         }
 
         // build position text
+        // figure out canvas touch numbers
         for ( const touch in e.touches ) {
             if ( e.touches.hasOwnProperty(touch) ) {
                 text = `${text} || ${e.touches[touch].screenX} : ${e.touches[touch].screenY}`;
@@ -135,11 +150,11 @@ class Mobile {
         this._lastY = this._y;
 
         // One Finger Touch therefore pan image
-        if ( e.touches.length === 1 && this._dragStart != null ) {
+        if ( this._canvas_touch === 1 && this._dragStart != null ) {
             const pt = this._ctx.transformedPoint( this._lastX, this._lastY );
 			this._ctx.translate( pt.x - this._dragStart.x, pt.y - this._dragStart.y );
             this._dirty = true;
-        } else if ( e.touches.length > 1 ){
+        } else if ( this._canvas_touch > 1 ){
             this._dragStart = null;
             const amount = (dist - this._lastTouchDistance);
             // this.writeDebug( `ZOOM: ${amount} : ${dist}` );
