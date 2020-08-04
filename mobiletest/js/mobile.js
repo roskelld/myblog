@@ -202,7 +202,7 @@ class Mobile {
 
         this.setCanvasSize();
 
-        this.writeDebug( `5:08pm` );
+        this.writeDebug( `5:21pm` );
     }
 
     setCanvasSize() {
