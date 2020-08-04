@@ -6,6 +6,9 @@ class Mobile {
         this._heightPad			 = document.getElementsByTagName('header')[0];
 		this._footerPad			 = document.getElementsByTagName('footer')[0];
 
+        // Select Pixel Button
+        this.select_pixel       = document.querySelector('#pixelbutton');
+
         // Debug
         this.debugEl             = document.querySelector( '#debug' );
 
@@ -31,7 +34,32 @@ class Mobile {
 
         this._dirty = true;
 
+        // Pixel selection
+        this._select_pixels = false;
+        this._deselect_pixels = false;
+
         // LISTENERS
+        this.select_pixel.addEventListener("touchstart", e => {
+            // Check pixel under cursor (center of screen)
+            // if selected set mode to deselct
+            // else set mode to select
+            if ( this._select_pixels ) {
+                this._select_pixels = false;
+                this._deselect_pixels = true;
+            } else {
+                this._deselect_pixels = false;
+                this._select_pixels = true;
+            }
+
+        }, false);
+
+        this.select_pixel.addEventListener("touchend", e => {
+            // stop pixel action
+            this._deselect_pixels = false;
+            this._select_pixels = false;
+        }, false);
+
+
         this._canvas.addEventListener("touchstart", e => {
             e.preventDefault();
             this.touchDown( e );
@@ -108,7 +136,7 @@ class Mobile {
         } else if ( e.touches.length > 1 ){
             this._dragStart = null;
             const amount = (dist - this._lastTouchDistance);
-            this.writeDebug( `ZOOM: ${amount} : ${dist}` );
+            // this.writeDebug( `ZOOM: ${amount} : ${dist}` );
             if ( dist > 100 && Math.abs(amount) > 0.2 ) {
 
                 if ( amount > 0 ) {
@@ -117,6 +145,14 @@ class Mobile {
                     this.zoomCanvas( -0.5 );
                 }
             }
+        }
+
+        // Are we selecting pixels
+        if ( this._select_pixels ) {
+            // If current pixel is not selected grab it
+            this.writeDebug("GRABBING PIXELS");
+        } else if ( this._deselect_pixels ) {
+            this.writeDebug("REMOVING PIXELS");
         }
 
 
