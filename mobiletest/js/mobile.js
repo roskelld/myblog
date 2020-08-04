@@ -57,6 +57,8 @@ class Mobile {
             // stop pixel action
             this._deselect_pixels = false;
             this._select_pixels = false;
+
+            this.writeDebug("")
         }, false);
 
 
@@ -92,6 +94,8 @@ class Mobile {
         } else {
             this._dragStart = null;
         }
+
+        this.writeDebug( e.touches.length );
     }
 
     touchMove( e ) {
