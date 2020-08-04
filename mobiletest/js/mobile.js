@@ -95,12 +95,15 @@ class Mobile {
     }
 
     touchDown( e ) {
+        // console.log( e );
         // Set Canvas Touch
-        for ( const touch in e.touches ) {
-            if ( e.touches.hasOwnProperty(touch) ) {
-                if (e.touches[touch].target.tagName === "CANVAS" ) this._canvas_touch++;
-            }
-        };
+        // for ( const touch in e.touches ) {
+        //     if ( e.touches.hasOwnProperty(touch) ) {
+        //         if (e.touches[touch].target.tagName === "CANVAS" ) this._canvas_touch++;
+        //     }
+        // };
+
+        if (e.target.tagName === "CANVAS" ) this._canvas_touch++;
 
         // Setup drag
         if ( e.touches.length === 1 ) {
@@ -132,13 +135,13 @@ class Mobile {
 
         // build position text
         // figure out canvas touch numbers
-        for ( const touch in e.touches ) {
-            if ( e.touches.hasOwnProperty(touch) ) {
-                text = `${text} || ${e.touches[touch].screenX} : ${e.touches[touch].screenY}`;
-            }
-        };
+        // for ( const touch in e.touches ) {
+        //     if ( e.touches.hasOwnProperty(touch) ) {
+        //         text = `${text} || ${e.touches[touch].screenX} : ${e.touches[touch].screenY}`;
+        //     }
+        // };
 
-        text = `${e.touches.length} | ${dist.toFixed(2)} :: ${(dist - this._lastTouchDistance).toFixed(2)} :: ${text}`
+        // text = `${e.touches.length} | ${dist.toFixed(2)} :: ${(dist - this._lastTouchDistance).toFixed(2)} :: ${text}`
 
         // this.writeDebug( text );
 
