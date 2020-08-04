@@ -95,7 +95,7 @@ class Mobile {
     }
 
     touchDown( e ) {
-        // console.log( e );
+        console.log( e );
         // Set Canvas Touch
         // for ( const touch in e.touches ) {
         //     if ( e.touches.hasOwnProperty(touch) ) {
@@ -103,7 +103,7 @@ class Mobile {
         //     }
         // };
 
-        if (e.target.tagName === "CANVAS" ) this._canvas_touch++;
+        if ( e.target.tagName === "CANVAS" ) this._canvas_touch++;
 
         // Setup drag
         if ( e.touches.length === 1 ) {
@@ -191,7 +191,7 @@ class Mobile {
 
         this.setCanvasSize();
 
-        this.writeDebug( `12:15am` );
+        this.writeDebug( `5:08pm` );
     }
 
     setCanvasSize() {
