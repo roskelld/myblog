@@ -40,6 +40,7 @@ class Mobile {
 
         // LISTENERS
         this.select_pixel.addEventListener("touchstart", e => {
+            e.preventDefault();
             // Check pixel under cursor (center of screen)
             // if selected set mode to deselct
             // else set mode to select
@@ -54,6 +55,7 @@ class Mobile {
         }, false);
 
         this.select_pixel.addEventListener("touchend", e => {
+            e.preventDefault();
             // stop pixel action
             this._deselect_pixels = false;
             this._select_pixels = false;

@@ -34,6 +34,7 @@ footer {
     display: flex;
     border: 1px solid orange;
     background: darkgrey;
+    pointer-events: none;
 }
 
 footer > div {
