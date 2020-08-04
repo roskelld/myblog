@@ -154,9 +154,9 @@ class Mobile {
         // Are we selecting pixels
         if ( this._select_pixels ) {
             // If current pixel is not selected grab it
-            this.writeDebug("GRABBING PIXELS");
+            this.writeDebug(`GRABBING PIXELS ${e.touches.length}`);
         } else if ( this._deselect_pixels ) {
-            this.writeDebug("REMOVING PIXELS");
+            this.writeDebug(`REMOVING PIXELS ${e.touches.length}`);
         }
 
 
