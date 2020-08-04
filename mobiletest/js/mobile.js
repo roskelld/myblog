@@ -61,7 +61,7 @@ class Mobile {
             this._deselect_pixels = false;
             this._select_pixels = false;
 
-            this.writeDebug( e.touches.length );
+            this.writeDebug( this._canvas_touch );
         }, false);
 
 
@@ -74,14 +74,6 @@ class Mobile {
 
         this._canvas.addEventListener("touchend", e => {
             e.preventDefault();
-            if ( e.touches.length === 1 ) {
-                this._lastX = e.targetTouches[0].pageX;
-                this._lastY = e.targetTouches[0].pageY;
-                this._dragStart = this._ctx.transformedPoint( this._lastX, this._lastY );
-            }
-
-            // if (e.target.tagName === "CANVAS" ) this._canvas_touch--;
-
             // Set Canvas Touch
             let num = 0;
             for ( const touch in e.touches ) {
@@ -90,6 +82,15 @@ class Mobile {
                 }
             };
             this._canvas_touch = num;
+
+            if ( this._canvas_touch === 1 ) {
+                this._lastX = e.targetTouches[0].pageX;
+                this._lastY = e.targetTouches[0].pageY;
+                this._dragStart = this._ctx.transformedPoint( this._lastX, this._lastY );
+            }
+
+            // if (e.target.tagName === "CANVAS" ) this._canvas_touch--;
+
 
             // this._dragStart = null;
             this.writeDebug( this._canvas_touch );
@@ -116,7 +117,7 @@ class Mobile {
         // if ( e.target.tagName === "CANVAS" ) this._canvas_touch++;
 
         // Setup drag
-        if ( e.touches.length === 1 ) {
+        if ( this._canvas_touch === 1 ) {
             this._lastX = e.targetTouches[0].pageX;
             this._lastY = e.targetTouches[0].pageY;
             this._dragStart = this._ctx.transformedPoint( this._lastX, this._lastY );
@@ -124,14 +125,14 @@ class Mobile {
             this._dragStart = null;
         }
 
-        this.writeDebug( e.touches.length );
+        this.writeDebug( this._canvas_touch );
     }
 
     touchMove( e ) {
         // DEBUGTEXT
         let text = "";
         let dist = 0;
-        if ( e.touches.length > 1 ) {
+        if ( this._canvas_touch > 1 ) {
             dist = Math.hypot(
                 e.touches[0].screenX - e.touches[1].screenX,
                 e.touches[0].screenY - e.touches[1].screenY
@@ -184,9 +185,9 @@ class Mobile {
         // Are we selecting pixels
         if ( this._select_pixels ) {
             // If current pixel is not selected grab it
-            this.writeDebug(`GRABBING PIXELS ${e.touches.length}`);
+            this.writeDebug(`GRABBING PIXELS ${this._canvas_touch}`);
         } else if ( this._deselect_pixels ) {
-            this.writeDebug(`REMOVING PIXELS ${e.touches.length}`);
+            this.writeDebug(`REMOVING PIXELS ${this._canvas_touch}`);
         }
 
 
