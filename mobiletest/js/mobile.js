@@ -214,8 +214,6 @@ class Mobile {
 
         // Draw current art state
         this._ctx.drawImage( this.image, 0, 0 );
-
-        this.drawDebugBox();
     }
 
     getZoom() {
@@ -226,55 +224,55 @@ class Mobile {
 	}
 
     zoomCanvas( amount, x, y ) {
-    // Define scale based on screen setup
-    const MAX_PIXEL_WIDTH = 100;
-    const MIN_PIXEL_WIDTH = 1;
+        // Define scale based on screen setup
+        const MAX_PIXEL_WIDTH = 100;
+        const MIN_PIXEL_WIDTH = 1;
 
-    // Store Transform in case needed
-    const restore = this._ctx.getTransform();
+        // Store Transform in case needed
+        const restore = this._ctx.getTransform();
 
-    // Set center point of zoom
-    if ( typeof x === 'undefined' || x === -1 ) {
-        x = (this._canvas.width / 2);
-    }
-    if ( typeof y === 'undefined' || y === -1 ) {
-        y = (this._canvas.height / 2);
-    }
+        // Set center point of zoom
+        if ( typeof x === 'undefined' || x === -1 ) {
+            x = (this._canvas.width / 2);
+        }
+        if ( typeof y === 'undefined' || y === -1 ) {
+            y = (this._canvas.height / 2);
+        }
 
-    let factor = Math.pow( this._scaleFactor, amount );
-    const pt = this._ctx.transformedPoint( x, y );
+        let factor = Math.pow( this._scaleFactor, amount );
+        const pt = this._ctx.transformedPoint( x, y );
 
-    // Perform the translation
-    this._ctx.translate( pt.x, pt.y );
+        // Perform the translation
+        this._ctx.translate( pt.x, pt.y );
 
-    this._ctx.scale( factor, factor );
+        this._ctx.scale( factor, factor );
 
-    this._ctx.translate( -pt.x, -pt.y );
+        this._ctx.translate( -pt.x, -pt.y );
 
-    // Check to see if it crossed the boundaries and then set to max or min
-    const trans = this._ctx.getTransform().a;
+        // Check to see if it crossed the boundaries and then set to max or min
+        const trans = this._ctx.getTransform().a;
 
-    const zoom = this.getZoom();
-    const scale = Math.min(
-        ( this._canvas.width / this.image.width ) * zoom,
-        ( this._canvas.height / this.image.height ) * zoom );
+        const zoom = this.getZoom();
+        const scale = Math.min(
+            ( this._canvas.width / this.image.width ) * zoom,
+            ( this._canvas.height / this.image.height ) * zoom );
 
-    // Are we at max zoom?
-    if ( trans > 0 && scale > MAX_PIXEL_WIDTH ) {
-        this._ctx.setTransform( restore.a, restore.b, restore.c, restore.d, restore.e, restore.f );
+        // Are we at max zoom?
+        if ( trans > 0 && scale > MAX_PIXEL_WIDTH ) {
+            this._ctx.setTransform( restore.a, restore.b, restore.c, restore.d, restore.e, restore.f );
+            this._dirty = true;
+            return false;
+        }
+
+        if ( trans < 1 && scale < MIN_PIXEL_WIDTH ) {
+            this._ctx.setTransform( restore.a, restore.b, restore.c, restore.d, restore.e, restore.f );
+            this._dirty = true;
+            return false;
+        }
+
         this._dirty = true;
-        return false;
+        return true;
     }
-
-    if ( trans < 1 && scale < MIN_PIXEL_WIDTH ) {
-        this._ctx.setTransform( restore.a, restore.b, restore.c, restore.d, restore.e, restore.f );
-        this._dirty = true;
-        return false;
-    }
-
-    this._dirty = true;
-    return true;
-}
 
     // *************************************************************************
     // UPDATE LOOP
@@ -325,6 +323,7 @@ class Mobile {
         this._dirty = false;
 
         this.drawImage();
+        this.drawDebugBox();
     }
 }
 
