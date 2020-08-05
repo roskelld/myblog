@@ -129,18 +129,28 @@ class Mobile {
     }
 
     touchMove( e ) {
+        // console.log( e );
+        const touches = [];
+        // MOVE CODE
+        for ( const touch in e.touches ) {
+            if ( e.touches.hasOwnProperty(touch) && e.touches[touch].target.tagName === "CANVAS" ) {
+                touches.push( e.touches[touch] );
+            }
+        };
+
+
         // DEBUGTEXT
         let text = "";
         let dist = 0;
         if ( this._canvas_touch > 1 ) {
             dist = Math.hypot(
-                e.touches[0].screenX - e.touches[1].screenX,
-                e.touches[0].screenY - e.touches[1].screenY
+                touches[0].screenX - e.touches[1].screenX,
+                touches[0].screenY - e.touches[1].screenY
             );
         } else {
             dist = Math.hypot(
-                e.touches[0].screenX,
-                e.touches[0].screenY
+                touches[0].screenX,
+                touches[0].screenY
             );
         }
 
@@ -156,9 +166,11 @@ class Mobile {
 
         // this.writeDebug( text );
 
-        // MOVE CODE
-        this._x = e.targetTouches[0].pageX;
-        this._y = e.targetTouches[0].pageY;
+
+
+
+        this._x = touches[0].pageX;
+        this._y = touches[0].pageY;
 
         this._lastX = this._x;
         this._lastY = this._y;
