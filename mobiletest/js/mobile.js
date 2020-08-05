@@ -105,7 +105,7 @@ class Mobile {
     }
 
     touchDown( e ) {
-        console.log( e );
+        // console.log( e );
         // Set Canvas Touch
         let num = 0;
         for ( const touch in e.touches ) {
@@ -142,10 +142,10 @@ class Mobile {
         // DEBUGTEXT
         let text = "";
         let dist = 0;
-        if ( this._canvas_touch > 1 ) {
+        if ( touches.length > 1 ) {
             dist = Math.hypot(
-                touches[0].screenX - e.touches[1].screenX,
-                touches[0].screenY - e.touches[1].screenY
+                touches[0].screenX - touches[1].screenX,
+                touches[0].screenY - touches[1].screenY
             );
         } else {
             dist = Math.hypot(
@@ -176,11 +176,11 @@ class Mobile {
         this._lastY = this._y;
 
         // One Finger Touch therefore pan image
-        if ( this._canvas_touch === 1 && this._dragStart != null ) {
+        if ( touches.length === 1 && this._dragStart != null ) {
             const pt = this._ctx.transformedPoint( this._lastX, this._lastY );
 			this._ctx.translate( pt.x - this._dragStart.x, pt.y - this._dragStart.y );
             this._dirty = true;
-        } else if ( this._canvas_touch > 1 ){
+        } else if ( touches.length > 1 ){
             this._dragStart = null;
             const amount = (dist - this._lastTouchDistance);
             // this.writeDebug( `ZOOM: ${amount} : ${dist}` );
