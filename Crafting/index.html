@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <link rel="stylesheet" href="style.css">
+        <meta charset="utf-8">
+        <title>Crafting Prototype</title>
+    </head>
+    <body>
+    <h1>Crafting Prototype Game</h1>
+    
+    <div class="grid">
+        <div id="game-layout" class="grid-main">
+            <canvas id='cnvs'></canvas>
+            <canvas id='materials'></canvas>
+            <canvas id='content'></canvas>
+        </div>
+        <div class="grid-side">
+            <div class="grid-side-panel">
+                <div class="grid-side-panel-item">Day</div>
+                <div id="game-time" class="grid-side-panel-item">0</div>
+                <div class="grid-side-panel-item">Gold</div>
+                <div id="gold" class="grid-side-panel-item">0</div>
+                <div class="grid-side-panel-item">Food</div>
+                <div id="food" class="grid-side-panel-item">0</div>
+            </div>
+        </div>
+        <div class="grid-bar">
+            WASD to Move : E to Survey : ENTER for new Adventure
+        </div>
+    </div>
+    
+    <div id="log"></div>
+
+
+    </body>
+    <script src="perlin.js" charset="utf-8"></script>
+    <script src="materials.js" charset="utf-8"></script>
+    <script src="landscape.js" charset="utf-8"></script>
+    <script src="town.js" charset="utf-8"></script>
+    <script src="avatar.js" charset="utf-8"></script>
+    <script src="game.js" charset="utf-8"></script>
+
+</html>
