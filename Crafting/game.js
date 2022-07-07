@@ -72,9 +72,8 @@ function keyInput(e) {
             init();
             return;
         default:
-            direction = NAV.North;
-            break;
-           
+            updateLog( `"${e.key}" has no power here.` );
+            return;           
     }
 
     if ( direction == lastDirection ) {
@@ -95,7 +94,7 @@ function keyInput(e) {
 function surveyTile( x, y ) {
     if ( avatar.isDead ) return;
     let result = surveyLocation( x, y )
-    GAME_LOG.push( `Your survey finds a ${result} source` );
+    updateLog( `Your survey finds a ${result} source` );
 
     drawMaterial( x, y );
 
@@ -132,9 +131,9 @@ function moveCharacter( direction ) {
         let feature = getLandscapeFeature( lookDirection[0], lookDirection[1] );
         
         if ( feature ) {
-            GAME_LOG.push( `You travel ${DIRECTION[direction]} to the ${feature.type} of ${feature.name}` );
+            updateLog( `You travel ${DIRECTION[direction]} to the ${feature.type} of ${feature.name}` );
         } else {
-            GAME_LOG.push( `You travel ${DIRECTION[direction]} into ${terrain.name}` );
+            updateLog( `You travel ${DIRECTION[direction]} into ${terrain.name}` );
         }
 
 
@@ -144,8 +143,7 @@ function moveCharacter( direction ) {
         checkedTile = false;
         gameUpdate();
     } else {
-        GAME_LOG.push( `You cannot traverse ${terrain.name} terrain` );
-        gameUpdate();
+        updateLog( `You cannot traverse ${terrain.name} terrain` );
     }
 
 }
@@ -160,7 +158,7 @@ function increaseGameTime(time) {
 // Report on the chosen direction
 function checkDirection( direction ) {
     if ( avatar.isDead ) return;
-    // console.log( `Can go ${direction}\n` );
+    // console.log( `Can go ${direction}` );
 
     let lookDirection = [...avatar.location];
     if ( direction % 2 === 0 ) {
@@ -173,10 +171,10 @@ function checkDirection( direction ) {
     let feature = getLandscapeFeature( lookDirection[0], lookDirection[1] );
 
     if ( feature ) {
-        GAME_LOG.push( `You can see the ${feature.type} of ${feature.name} to the ${DIRECTION[direction]}` );
+        updateLog( `You can see the ${feature.type} of ${feature.name} to the ${DIRECTION[direction]}` );
     } else {
         let terrain = LAND.getTerrainByPosition( lookDirection[0], lookDirection[1] );
-        GAME_LOG.push( `You can see a path ${DIRECTION[direction]} into ${terrain.name}` );
+        updateLog( `You can see a path ${DIRECTION[direction]} into ${terrain.name}` );
     }
 
     checkedTile = true;
@@ -211,12 +209,17 @@ function clearUI() {
     CONTENT_CTX.clearRect(0,0,CONTENT_CANVAS.width, CONTENT_CANVAS.height);
 }
 
-function gameUpdate() {
+function updateLog( message ) {
+    GAME_LOG.push( message );
     const NEW_ENTRY = document.createElement( 'p' );
     NEW_ENTRY.textContent = GAME_LOG[GAME_LOG.length-1];
     
     GAME_LOG_UI.appendChild( NEW_ENTRY );
     GAME_LOG_UI.scrollTop = GAME_LOG_UI.scrollHeight;
+}
+
+function gameUpdate() {
+
     
     if ( avatar.isDead ) return;
 
@@ -276,7 +279,7 @@ function init() {
     // Default terrain
     avatar.addValidTerrain("soil");
     
-    GAME_LOG.push( `The adventures of ${avatar.name} from the town of ${startTown.name}` );
+    updateLog( `The adventures of ${avatar.name} from the town of ${startTown.name}` );
     gameUpdate();
     
     LAND.draw(avatar.location[0], avatar.location[1]);

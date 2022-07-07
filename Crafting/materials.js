@@ -73,8 +73,8 @@ function surveyLocation( x, y ) {
 function drawMaterial( x, y ) {
     // let result = surveyLocation(x, y);
     
-    loc_x = x * (PIXEL_SIZE / GRID_SIZE);
-    loc_y = y * (PIXEL_SIZE / GRID_SIZE);
+    loc_x = x * (LAND._PIXEL_SIZE / LAND._GRID_SIZE);
+    loc_y = y * (LAND._PIXEL_SIZE / LAND._GRID_SIZE);
 
     // console.log(`x: ${loc_x} y: ${loc_y} :: avatar x: ${avatarLocation[0]} y: ${avatarLocation[1]}`);
 
@@ -87,13 +87,13 @@ function drawMaterial( x, y ) {
     if (color[0] === 0 && color[1] === 0 && color[2] === 0 ) {
         MATERIALS_CTX.strokeStyle = 'rgba(0,0,0,0.3)';
         MATERIALS_CTX.beginPath();
-        MATERIALS_CTX.arc( loc_x + (PIXEL_SIZE/GRID_SIZE/2), loc_y + (PIXEL_SIZE/GRID_SIZE/2), (PIXEL_SIZE/GRID_SIZE)/2-1, 0, 2 * Math.PI );
+        MATERIALS_CTX.arc( loc_x + (LAND._PIXEL_SIZE/LAND._GRID_SIZE/2), loc_y + (LAND._PIXEL_SIZE/LAND._GRID_SIZE/2), (LAND._PIXEL_SIZE/LAND._GRID_SIZE)/2-1, 0, 2 * Math.PI );
         MATERIALS_CTX.stroke();
     } else {
         MATERIALS_CTX.fillStyle = `rgb(${color[0]}, ${color[1]}, ${color[2]})`;
         MATERIALS_CTX.strokeStyle = `rgb(${stroke[0]}, ${stroke[1]}, ${stroke[2]})`;
         MATERIALS_CTX.beginPath();
-        MATERIALS_CTX.arc( loc_x + (PIXEL_SIZE/GRID_SIZE/2), loc_y + (PIXEL_SIZE/GRID_SIZE/2), (PIXEL_SIZE/GRID_SIZE)/2-1, 0, 2 * Math.PI );
+        MATERIALS_CTX.arc( loc_x + (LAND._PIXEL_SIZE/LAND._GRID_SIZE/2), loc_y + (LAND._PIXEL_SIZE/LAND._GRID_SIZE/2), (LAND._PIXEL_SIZE/LAND._GRID_SIZE)/2-1, 0, 2 * Math.PI );
         MATERIALS_CTX.fill();
         MATERIALS_CTX.stroke();
     }
@@ -105,9 +105,9 @@ function clearMaterials() {
 }
 
 function getMatValue( x, y ) {
-    let coord = convertCoordinates( x, y );
+    let coord = LAND.convertCoordinates( x, y );
     let copper = COPPER.get( coord.x, coord.y );
-    let land = LANDSCAPE.get( coord.x, coord.y );
+    let land = LAND._map.get( coord.x, coord.y );
     let result = copper + land;
     return result;
 }
