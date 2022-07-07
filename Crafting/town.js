@@ -5,6 +5,7 @@ class Town {
         this.color = generateColor();
         this.stroke = [];
         this._location = [];
+        this._revealed = false;
         this.generateName();
     }
 
@@ -23,28 +24,28 @@ class Town {
         return this._location;
     }
 
-    draw() { 
+    draw(land) { 
         // console.log(loc);
         let x = this._location[0];
         let y = this._location[1];
 
         // LANDSCAPE_CTX.strokeStyle = `rgb(${this.stroke[0]},${this.stroke[1]},${this.stroke[2]})`;
-        LANDSCAPE_CTX.strokeStyle = `rgb(${Math.max(0,this.color[0]-30)},${Math.max(0,this.color[1]-30)},${Math.max(0,this.color[2]-30)})`;
-        LANDSCAPE_CTX.fillStyle = `rgb(${this.color[0]},${this.color[1]},${this.color[2]})`;
-        LANDSCAPE_CTX.fillRect( x, y, PIXEL_SIZE / GRID_SIZE , PIXEL_SIZE / GRID_SIZE  );
-        LANDSCAPE_CTX.strokeRect( x, y, PIXEL_SIZE / GRID_SIZE , PIXEL_SIZE / GRID_SIZE  );
+        land._CTX.strokeStyle = `rgb(${Math.max(0,this.color[0]-30)},${Math.max(0,this.color[1]-30)},${Math.max(0,this.color[2]-30)})`;
+        land._CTX.fillStyle = `rgb(${this.color[0]},${this.color[1]},${this.color[2]})`;
+        land._CTX.fillRect( x, y, land._PIXEL_SIZE / land._GRID_SIZE , land._PIXEL_SIZE / land._GRID_SIZE  );
+        land._CTX.strokeRect( x, y, land._PIXEL_SIZE / land._GRID_SIZE , land._PIXEL_SIZE / land._GRID_SIZE  );
         
         let roof = new Path2D();
     
         // roof.beginPath();
-        roof.moveTo( x - ( PIXEL_SIZE / GRID_SIZE / 3 ), y );
-        roof.lineTo( x + ( PIXEL_SIZE / GRID_SIZE / 2 ), y - ( PIXEL_SIZE / GRID_SIZE / 1.2 ) );
-        roof.lineTo( x + ( PIXEL_SIZE / GRID_SIZE / 3 ) + ( PIXEL_SIZE / GRID_SIZE ), y );
+        roof.moveTo( x - ( land._PIXEL_SIZE / land._GRID_SIZE / 3 ), y );
+        roof.lineTo( x + ( land._PIXEL_SIZE / land._GRID_SIZE / 2 ), y - ( land._PIXEL_SIZE / land._GRID_SIZE / 1.2 ) );
+        roof.lineTo( x + ( land._PIXEL_SIZE / land._GRID_SIZE / 3 ) + ( land._PIXEL_SIZE / land._GRID_SIZE ), y );
         
         roof.closePath();
     
-        LANDSCAPE_CTX.fill(roof);
-        LANDSCAPE_CTX.stroke(roof);
+        land._CTX.fill(roof);
+        land._CTX.stroke(roof);
     }
 }
 

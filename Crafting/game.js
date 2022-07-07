@@ -27,6 +27,20 @@ const UI_GAME_TIME = document.querySelector("#game-time");
 const UI_GOLD = document.querySelector("#gold");
 const UI_FOOD = document.querySelector("#food");
 
+// Setup Land
+const LAND = new Land( document.getElementById('cnvs') );
+
+LAND.addTerrain( 1,     [250,250,250],  "snow peaks",   "rock", 3 );
+LAND.addTerrain( -0.5,  [13,34,97],     "deep lake",    "water", 2 );
+LAND.addTerrain( -0.4,  [27,50,118],    "lake",         "water", 1.5 );
+LAND.addTerrain( -0.3,  [24, 131, 195], "shallow lake", "water", 1.2 );
+LAND.addTerrain( -0.27, [186, 166, 126],"sandy beaches","soil", 1.1 );
+LAND.addTerrain( 0,     [22, 132 ,17],  "grass lands",  "soil", 1 );
+LAND.addTerrain( 0.2,   [23, 67, 21],   "forest",       "soil", 1.2 );
+LAND.addTerrain( 0.3,   [93, 96, 106],  "mountains",    "rock", 2 );
+LAND.addTerrain( 0.47,  [133, 133, 133],"high mountains", "rock", 2 );
+LAND.addTerrain( 1,     [250, 250, 250],"snow peaks",   "rock", 2.5 );
+
 // Game Time
 let gameTime = 1;
 
@@ -80,8 +94,6 @@ function keyInput(e) {
 
 function surveyTile( x, y ) {
     if ( avatar.isDead ) return;
-    let terrainType = getTerrainValueByPosition(x, y);
-    // console.log( `Survey: ${x} ${y} :: ${terrainType}` );
     let result = surveyLocation( x, y )
     GAME_LOG.push( `Your survey finds a ${result} source` );
 
@@ -104,13 +116,10 @@ function moveCharacter( direction ) {
     }
 
     // let value = getTerrainValueByPosition( avatar.location[0], avatar.location[1] );
-    let value = getTerrainValueByPosition( lookDirection[0], lookDirection[1] );
-    
-    // Check move is valid
-    let type = getTerrainType( value );
-    let terrain = getTerrainName( value );
-    
-    if ( avatar.hasTerrain( type ) ) {
+    let terrain = LAND.getTerrainByPosition( lookDirection[0], lookDirection[1] );
+
+    // Check move is valid   
+    if ( avatar.hasTerrain( terrain.type ) ) {
 
         if ( direction % 2 === 0 ) {
             avatar.location[1] += (direction === 0) ? -1 : 1;
@@ -125,17 +134,17 @@ function moveCharacter( direction ) {
         if ( feature ) {
             GAME_LOG.push( `You travel ${DIRECTION[direction]} to the ${feature.type} of ${feature.name}` );
         } else {
-            GAME_LOG.push( `You travel ${DIRECTION[direction]} into ${terrain}` );
+            GAME_LOG.push( `You travel ${DIRECTION[direction]} into ${terrain.name}` );
         }
 
 
         // Calculate travel time
-        increaseGameTime( getTerrainDifficulty( value ) );
+        increaseGameTime( terrain.difficulty );
 
         checkedTile = false;
         gameUpdate();
     } else {
-        GAME_LOG.push( `You cannot traverse ${terrain} terrain` );
+        GAME_LOG.push( `You cannot traverse ${terrain.name} terrain` );
         gameUpdate();
     }
 
@@ -166,10 +175,8 @@ function checkDirection( direction ) {
     if ( feature ) {
         GAME_LOG.push( `You can see the ${feature.type} of ${feature.name} to the ${DIRECTION[direction]}` );
     } else {
-        let value = getTerrainValueByPosition( lookDirection[0], lookDirection[1] );
-        let terrain = getTerrainName(value)
-    
-        GAME_LOG.push( `You can see a path ${DIRECTION[direction]} into ${terrain}` );
+        let terrain = LAND.getTerrainByPosition( lookDirection[0], lookDirection[1] );
+        GAME_LOG.push( `You can see a path ${DIRECTION[direction]} into ${terrain.name}` );
     }
 
     checkedTile = true;
@@ -179,9 +186,9 @@ function checkDirection( direction ) {
 function getLandscapeFeature( x, y ) {
 
     // Step through all the landscape feature arrays (or combine them into one)
-    let feature = TOWNS.find( e => (
-        x === ( e.location[0] / (PIXEL_SIZE / GRID_SIZE) ) && 
-        y === ( e.location[1] / (PIXEL_SIZE / GRID_SIZE) )  
+    let feature = LAND._TOWNS.find( e => (
+        x === ( e.location[0] / (LAND._PIXEL_SIZE / LAND._GRID_SIZE) ) && 
+        y === ( e.location[1] / (LAND._PIXEL_SIZE / LAND._GRID_SIZE) )  
     ) );
 
     // NEXT
@@ -190,14 +197,14 @@ function getLandscapeFeature( x, y ) {
 }
 
 function drawAvatar() {
-    let loc_x = avatar.location[0] * (PIXEL_SIZE / GRID_SIZE);
-    let loc_y = avatar.location[1] * (PIXEL_SIZE / GRID_SIZE);
+    let loc_x = avatar.location[0] * (LAND._PIXEL_SIZE / LAND._GRID_SIZE);
+    let loc_y = avatar.location[1] * (LAND._PIXEL_SIZE / LAND._GRID_SIZE);
 
     // console.log(`x: ${loc_x} y: ${loc_y} :: avatar x: ${avatar.location[0]} y: ${avatar.location[1]}`);
 
     clearUI();
     CONTENT_CTX.strokeStyle = 'white';
-    CONTENT_CTX.strokeRect( loc_x, loc_y,  PIXEL_SIZE / GRID_SIZE , PIXEL_SIZE / GRID_SIZE );
+    CONTENT_CTX.strokeRect( loc_x, loc_y,  LAND._PIXEL_SIZE / LAND._GRID_SIZE , LAND._PIXEL_SIZE / LAND._GRID_SIZE );
 }
 
 function clearUI() {
@@ -231,6 +238,7 @@ function gameUpdate() {
     // update food
     UI_FOOD.textContent = avatar.food;
     
+    LAND.draw(avatar.location[0], avatar.location[1]);
     drawAvatar();
 }
 
@@ -246,32 +254,37 @@ function generateColor() {
 
 // Init
 function init() {
+    gameTime = 1;
     GAME_LOG_UI.replaceChildren();
 
-    LANDSCAPE.seed();
+    LAND.clear();
     clearMaterials();
 
-    drawLandscape();
-    generateTowns();
+    // drawLandscape();
+    LAND.generateTowns();
     
-    let startTown = TOWNS[Math.floor(Math.random()*TOWNS.length)];
+    let startTown = LAND._TOWNS[Math.floor(Math.random()*LAND._TOWNS.length)];
     
     avatar = new Avatar();
     
     
-    avatar.location[0] = startTown.location[0] / (PIXEL_SIZE / GRID_SIZE);
-    avatar.location[1] = startTown.location[1] / (PIXEL_SIZE / GRID_SIZE);
+    // avatar.location[0] = startTown.location[0] / (PIXEL_SIZE / GRID_SIZE);
+    // avatar.location[1] = startTown.location[1] / (PIXEL_SIZE / GRID_SIZE);
     
-    avatar.location = [startTown.location[0] / (PIXEL_SIZE / GRID_SIZE), startTown.location[1] / (PIXEL_SIZE / GRID_SIZE)];
+    avatar.location = [startTown.location[0] / (LAND._PIXEL_SIZE / LAND._GRID_SIZE), startTown.location[1] / (LAND._PIXEL_SIZE / LAND._GRID_SIZE)];
     
     // Default terrain
     avatar.addValidTerrain("soil");
     
-    
     GAME_LOG.push( `The adventures of ${avatar.name} from the town of ${startTown.name}` );
     gameUpdate();
     
+    LAND.draw(avatar.location[0], avatar.location[1]);
     drawAvatar();
+
 }
+
+
+
 
 init();
