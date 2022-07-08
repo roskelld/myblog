@@ -105,6 +105,7 @@ function surveyTile( x, y ) {
 }
 
 function moveCharacter( direction ) {
+    if ( avatar.isDead ) return;
     // console.log( `Move ${direction}` );
     
     let lookDirection = [...avatar.location];

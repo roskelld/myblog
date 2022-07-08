@@ -71,9 +71,8 @@ class Avatar {
 
     eatFood() {
         if (this._food <= 0 ) {
-            GAME_LOG.push(`${this._name} is out of food and has died of starvation. Press ${RESTART} to adventure again`);
+            updateLog(`${this._name} is out of food and has died of starvation. Press ${RESTART} to adventure again`);
             this._dead = true;
-            gameUpdate();
             return false;
         } else {
             this._food--;

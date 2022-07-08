@@ -104,10 +104,57 @@ function clearMaterials() {
     MATERIALS_CTX.clearRect(0,0,MATERIALS_CANVAS.width, MATERIALS_CANVAS.height);
 }
 
+// Calculate Material Yield
 function getMatValue( x, y ) {
     let coord = LAND.convertCoordinates( x, y );
     let copper = COPPER.get( coord.x, coord.y );
     let land = LAND._map.get( coord.x, coord.y );
     let result = copper + land;
     return result;
+}
+
+class Material {
+    constructor(canvas) {
+        this._CANVAS = canvas;
+        this._CTX = this._CANVAS.getContext('2d');
+        this._CANVAS.width = this._CANVAS.height = 512;
+
+        this._map = new Perlin();
+        this._map = [];
+    }
+    checkForMaterial( type, x, y ) {
+        let coord = LAND.convertCoordinates( x, y );
+        let copper = COPPER.get( coord.x, coord.y );
+        let land = LAND._map.get( coord.x, coord.y );
+        let result = copper + land;
+        return result;
+    }
+
+}
+
+class Resource {
+    constructor( stroke, color, name, type, properties ) {
+        this._stroke = stroke;
+        this._color = color;
+        this._name = name;
+        this._type = type;
+        this._properties = properties;
+    }
+    get stroke() { return this._stroke; }
+    get color() { return this._color; }
+    get name() { return this._name; }
+    get properties() { return this._properties; }
+    hasType( type ) {
+        return this._type.some( e => e === type );
+    }
+}
+
+let properties = {
+    conduction:     0,
+    density:        0,
+    malleable:      0,
+    ductile:        0,
+    meltingpoint:   0,
+    sonorous:       0,
+    luster:         0
 }
