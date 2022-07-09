@@ -7,6 +7,7 @@ const MOVE_SOUTH = "s";
 const MOVE_WEST = "a";
 const SURVEY = "e";
 const RESTART = "Enter";
+const MINE = "r";
 
 
 const NAV = { North: 0, East: 1, South: 2, West: 3 };
@@ -28,7 +29,7 @@ const UI_GOLD = document.querySelector("#gold");
 const UI_FOOD = document.querySelector("#food");
 
 // Setup Land
-const LAND = new Land( document.getElementById('cnvs') );
+const LAND = new Land( document.getElementById("cnvs"));
 
 LAND.addTerrain( 1,     [250,250,250],  "snow peaks",   "rock", 3 );
 LAND.addTerrain( -0.5,  [13,34,97],     "deep lake",    "water", 2 );
@@ -40,6 +41,25 @@ LAND.addTerrain( 0.2,   [23, 67, 21],   "forest",       "soil", 1.2 );
 LAND.addTerrain( 0.3,   [93, 96, 106],  "mountains",    "rock", 2 );
 LAND.addTerrain( 0.47,  [133, 133, 133],"high mountains", "rock", 2 );
 LAND.addTerrain( 1,     [250, 250, 250],"snow peaks",   "rock", 2.5 );
+
+// Set Material
+
+const MAT = new Material( document.getElementById("materials"));
+MAT.addResource( new Resource( 
+    "copper", 
+    [219,159,36],
+    [220,192,35], 
+    ["metal","copper"], 
+    { 
+        conduction: 30, 
+        density: 80, 
+        malleable: 40, 
+        ductile: 0, 
+        meltingpoint: 340, 
+        sonorous: 50, 
+        luster: 30, 
+        hardness: 40
+    } ) );
 
 // Game Time
 let gameTime = 1;
@@ -66,7 +86,10 @@ function keyInput(e) {
             direction = NAV.West;
             break;
         case SURVEY:
-            surveyTile( avatar.location[0], avatar.location[1] );
+            surveyTile( "copper", avatar.location[0], avatar.location[1] );
+            return;
+        case MINE:
+            mineTile( "copper", avatar.location[0], avatar.location[1] );
             return;
         case RESTART:
             init();
@@ -91,12 +114,24 @@ function keyInput(e) {
 
 }
 
-function surveyTile( x, y ) {
+function surveyTile( name, x, y ) {
     if ( avatar.isDead ) return;
-    let result = surveyLocation( x, y )
-    updateLog( `Your survey finds a ${result} source` );
+    let result = MAT.getResourceDescriptionAtLocation( name, x, y );
+    updateLog( `Your survey for ${name} finds a ${result} source` );
 
-    drawMaterial( x, y );
+    // drawMaterial( x, y );
+    MAT.drawResource( name, x, y );
+
+    increaseGameTime(1);
+
+    lastDirection = null;
+    gameUpdate();
+}
+
+function mineTile( name, x, y ) {
+    if ( avatar.isDead ) return;
+    let result = MAT.removeResource( "copper", avatar.location[0], avatar.location[1] );
+    updateLog( `You mine ${result} of ${name}` );
 
     increaseGameTime(1);
 
@@ -262,7 +297,7 @@ function init() {
     GAME_LOG_UI.replaceChildren();
 
     LAND.clear();
-    clearMaterials();
+    MAT.clear();
 
     // drawLandscape();
     LAND.generateTowns();

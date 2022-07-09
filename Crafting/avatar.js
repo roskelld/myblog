@@ -48,6 +48,10 @@ class Avatar {
         return this._location;
     }
 
+    get mapLocation() {
+        return LAND.convertCoordinates( this.location[0], this.location[1] );
+    }
+
     get gold() {
         return this._gold;
     }
