@@ -9,12 +9,10 @@
     <h1>Crafting Prototype Game</h1>
     
     <div class="grid">
-        <div id="game-layout" class="grid-main">
-            <canvas id='cnvs'></canvas>
-            <canvas id='materials'></canvas>
-            <canvas id='content'></canvas>
-        </div>
-        <div class="grid-side">
+        <canvas class="box-1" id="landscape"></canvas>
+        <canvas class="box-1" id="materials"></canvas>
+        <canvas class="box-1" id="content"></canvas>
+        <div class="box-2">
             <div class="grid-side-panel">
                 <div class="grid-side-panel-item">Day</div>
                 <div id="game-time" class="grid-side-panel-item">0</div>
@@ -22,22 +20,36 @@
                 <div id="gold" class="grid-side-panel-item">0</div>
                 <div class="grid-side-panel-item">Food</div>
                 <div id="food" class="grid-side-panel-item">0</div>
+                <div class="grid-side-panel-item">Weight</div>
+                <div id="weight" class="grid-side-panel-item">0</div>
             </div>
         </div>
-        <div class="grid-bar">
-            (WASD) Move : (E) Survey : (R) Mine : (ENTER) Restart
+        <div class="box-3">
+            <label for="inventory">Equipped</label>
+            <select name="inventory" id="inventory" multiple size="10">
+                <option value="none" selected >NONE</option>
+            </select>
         </div>
+        <div class="box-6">
+            <label for="action">Action</label>
+            <select name="action" id="action" multiple size="8">
+                <!-- <option value="none" selected >NONE</option> -->
+            </select>
+        </div>
+        <div class="box-4">
+            <p id="instructions">
+                (WASD) Move : (E) Survey : (R) Mine : (ENTER) Restart
+            </p>
+        </div>
+        <div id="log" class="box-5"></div>
     </div>
-    
-    <div id="log"></div>
-
-
-    </body>
+        </body>
     <script src="perlin.js" charset="utf-8"></script>
     <script src="materials.js" charset="utf-8"></script>
     <script src="landscape.js" charset="utf-8"></script>
     <script src="town.js" charset="utf-8"></script>
     <script src="avatar.js" charset="utf-8"></script>
+    <script src="item.js" charset="utf-8"></script>
     <script src="game.js" charset="utf-8"></script>
 
 </html>

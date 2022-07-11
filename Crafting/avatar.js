@@ -8,6 +8,9 @@ class Avatar {
         this._food = 40;
         this._MAX_FOOD = 40;
         this._dead = false;
+        this._weight = 0;
+        this._inventory = [];
+        this._sight = 3;
     }
 
     update(duration) {
@@ -15,6 +18,14 @@ class Avatar {
         for (let index = 0; index < Math.round(duration); index++) {
             this.eatFood();
         }
+    }
+    get sight() {
+        return this._sight;
+    }
+    get weight() {
+        this._weight = 0;
+        this._inventory.forEach( e => { this._weight += e.weight } );
+        return this._weight;
     }
 
     generateName() {
@@ -95,4 +106,17 @@ class Avatar {
     get isDead() {
         return this._dead;
     }
+
+    addToInventory( item ) {
+        this._inventory.push(item);
+        INVENTORY_SELECTION.options[INVENTORY_SELECTION.length] = new Option( item.name, item.id );
+
+    }
+    removeFromInventory( item ) {
+
+    }
+    getItem( id ) {
+        return this._inventory.find( e => e.id === id );
+    }
 }
+

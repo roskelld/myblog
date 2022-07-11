@@ -5,13 +5,25 @@ const MOVE_NORTH = "w";
 const MOVE_EAST = "d";
 const MOVE_SOUTH = "s";
 const MOVE_WEST = "a";
-const SURVEY = "e";
+const USE = "e";
 const RESTART = "Enter";
-const MINE = "r";
+// const MINE = "r";
+const INV_DOWN = "ArrowDown";
+const INV_UP = "ArrowUp";
+const ACT_DOWN = "f";
+const ACT_UP = "r";
 
 
 const NAV = { North: 0, East: 1, South: 2, West: 3 };
 const DIRECTION = { 0: "north", 1: "east", 2: "south", 3: "west" };
+
+// Strings
+const ACTION_STRINGS = {
+    "Look":     "look at",
+    "Mine":     "mine with",
+    "Attack":   "attack with",
+    "Survey":   "survey with"
+}
 
 let lastDirection;
 let checkedTile = false;
@@ -27,9 +39,18 @@ const CONTENT_CTX = CONTENT_CANVAS.getContext('2d');
 const UI_GAME_TIME = document.querySelector("#game-time");
 const UI_GOLD = document.querySelector("#gold");
 const UI_FOOD = document.querySelector("#food");
+const UI_WEIGHT = document.querySelector("#weight");
+
+const INVENTORY_SELECTION = document.querySelector("#inventory");
+INVENTORY_SELECTION.addEventListener("change", selectItem, false );
+
+const ITEM_ACTIONS = document.querySelector("#action");
+ITEM_ACTIONS.addEventListener("change", selectAction, false );
+
+const INSTRUCTIONS = document.querySelector("#instructions");
 
 // Setup Land
-const LAND = new Land( document.getElementById("cnvs"));
+const LAND = new Land( document.getElementById("landscape"));
 
 LAND.addTerrain( 1,     [250,250,250],  "snow peaks",   "rock", 3 );
 LAND.addTerrain( -0.5,  [13,34,97],     "deep lake",    "water", 2 );
@@ -85,14 +106,44 @@ function keyInput(e) {
         case MOVE_WEST:
             direction = NAV.West;
             break;
-        case SURVEY:
-            surveyTile( "copper", avatar.location[0], avatar.location[1] );
-            return;
-        case MINE:
-            mineTile( "copper", avatar.location[0], avatar.location[1] );
+        case USE:
+            if ( INVENTORY_SELECTION.selectedIndex === 0 || INVENTORY_SELECTION.selectedIndex === -1 ) return;
+            useItem( INVENTORY_SELECTION.value );
             return;
         case RESTART:
             init();
+            return; 
+        case INV_UP:
+            if ( INVENTORY_SELECTION.selectedIndex === 0 || INVENTORY_SELECTION.selectedIndex === -1 ) {
+                INVENTORY_SELECTION.selectedIndex = INVENTORY_SELECTION.length - 1;
+            } else {
+                INVENTORY_SELECTION.selectedIndex--;
+            }
+            selectItem( INVENTORY_SELECTION.value );
+            return;
+        case INV_DOWN:
+            if ( INVENTORY_SELECTION.selectedIndex === INVENTORY_SELECTION.length - 1 ) {
+                INVENTORY_SELECTION.selectedIndex = 0;
+            } else {
+                INVENTORY_SELECTION.selectedIndex++;
+            }
+            selectItem( INVENTORY_SELECTION.value );
+            return;
+        case ACT_UP:
+            if ( ITEM_ACTIONS.selectedIndex === 0 || ITEM_ACTIONS.selectedIndex === -1 ) {
+                ITEM_ACTIONS.selectedIndex = ITEM_ACTIONS.length - 1;
+            } else {
+                ITEM_ACTIONS.selectedIndex--;
+            }
+            selectAction();
+            return;
+        case ACT_DOWN:
+            if ( ITEM_ACTIONS.selectedIndex === ITEM_ACTIONS.length - 1 ) {
+                ITEM_ACTIONS.selectedIndex = 0;
+            } else {
+                ITEM_ACTIONS.selectedIndex++;
+            }
+            selectAction();
             return;
         default:
             updateLog( `"${e.key}" has no power here.` );
@@ -114,6 +165,76 @@ function keyInput(e) {
 
 }
 
+function selectItem( name ) {
+    
+    // Show all actions
+    // Get Item
+    let item = avatar.getItem( INVENTORY_SELECTION.value );
+    
+    // clear current actions
+    let items = ITEM_ACTIONS.options.length;
+    for (let i = 0; i < items; i++) {
+        ITEM_ACTIONS.options[0].remove();
+    }
+    
+    // No item equipped
+    if ( !item ) {
+        updateIntructions( INVENTORY_SELECTION.options[INVENTORY_SELECTION.selectedIndex].text );
+        return;
+    }
+    
+    if ( !item.use ) {
+        updateIntructions();
+        return;
+    }
+
+    item.use.forEach( e => {
+        ITEM_ACTIONS.options[ITEM_ACTIONS.length] = new Option( e, e );    
+    });
+    
+    // Select first option;
+    ITEM_ACTIONS.options[0].selected = true;
+
+    updateIntructions( INVENTORY_SELECTION.options[INVENTORY_SELECTION.selectedIndex].text );
+}
+
+function selectAction() {
+    updateIntructions( INVENTORY_SELECTION.options[INVENTORY_SELECTION.selectedIndex].text );
+}
+
+function useItem( id ) {
+    if ( avatar.isDead ) return;
+    let item = avatar.getItem( id );
+    
+    // Figure out logic for use action based on selected item and content at location
+    // Survey is always an option so could be a fall back given if there's no "EVENT" happening or "FEATURE"
+    let action = ITEM_ACTIONS.options[ITEM_ACTIONS.options.selectedIndex].value;
+
+    switch (action) {
+        case "Mine":
+            mineTile( "copper", avatar.location[0], avatar.location[1] );
+            break;
+        case "Survey":
+            surveyTile( "copper", avatar.location[0], avatar.location[1] );
+            break;
+        case "Look":
+            updateLog( `You inspect the ${item.name}, it feels nice in the hand.` );
+            break;            
+        default:
+            break;
+    }
+    
+}
+
+function updateIntructions( name ) {
+    if ( name === "NONE" || name === undefined ) {
+        INSTRUCTIONS.textContent = `(ENTER) Restart : (WASD) Move : (\u2B06\u2B07) Inventory `;
+    } else {
+        let action = ACTION_STRINGS[ITEM_ACTIONS.options[ITEM_ACTIONS.options.selectedIndex].value];
+        INSTRUCTIONS.textContent = `(ENTER) Restart : (WASD) Move : (\u2B06\u2B07) Inventory : (E) ${action} ${name}`;
+    }
+}
+
 function surveyTile( name, x, y ) {
     if ( avatar.isDead ) return;
     let result = MAT.getResourceDescriptionAtLocation( name, x, y );
@@ -131,6 +252,8 @@ function surveyTile( name, x, y ) {
 function mineTile( name, x, y ) {
     if ( avatar.isDead ) return;
     let result = MAT.removeResource( "copper", avatar.location[0], avatar.location[1] );
+
+    avatar.addToInventory( new Item( name, 1, { value: result } ) );
     updateLog( `You mine ${result} of ${name}` );
 
     increaseGameTime(1);
@@ -276,8 +399,11 @@ function gameUpdate() {
     
     // update food
     UI_FOOD.textContent = avatar.food;
+
+    // update weight
+    UI_WEIGHT.textContent = avatar.weight;
     
-    LAND.draw(avatar.location[0], avatar.location[1]);
+    LAND.draw(avatar.location[0], avatar.location[1], avatar.sight);
     drawAvatar();
 }
 
@@ -295,6 +421,8 @@ function generateColor() {
 function init() {
     gameTime = 1;
     GAME_LOG_UI.replaceChildren();
+
+    updateIntructions();
 
     LAND.clear();
     MAT.clear();
@@ -315,15 +443,17 @@ function init() {
     // Default terrain
     avatar.addValidTerrain("soil");
     
+    // Default items
+    avatar.addToInventory( new Item( ITEM_DATA.pickaxe.name, ITEM_DATA.pickaxe.weight, ITEM_DATA.pickaxe.properties, ITEM_DATA.pickaxe.use ) );
+    avatar.addToInventory( new Item( ITEM_DATA.dowsingTwig.name, ITEM_DATA.dowsingTwig.weight, ITEM_DATA.dowsingTwig.properties, ITEM_DATA.dowsingTwig.use ) );
+    INVENTORY_SELECTION.selectedIndex = 0; 
+    
     updateLog( `The adventures of ${avatar.name} from the town of ${startTown.name}` );
     gameUpdate();
     
-    LAND.draw(avatar.location[0], avatar.location[1]);
+    LAND.draw(avatar.location[0], avatar.location[1], avatar.sight);
     drawAvatar();
 
 }
-
-
-
 
 init();

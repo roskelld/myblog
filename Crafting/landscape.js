@@ -93,38 +93,43 @@ class Land {
             this._TOWNS.push(town);           
         }
     }
-    draw(x, y) {
+    draw(x, y, radius) {
         // Draw circle 
         // Write a formula for this sheesh!
-        let loop = [[0,0],[0,1],[1,0],[0,-1],[-1,0],[0,2],[1,2],[1,1],[2,1],[2,0],[2,-1],[1,-1],[1,-2],[0,-2],[-1,-2],[-1,-1],[-2,-1],[-2,0],[-2,1],[-1,1],[-1,2]];
+        // let loop = [[0,0],[0,1],[1,0],[0,-1],[-1,0],[0,2],[1,2],[1,1],[2,1],[2,0],[2,-1],[1,-1],[1,-2],[0,-2],[-1,-2],[-1,-1],[-2,-1],[-2,0],[-2,1],[-1,1],[-1,2]];
 
-        loop.forEach(e => {
-            
-            let results = this.convertCoordinates( x + e[0], y + e[1] );
+        for ( let offset_x = 0 - radius; offset_x <= 0 + radius; offset_x++ ) {
+            for( let offset_y = 0 - radius; offset_y <= 0 + radius; offset_y++) {
+                if ( Math.abs(offset_x) + Math.abs(offset_y) <= radius + (radius/2) ) {
+
+                    let results = this.convertCoordinates( x + offset_x, y + offset_y );
     
-            let result = this._map.get(results.x, results.y);
-            let terrain = this.getTerrainColor(result);
-        
-            this._CTX.fillStyle = `rgb(${terrain[0]}, ${terrain[1]}, ${terrain[2]})`;
-            this._CTX.fillRect(
-                results.x / this._GRID_SIZE * this._CANVAS.width,
-                results.y / this._GRID_SIZE * this._CANVAS.width,
-                this._CANVAS.width / this._RESOLUTION / this._GRID_SIZE,
-                this._CANVAS.width / this._RESOLUTION / this._GRID_SIZE
-            );
-            // Draw towns (on top of drawn land)
-            this._TOWNS.forEach( town => { 
-                if ( town._revealed === true ) return;                
-                let loc = {
-                    x: town.location[0] / (LAND._PIXEL_SIZE / LAND._GRID_SIZE),
-                    y: town.location[1] / (LAND._PIXEL_SIZE / LAND._GRID_SIZE)
-                };
-                if ( x + e[0] === loc.x && y + e[1] === loc.y ) {
-                    town._revealed = true;
-                };
-            } );
-        });
-        
+                    let result = this._map.get(results.x, results.y);
+                    let terrain = this.getTerrainColor(result);
+                
+                    this._CTX.fillStyle = `rgb(${terrain[0]}, ${terrain[1]}, ${terrain[2]})`;
+                    this._CTX.fillRect(
+                        results.x / this._GRID_SIZE * this._CANVAS.width,
+                        results.y / this._GRID_SIZE * this._CANVAS.width,
+                        this._CANVAS.width / this._RESOLUTION / this._GRID_SIZE,
+                        this._CANVAS.width / this._RESOLUTION / this._GRID_SIZE
+                    );
+                    // Draw towns (on top of drawn land)
+                    this._TOWNS.forEach( town => { 
+                        if ( town._revealed === true ) return;                
+                        let loc = {
+                            x: town.location[0] / (LAND._PIXEL_SIZE / LAND._GRID_SIZE),
+                            y: town.location[1] / (LAND._PIXEL_SIZE / LAND._GRID_SIZE)
+                        };
+                        if ( x + offset_x === loc.x && y + offset_y === loc.y ) {
+                            town._revealed = true;
+                        };
+                    } );
+
+
+                }
+            }
+        }
         // Check for and draw any feature
         this._TOWNS.forEach(e => { if ( e._revealed === true ) e.draw(this) } );
     }
@@ -146,6 +151,10 @@ class Land {
                 // console.log(`x: ${x} y: ${y} :: ${result} :: ${getTerrainName(result)}`);
             }
         }
+    }
+    getContentTypes() {
+        // Return a valid list of actions the player can perform
+        
     }
 }
 

@@ -47,6 +47,8 @@ class Material {
         let resource = 0;
         if ( found ) resource = found.getValue( x, y );
         
+        console.log(`${found} :: ${resource}`);
+
         // Calculate yield
         // let land = LAND._map.get( loc.x, loc.y );
         // let result = resource + land;
