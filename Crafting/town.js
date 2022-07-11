@@ -7,12 +7,19 @@ class Town {
         this._location = [];
         this._revealed = false;
         this.generateName();
+        this._actions = ["Buy", "Sell", "Pray", "Gamble"];
+        this._market = [];
+
     }
 
     generateName() {
         if (this.name == "") {
             this.name = DATA.towns[Math.floor(Math.random()*DATA.towns.length)];
         }
+    }
+
+    generateMarket() {
+
     }
 
     set location(loc) {
@@ -22,6 +29,10 @@ class Town {
 
     get location() {
         return this._location;
+    }
+
+    get actions() {
+        return this._actions;
     }
 
     draw(land) { 
@@ -254,7 +265,17 @@ const DATA = {
         "Xantho",
         "Zenith",
         "Zuzana"
-    ]
+    ], 
+    items: [{
+        name:   "dagger",
+        price:  3
+    }, {
+        name:   "small statue",
+        price:  1
+    }, {
+        name:   ""
+    }
+]
 
 }
 

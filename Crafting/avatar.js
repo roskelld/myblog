@@ -11,6 +11,7 @@ class Avatar {
         this._weight = 0;
         this._inventory = [];
         this._sight = 3;
+        this._luck = 0;
     }
 
     update(duration) {
@@ -26,6 +27,15 @@ class Avatar {
         this._weight = 0;
         this._inventory.forEach( e => { this._weight += e.weight } );
         return this._weight;
+    }
+
+    get luck() {
+        return this._luck;
+    }
+
+    set luck(value) {
+        this._luck += value;
+        return this._luck;
     }
 
     generateName() {

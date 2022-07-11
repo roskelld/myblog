@@ -22,8 +22,16 @@ const ACTION_STRINGS = {
     "Look":     "look at",
     "Mine":     "mine with",
     "Attack":   "attack with",
-    "Survey":   "survey with"
+    "Survey":   "survey with",
+    "Defend":   "defend with",
+    "Throw":    "throw",
+    "Buy":      "Enter store to",
+    "Sell":     "Enter store to",
+    "Pray":     "Enter holy site to",
+    "Gamble":   "Enter tavern to"
 }
+
+const INSTRUCTION_BASE = "(WASD) Move : (\u2B06\u2B07) Equip Item : (R/F) Select Action";
 
 let lastDirection;
 let checkedTile = false;
@@ -107,7 +115,8 @@ function keyInput(e) {
             direction = NAV.West;
             break;
         case USE:
-            if ( INVENTORY_SELECTION.selectedIndex === 0 || INVENTORY_SELECTION.selectedIndex === -1 ) return;
+            // if ( INVENTORY_SELECTION.selectedIndex === 0 || INVENTORY_SELECTION.selectedIndex === -1 ) return;
+            if ( ITEM_ACTIONS.options.length === 0 ) return;
             useItem( INVENTORY_SELECTION.value );
             return;
         case RESTART:
@@ -178,8 +187,9 @@ function selectItem( name ) {
     }
     
     // No item equipped
+    // This could be used for character actions such as camp, pray, hunt    
     if ( !item ) {
-        updateIntructions( INVENTORY_SELECTION.options[INVENTORY_SELECTION.selectedIndex].text );
+        setLandscapeFeatureActions();
         return;
     }
     
@@ -219,7 +229,28 @@ function useItem( id ) {
             break;
         case "Look":
             updateLog( `You inspect the ${item.name}, it feels nice in the hand.` );
-            break;            
+            break;
+        case "Gamble":
+            gamble();
+            break;
+        case "Pray":
+            pray();
+            break;
+        case "Attack":
+            attack();            
+            break;  
+        case "Defend":
+            defend();            
+            break;  
+        case "Throw":
+            throwItem();            
+            break;    
+        case "Buy":
+            updateLog( `Shop is closed for refurbishment` );
+            break;          
+        case "Sell":
+            updateLog( `Shop is closed for refurbishment` );
+            break;
         default:
             break;
     }
@@ -227,12 +258,30 @@ function useItem( id ) {
 }
 
 function updateIntructions( name ) {
-    if ( name === "NONE" || name === undefined ) {
-        INSTRUCTIONS.textContent = `(ENTER) Restart : (WASD) Move : (\u2B06\u2B07) Inventory `;
+
+    if ( name === "NONE" && ITEM_ACTIONS.options.length > 0 ) {
+        let noun = ACTION_STRINGS[ITEM_ACTIONS.options[ITEM_ACTIONS.options.selectedIndex].value];
+        let verb = ITEM_ACTIONS.options[ITEM_ACTIONS.options.selectedIndex].value;
+        INSTRUCTIONS.textContent = `${INSTRUCTION_BASE} : (E) ${noun} ${verb}`;
+    } else if ( name === "NONE" || name === undefined ) {
+        INSTRUCTIONS.textContent = `${INSTRUCTION_BASE} `;
     } else {
         let action = ACTION_STRINGS[ITEM_ACTIONS.options[ITEM_ACTIONS.options.selectedIndex].value];
-        INSTRUCTIONS.textContent = `(ENTER) Restart : (WASD) Move : (\u2B06\u2B07) Inventory : (E) ${action} ${name}`;
+        INSTRUCTIONS.textContent = `${INSTRUCTION_BASE} : (E) ${action} ${name}`;
     }
+}
+
+function attack() {
+    updateLog( `Your nimbly swipe your ${avatar.getItem(INVENTORY_SELECTION.value).name} in an aggressive fashion. Shame there's no one around to witness your warrior prowess.` );
+}
+
+function defend() {
+    updateLog( `Holding your ${avatar.getItem(INVENTORY_SELECTION.value).name} up high, you stand your ground against the imagined attackers who vanish from your mind before they can strike.` );
+}
+
+function throwItem() {
+    let distance = Math.round(Math.random() * 10);
+    updateLog( `You swing your arm in a great arc launching the ${avatar.getItem(INVENTORY_SELECTION.value).name} into the air. It lands ${distance} feet in front of you. You pause and wonder what use that was before picking it back up and dusting the mud from it.` );
 }
 
 function surveyTile( name, x, y ) {
@@ -262,6 +311,36 @@ function mineTile( name, x, y ) {
     gameUpdate();
 }
 
+function gamble() {
+    if ( avatar.gold <= 0 ) {
+        updateLog( `You enter the tavern feeling lucky, but soon realize that you're out of money and slip back out hoping no one noticed.` );
+    } else {
+        let result = Math.random() + (avatar.luck / 100);
+        avatar.removeGold(1);
+        if ( result >= 0.75 ) {
+            updateLog( `You enter the tavern and slap down a gold piece on the dice table. Thank the gods your numbers come up adding a nice weight of gold in your pouch.` );
+            avatar.addGold(5);
+        } else {
+            updateLog( `You enter the taven and place your gold piece on the dice table. The dice roll and you feel a dark cloud cast over you. Your numbers don't come up, leaving your pouch a little lighter.` );
+        }                
+    }
+    gameUpdate();
+}
+
+function pray() {
+    if ( avatar.gold <= 0 ) {
+        updateLog( `You enter the holy site and find a quiet spot to pray to your god.` );
+    } else {
+        let result = Math.random();
+        avatar.removeGold(1);
+        updateLog( `You enter the holy site and place a gold coin as an offering hoping that your god will bring you luck` );
+        if ( result >= 0.75 ) {
+            avatar.luck = 1;
+        }
+    }
+    gameUpdate();
+}
+
 function moveCharacter( direction ) {
     if ( avatar.isDead ) return;
     // console.log( `Move ${direction}` );
@@ -284,14 +363,14 @@ function moveCharacter( direction ) {
         } else {
             avatar.location[0] += (direction === 1) ? 1 : -1;
         }
-
         
         // Check to see if there's a landscape feature
         let feature = getLandscapeFeature( lookDirection[0], lookDirection[1] );
         
         if ( feature ) {
-            updateLog( `You travel ${DIRECTION[direction]} to the ${feature.type} of ${feature.name}` );
+            setLandscapeFeatureActions(feature);
         } else {
+            if ( INVENTORY_SELECTION.value === "none" ) setLandscapeFeatureActions();
             updateLog( `You travel ${DIRECTION[direction]} into ${terrain.name}` );
         }
 
@@ -305,6 +384,37 @@ function moveCharacter( direction ) {
         updateLog( `You cannot traverse ${terrain.name} terrain` );
     }
 
+}
+
+function setLandscapeFeatureActions(feature) {
+    if ( feature === undefined ) feature = getLandscapeFeature( avatar.location[0], avatar.location[1] );
+    // Escape from no features (there should't be none, but for now there is)
+    if ( feature === undefined ) {
+        // clear current actions
+        let items = ITEM_ACTIONS.options.length;
+        for (let i = 0; i < items; i++) {
+            ITEM_ACTIONS.options[0].remove();
+        }
+        return
+    }
+    if ( feature.type = "town" ) {
+
+        // Select first inventory option (unequip items and reveal town actions)
+        INVENTORY_SELECTION.options.selectedIndex = 0;
+
+        // clear current actions
+        let items = ITEM_ACTIONS.options.length;
+        for (let i = 0; i < items; i++) {
+            ITEM_ACTIONS.options[0].remove();
+        }
+
+        // Add Town actions
+        feature.actions.forEach( e => {
+            ITEM_ACTIONS.options[ITEM_ACTIONS.length] = new Option( e, e );    
+        });
+        ITEM_ACTIONS.options.selectedIndex = 0;
+        updateIntructions(ITEM_ACTIONS.value);
+    }
 }
 
 function increaseGameTime(time) {
@@ -443,11 +553,20 @@ function init() {
     // Default terrain
     avatar.addValidTerrain("soil");
     
+    // clear current inventory UI
+    let items = INVENTORY_SELECTION.options.length;
+    for (let i = 1; i < items; i++) {
+        INVENTORY_SELECTION.options[1].remove();
+    }
+
     // Default items
     avatar.addToInventory( new Item( ITEM_DATA.pickaxe.name, ITEM_DATA.pickaxe.weight, ITEM_DATA.pickaxe.properties, ITEM_DATA.pickaxe.use ) );
     avatar.addToInventory( new Item( ITEM_DATA.dowsingTwig.name, ITEM_DATA.dowsingTwig.weight, ITEM_DATA.dowsingTwig.properties, ITEM_DATA.dowsingTwig.use ) );
     INVENTORY_SELECTION.selectedIndex = 0; 
+    selectItem( INVENTORY_SELECTION.value );
     
+    avatar.addGold(10);
+
     updateLog( `The adventures of ${avatar.name} from the town of ${startTown.name}` );
     gameUpdate();
     

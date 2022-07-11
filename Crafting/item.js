@@ -3,7 +3,7 @@ const ITEM_DATA = {
     pickaxe: {
         name:      "Pickaxe",
         weight:    3,
-        use:        ["Mine", "Look", "Attack"],
+        use:        ["Mine",  "Attack", "Defend", "Throw", "Look"],
         properties: {
             antler:    100,
             wood:      80,
@@ -12,20 +12,52 @@ const ITEM_DATA = {
     dowsingTwig: {
         name:       "Dowsing Twig",
         weight:     0.5,
-        use:        ["Survey", "Look", "Attack"],
+        use:        ["Survey", "Look", "Attack", "Throw", "Defend"],
         properties: {
             wood:   20,
         },
 
     },
-    diviningRod: {
+    divining_rod: {
         name:       "Divining Rod",
         weight:     1,
-        use:        ["Survey", "Look", "Attack"],
+        use:        ["Survey", "Look", "Attack", "Throw", "Defend"],
+        properties: {
+            metal:  5,
+        }
+    }, 
+    dagger: {
+        name:       "Dagger",
+        weight:     1,
+        use:        ["Attack", "Defend", "Throw", "Look"],
+        properties: {
+            metal:  15,
+            cloth:  1
+        }
+    },
+    sml_statue: {
+        name:       "Small Statue",
+        weight:     1,
+        use:        ["Look", "Attack", "Throw", "Defend"],
+        properties: {
+            stone:  5
+        }
+    },
+    long_sword: {
+        name:       "Long Sword",
+        weight:     4,
+        use:        ["Attack", "Defend", "Throw", "Look"],
         properties: {
             metal:  20,
+            cloth:  2
         }
+    },
+    spear: {
+        name:       "Spear",
+        weight:     3,
+        use:        ["Attack", "Defend", "Throw", "Look"],
     }
+
 }
 
 class Item {

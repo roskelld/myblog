@@ -35,7 +35,7 @@ h1 {
 }
 
 #log p:last-child {
-    line-height: 1em;
+    line-height: 1.2em;
     color:rgb(22, 132, 17);
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-weight: 800;
@@ -106,6 +106,7 @@ canvas {
     display: grid;
     grid-auto-rows: minmax(auto, auto);
     margin: 0;
+    font-size: 2vh;
 }
 
 
