@@ -23,19 +23,23 @@ class Land {
         this._terrain.push(terrain);
         this._terrain.sort( (a, b) => { return a._value > b._value } );
     }
-    getTerrainColor( value ) {        
+    getTerrainColor( value ) {       
+        this._terrain.sort( (a, b) => { return a._value - b._value } );
         let terrain = this._terrain.find( e => { return value <= e._value } );
         return terrain._color;
     }
     getTerrainDifficulty( value ) {
+        this._terrain.sort( (a, b) => { return a._value - b._value } );
         let terrain = this._terrain.find( e => { return value <= e._value } );
         return terrain._difficulty;
     }
     getTerrainName( value ) {
+        this._terrain.sort( (a, b) => { return a._value - b._value } );
         let terrain = this._terrain.find( e => { return value <= e._value } );
         return terrain._name;
     }
     getTerrainType( value ) {
+        this._terrain.sort( (a, b) => { return a._value - b._value } );
         let terrain = this._terrain.find( e => { return value <= e._value } );
         return terrain._type;
     }
@@ -45,6 +49,7 @@ class Land {
         return this.getTerrain(result);
     }
     getTerrain(value) {
+        this._terrain.sort( (a, b) => { return a._value - b._value } );
         let terrain = this._terrain.find( e => { return value <= e._value } );
         return terrain;
     }
@@ -105,7 +110,9 @@ class Land {
                     let results = this.convertCoordinates( x + offset_x, y + offset_y );
     
                     let result = this._map.get(results.x, results.y);
+
                     let terrain = this.getTerrainColor(result);
+                    // console.log(`${result} ${terrain[0]}, ${terrain[1]}, ${terrain[2]}`);
                 
                     this._CTX.fillStyle = `rgb(${terrain[0]}, ${terrain[1]}, ${terrain[2]})`;
                     this._CTX.fillRect(

@@ -76,7 +76,6 @@ class Avatar {
     get gold() {
         return this._gold;
     }
-
     addGold(amount) {
         this._gold += amount;
     }

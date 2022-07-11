@@ -37,7 +37,7 @@ class Perlin {
     }
     get(x, y) {
         if (this.memory.hasOwnProperty([x,y]))
-            return this.memory[[x,y]];
+        return this.memory[[x,y]];
         let xf = Math.floor(x);
         let yf = Math.floor(y);
         //interpolate
