@@ -9,6 +9,16 @@
     <h1>Crafting Prototype Game</h1>
     
     <div class="grid">
+        <div class="box-1 overlay hide" id="shop">
+            <label for="shop">Shop
+                <select name="shop" id="shop-list" multiple size="22">
+  
+                </select>
+            </label>
+            <!-- <div class="button-bar">
+                <button id="button-leave-shop">Leave</button>
+            </div> -->
+        </div>
         <canvas class="box-1" id="landscape"></canvas>
         <canvas class="box-1" id="materials"></canvas>
         <canvas class="box-1" id="content"></canvas>
@@ -25,16 +35,16 @@
             </div>
         </div>
         <div class="box-3">
-            <label for="inventory">Equipped</label>
-            <select name="inventory" id="inventory" multiple size="10">
-                <option value="none" selected >NONE</option>
-            </select>
+            <label for="inventory">Equipped          
+                <select name="inventory" id="inventory" multiple size="1">
+                    <option value="none" selected >NONE</option>
+                </select>
+            </label>
         </div>
         <div class="box-6">
-            <label for="action">Action</label>
-            <select name="action" id="action" multiple size="8">
-                <!-- <option value="none" selected >NONE</option> -->
-            </select>
+            <label for="action">Action
+                <select name="action" id="action" multiple size="1"></select>
+            </label>
         </div>
         <div class="box-4">
             <p id="instructions">

@@ -119,10 +119,11 @@ class Avatar {
     addToInventory( item ) {
         this._inventory.push(item);
         INVENTORY_SELECTION.options[INVENTORY_SELECTION.length] = new Option( item.name, item.id );
-
     }
-    removeFromInventory( item ) {
+    removeFromInventory( id ) {
+        Object.values(INVENTORY_SELECTION.options).find( e => e.value == id ).remove();
 
+        this._inventory.splice( this._inventory.findIndex( e => e.id === id ), 1);
     }
     getItem( id ) {
         return this._inventory.find( e => e.id === id );

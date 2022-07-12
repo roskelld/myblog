@@ -6,16 +6,27 @@ const MOVE_EAST = "d";
 const MOVE_SOUTH = "s";
 const MOVE_WEST = "a";
 const USE = "e";
-const RESTART = "Enter";
-// const MINE = "r";
+const ACCEPT = "Enter";
+const RESTART = "Escape";
 const INV_DOWN = "ArrowDown";
 const INV_UP = "ArrowUp";
 const ACT_DOWN = "f";
 const ACT_UP = "r";
-
+const BACK = "q";
 
 const NAV = { North: 0, East: 1, South: 2, West: 3 };
 const DIRECTION = { 0: "north", 1: "east", 2: "south", 3: "west" };
+
+const GAME_MODES = {
+    general:    0,
+    shop_buy:   1,
+    shop_sell:  2,
+    tavern:     3,
+    crafting:   4,
+    combat:     5,
+    dungeon:    6
+}
+let _currentGameMode = 0;
 
 // Strings
 const ACTION_STRINGS = {
@@ -51,11 +62,18 @@ const UI_WEIGHT = document.querySelector("#weight");
 
 const INVENTORY_SELECTION = document.querySelector("#inventory");
 INVENTORY_SELECTION.addEventListener("change", selectItem, false );
+INVENTORY_SELECTION.addEventListener("focus", e => { INVENTORY_SELECTION.blur(); }, false );
 
 const ITEM_ACTIONS = document.querySelector("#action");
 ITEM_ACTIONS.addEventListener("change", selectAction, false );
+ITEM_ACTIONS.addEventListener("focus", e => { ITEM_ACTIONS.blur(); }, false );
 
 const INSTRUCTIONS = document.querySelector("#instructions");
+
+const SHOP_UI = document.querySelector("#shop");
+const SHOP_LIST = document.querySelector("#shop-list");
+SHOP_LIST.addEventListener("change", selectShopItem, false );
+SHOP_LIST.addEventListener("focus", e => { SHOP_LIST.blur(); }, false );
 
 // Setup Land
 const LAND = new Land( document.getElementById("landscape"));
@@ -97,81 +115,168 @@ let avatar;
 
 document.addEventListener("keyup", keyInput, false);
 
-function keyInput(e) {
+function keyInput(e) {    
     const KEY_NAME = e.key;
     let direction;
 
-    switch (KEY_NAME) {
-        case MOVE_NORTH:          
-            direction = NAV.North;
-            break;
-        case MOVE_EAST:
-            direction = NAV.East;
-            break;
-        case MOVE_SOUTH:
-            direction = NAV.South;
-            break;
-        case MOVE_WEST:
-            direction = NAV.West;
-            break;
-        case USE:
-            // if ( INVENTORY_SELECTION.selectedIndex === 0 || INVENTORY_SELECTION.selectedIndex === -1 ) return;
-            if ( ITEM_ACTIONS.options.length === 0 ) return;
-            useItem( INVENTORY_SELECTION.value );
-            return;
-        case RESTART:
-            init();
-            return; 
-        case INV_UP:
-            if ( INVENTORY_SELECTION.selectedIndex === 0 || INVENTORY_SELECTION.selectedIndex === -1 ) {
-                INVENTORY_SELECTION.selectedIndex = INVENTORY_SELECTION.length - 1;
-            } else {
-                INVENTORY_SELECTION.selectedIndex--;
+    // general:    0,
+    // shop_buy:   1,
+    // shop_sell:  2,
+    // tavern:     3,
+    // crafting:   4,
+    // combat:     5,
+    // dungeon:    6
+
+    switch(_currentGameMode) {
+        case 0:
+            switch (KEY_NAME) {
+                case MOVE_NORTH:          
+                    direction = NAV.North;
+                    break;
+                case MOVE_EAST:
+                    direction = NAV.East;
+                    break;
+                case MOVE_SOUTH:
+                    direction = NAV.South;
+                    break;
+                case MOVE_WEST:
+                    direction = NAV.West;
+                    break;
+                case USE:
+                case ACCEPT:
+                    // if ( INVENTORY_SELECTION.selectedIndex === 0 || INVENTORY_SELECTION.selectedIndex === -1 ) return;
+                    if ( ITEM_ACTIONS.options.length === 0 ) return;
+                    useItem( INVENTORY_SELECTION.value );
+                    return;
+                case RESTART:
+                    init();
+                    return; 
+                case INV_UP:
+                    if ( INVENTORY_SELECTION.selectedIndex === 0 || INVENTORY_SELECTION.selectedIndex === -1 ) {
+                        INVENTORY_SELECTION.selectedIndex = INVENTORY_SELECTION.length - 1;
+                    } else {
+                        INVENTORY_SELECTION.selectedIndex--;
+                    }
+                    selectItem( INVENTORY_SELECTION.value );
+                    return;
+                case INV_DOWN:
+                    if ( INVENTORY_SELECTION.selectedIndex === INVENTORY_SELECTION.length - 1 ) {
+                        INVENTORY_SELECTION.selectedIndex = 0;
+                    } else {
+                        INVENTORY_SELECTION.selectedIndex++;
+                    }
+                    selectItem( INVENTORY_SELECTION.value );
+                    return;
+                case ACT_UP:
+                    if ( ITEM_ACTIONS.selectedIndex === 0 || ITEM_ACTIONS.selectedIndex === -1 ) {
+                        ITEM_ACTIONS.selectedIndex = ITEM_ACTIONS.length - 1;
+                    } else {
+                        ITEM_ACTIONS.selectedIndex--;
+                    }
+                    selectAction();
+                    return;
+                case ACT_DOWN:
+                    if ( ITEM_ACTIONS.selectedIndex === ITEM_ACTIONS.length - 1 ) {
+                        ITEM_ACTIONS.selectedIndex = 0;
+                    } else {
+                        ITEM_ACTIONS.selectedIndex++;
+                    }
+                    selectAction();
+                    return;
+                default:
+                    updateLog( `"${e.key}" has no power here.` );
+                    return;           
             }
-            selectItem( INVENTORY_SELECTION.value );
-            return;
-        case INV_DOWN:
-            if ( INVENTORY_SELECTION.selectedIndex === INVENTORY_SELECTION.length - 1 ) {
-                INVENTORY_SELECTION.selectedIndex = 0;
+        
+            if ( direction == lastDirection ) {
+                if (checkDirection) {
+                    moveCharacter( direction );
+                    lastDirection = null;
+                } else {
+                    checkDirection( direction );
+                }
+        
             } else {
-                INVENTORY_SELECTION.selectedIndex++;
+                lastDirection = direction;
+                checkDirection( direction );
             }
-            selectItem( INVENTORY_SELECTION.value );
-            return;
-        case ACT_UP:
-            if ( ITEM_ACTIONS.selectedIndex === 0 || ITEM_ACTIONS.selectedIndex === -1 ) {
-                ITEM_ACTIONS.selectedIndex = ITEM_ACTIONS.length - 1;
-            } else {
-                ITEM_ACTIONS.selectedIndex--;
+            break;
+        case 1:
+        case 2:
+            switch (KEY_NAME) {
+                case USE:
+                case ACCEPT:
+                    if ( getGameMode() === 1 ) {
+                        buy( SHOP_LIST.value );
+                    } else {
+                        sell( SHOP_LIST.value );
+                    }
+                break;
+                case ACT_UP:
+                case INV_UP:
+                    if ( SHOP_LIST.selectedIndex === 0 || SHOP_LIST.selectedIndex === -1 ) {
+                        SHOP_LIST.selectedIndex = SHOP_LIST.length - 1;
+                    } else {
+                        SHOP_LIST.selectedIndex--;
+                    }
+                    selectShopItem();
+                break;
+                case ACT_DOWN:
+                case INV_DOWN:
+                    if ( SHOP_LIST.selectedIndex === SHOP_LIST.length - 1 ) {
+                        SHOP_LIST.selectedIndex = 0;
+                    } else {
+                        SHOP_LIST.selectedIndex++;
+                    }
+                    selectShopItem();
+                break;
+                case INV_UP:
+                break;
+                case INV_DOWN:
+                break;
+                case BACK:
+                case RESTART:
+                    leaveShop();
+                break;
             }
-            selectAction();
-            return;
-        case ACT_DOWN:
-            if ( ITEM_ACTIONS.selectedIndex === ITEM_ACTIONS.length - 1 ) {
-                ITEM_ACTIONS.selectedIndex = 0;
-            } else {
-                ITEM_ACTIONS.selectedIndex++;
-            }
-            selectAction();
-            return;
-        default:
-            updateLog( `"${e.key}" has no power here.` );
-            return;           
+            break;
     }
 
-    if ( direction == lastDirection ) {
-        if (checkDirection) {
-            moveCharacter( direction );
-            lastDirection = null;
-        } else {
-            checkDirection( direction );
-        }
 
+}
+
+function setGameMode( mode ) {
+    let current = _currentGameMode;
+
+    if (GAME_MODES[mode] === undefined) {
+        _currentGameMode = 0;
     } else {
-        lastDirection = direction;
-        checkDirection( direction );
+        _currentGameMode = GAME_MODES[mode];
     }
+}
 
+function getGameMode() {
+    return _currentGameMode;
+}
+
+function selectShopItem() {
+    updateIntructions();
+    if ( SHOP_LIST.value == -1 ) {
+        updateLog(`You turn to face the door of the shop.`);
+        return;
+    } 
+    let feature = getLandscapeFeature( avatar.location[0], avatar.location[1] );
+    if ( getGameMode() === 1 ) {
+        let price = feature._market[SHOP_LIST.selectedIndex-1].price;
+        updateLog(`You pick up a ${SHOP_LIST.value} from a shelf and the shop keeper looks up and shouts "${price} gold, you'll not find a better deal".`);
+        return;
+    }
+    if ( getGameMode() === 2 ) {
+        let name = avatar.getItem( SHOP_LIST.value ).name;
+        let price = feature.offerToBuyPrice( name, avatar );
+        updateLog(`You pull a ${name} from your pack and show it to the shop keeper who quickly blerts out "${price} gold" in a way that makes it clear that it's not a negotiable offer.`);
+        return;
+    }
 }
 
 function selectItem( name ) {
@@ -246,10 +351,10 @@ function useItem( id ) {
             throwItem();            
             break;    
         case "Buy":
-            updateLog( `Shop is closed for refurbishment` );
+            enterShop("buy");
             break;          
         case "Sell":
-            updateLog( `Shop is closed for refurbishment` );
+            enterShop("sell");
             break;
         default:
             break;
@@ -259,7 +364,17 @@ function useItem( id ) {
 
 function updateIntructions( name ) {
 
-    if ( name === "NONE" && ITEM_ACTIONS.options.length > 0 ) {
+    if ( getGameMode() === 1 ) {
+        // Shop (to Buy)
+        let item = ( SHOP_LIST.value == -1 ) ? "Leave shop" : `Buy ${SHOP_LIST.value}`
+        INSTRUCTIONS.textContent = `(\u2B06\u2B07) Select Item : (E) ${item}`;
+        return;
+    } else if ( getGameMode() === 2 ) {
+        // Shop (to Buy)
+        let item = ( SHOP_LIST.value == -1 ) ? "Leave shop" : `Sell ${SHOP_LIST.value}`
+        INSTRUCTIONS.textContent = `(\u2B06\u2B07) Select Item : (E) ${item}`;
+        return;
+    } else if ( name === "NONE" && ITEM_ACTIONS.options.length > 0 ) {
         let noun = ACTION_STRINGS[ITEM_ACTIONS.options[ITEM_ACTIONS.options.selectedIndex].value];
         let verb = ITEM_ACTIONS.options[ITEM_ACTIONS.options.selectedIndex].value;
         INSTRUCTIONS.textContent = `${INSTRUCTION_BASE} : (E) ${noun} ${verb}`;
@@ -269,6 +384,104 @@ function updateIntructions( name ) {
         let action = ACTION_STRINGS[ITEM_ACTIONS.options[ITEM_ACTIONS.options.selectedIndex].value];
         INSTRUCTIONS.textContent = `${INSTRUCTION_BASE} : (E) ${action} ${name}`;
     }
+}
+
+function enterShop( mode ) {
+    // clear current items
+    let items = SHOP_LIST.options.length;
+    for (let i = 0; i < items; i++) {
+        SHOP_LIST.options[0].remove();
+    }
+    
+    let feature = getLandscapeFeature( avatar.location[0], avatar.location[1] );
+    updateLog(`You walk through the streets of ${feature.name} to see a shop that looks like it might have some interesting wares.`);
+    if ( mode === "buy" ) {
+        setGameMode("shop_buy");
+
+        // Populate shop
+        SHOP_LIST.options[0] = new Option( `LEAVE SHOP`, -1 );
+        feature._market.forEach( e => {
+            SHOP_LIST.options[SHOP_LIST.length] = new Option( `Buy ${e.name} (${e.price}g)`, e.name );
+        } );
+        SHOP_LIST.selectedIndex = 0;
+    }
+
+    if ( mode === "sell" ) {
+        setGameMode("shop_sell");
+        SHOP_LIST.options[0] = new Option( `LEAVE SHOP`, -1 );
+        avatar._inventory.forEach( e => {
+            let price = feature.offerToBuyPrice( e.name, avatar );
+            SHOP_LIST.options[SHOP_LIST.length] = new Option( `Sell ${e.name} for ${price} gold`, e.id );
+        } );
+        SHOP_LIST.selectedIndex = 0;        
+    }
+
+    SHOP_UI.classList.remove("hide");    
+    updateIntructions();
+}
+
+function leaveShop() {
+    SHOP_UI.classList.add("hide");
+    setGameMode("general");
+    let feature = getLandscapeFeature( avatar.location[0], avatar.location[1] );
+    updateLog(`You leave the shop and step back onto the streets of ${feature.name} wondering what your next move might be.`);
+}
+
+function buy( item ) {
+    // If selected LEAVE then leave the shop (Note -1 is a string)
+    if ( item == -1 ) {
+        leaveShop();
+        return;
+    }
+
+    let feature = getLandscapeFeature( avatar.location[0], avatar.location[1] );
+    let tobuy = feature._market.find( e => e.name === item );
+
+    if ( avatar.gold < tobuy.price ) {
+        updateLog(`You realise that you don't have the gold to buy the ${item}. You try to haggle but the shopkeeper has none of it and scorns you for wasting time.`);
+    } else {        
+        // Remove the item from the shop UI
+        SHOP_LIST.options[SHOP_LIST.selectedIndex].remove();
+        SHOP_LIST.selectedIndex = 0
+        
+        // Remove the item from the market list
+        feature._market.splice( e => e.name === item, 1 );
+        
+        // Take the money from the avatar
+        avatar.removeGold( tobuy.price );
+        // Get the item data
+        let data = ITEM_DATA[[`${tobuy.id}`]];
+
+        // Add it to the avatar inventory
+        avatar.addToInventory( new Item( data.name, data.weight, data.properties, data.use ));
+        gameUpdate();
+    }
+}
+
+function sell( id ) {
+    // If selected LEAVE then leave the shop (Note -1 is a string)
+    if ( id == -1 ) {
+        leaveShop();
+        return;
+    }
+
+    // Get the item name
+    let name = avatar.getItem( id ).name;
+
+    // Get the item price
+    let feature = getLandscapeFeature( avatar.location[0], avatar.location[1] );
+    let price = feature.offerToBuyPrice( name, avatar );
+    
+    // Remove the item from the player's inventory (and inventory UI)
+    avatar.removeFromInventory( SHOP_LIST.value );
+    // Remove the item from the market list
+    SHOP_LIST.options[SHOP_LIST.selectedIndex].remove();
+    
+    // Give the player the gold
+    avatar.addGold( price );
+    
+    SHOP_LIST.selectedIndex = 0
+    gameUpdate();
 }
 
 function attack() {
@@ -300,10 +513,15 @@ function surveyTile( name, x, y ) {
 
 function mineTile( name, x, y ) {
     if ( avatar.isDead ) return;
-    let result = MAT.removeResource( "copper", avatar.location[0], avatar.location[1] );
-
-    avatar.addToInventory( new Item( name, 1, { value: result } ) );
-    updateLog( `You mine ${result} of ${name}` );
+    if ( MAT.getResourceValueAtLocation( name, x, y ) <= 0 ) {
+        updateLog( `Your efforts to mine ${name} are fruitless.` );
+        return;
+    } else {
+        let result = MAT.removeResource( "copper", avatar.location[0], avatar.location[1] );    
+    
+        avatar.addToInventory( new Item( name, 1, { value: result } ) );
+        updateLog( `You mine ${result} of ${name}` );
+    }
 
     increaseGameTime(1);
 
@@ -544,7 +762,10 @@ function init() {
     
     avatar = new Avatar();
     
-    
+    // Reset Shop
+    SHOP_UI.classList.add("hide");
+
+
     // avatar.location[0] = startTown.location[0] / (PIXEL_SIZE / GRID_SIZE);
     // avatar.location[1] = startTown.location[1] / (PIXEL_SIZE / GRID_SIZE);
     
@@ -553,15 +774,11 @@ function init() {
     // Default terrain
     avatar.addValidTerrain("soil");
     
-    // clear current inventory UI
-    let items = INVENTORY_SELECTION.options.length;
-    for (let i = 1; i < items; i++) {
-        INVENTORY_SELECTION.options[1].remove();
-    }
+
 
     // Default items
     avatar.addToInventory( new Item( ITEM_DATA.pickaxe.name, ITEM_DATA.pickaxe.weight, ITEM_DATA.pickaxe.properties, ITEM_DATA.pickaxe.use ) );
-    avatar.addToInventory( new Item( ITEM_DATA.dowsingTwig.name, ITEM_DATA.dowsingTwig.weight, ITEM_DATA.dowsingTwig.properties, ITEM_DATA.dowsingTwig.use ) );
+    avatar.addToInventory( new Item( ITEM_DATA.dowsingTwig.name, ITEM_DATA.dowsingTwig.weight, ITEM_DATA.dowsingTwig.properties, ITEM_DATA.dowsingTwig.use ) );    
     INVENTORY_SELECTION.selectedIndex = 0; 
     selectItem( INVENTORY_SELECTION.value );
     
@@ -574,5 +791,6 @@ function init() {
     drawAvatar();
 
 }
+
 
 init();

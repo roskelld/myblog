@@ -9,7 +9,9 @@ class Town {
         this.generateName();
         this._actions = ["Buy", "Sell", "Pray", "Gamble"];
         this._market = [];
-
+        this._economic_status;
+        this.generateStatus();
+        this.generateMarket();
     }
 
     generateName() {
@@ -19,7 +21,27 @@ class Town {
     }
 
     generateMarket() {
+        // ITEM_DATA[Object.keys(ITEM_DATA)[3]].
+        // Number of items to sell 
+        let number = Math.round( Math.random() * 5 + this._economic_status  ); 
+        for (let index = 0; index < number; index++) {
+            // Get Item Data 
+            let index = Math.floor(Object.keys(ITEM_DATA).length * Math.random());
+            let item = ITEM_DATA[Object.keys(ITEM_DATA)[index]];
+            let price = Math.round(item.price + (this._economic_status*this._economic_status));
+            this._market.push({ name: item.name, price: price, id: Object.keys(ITEM_DATA)[index] });
+        }
+    }
 
+    generateStatus() {
+        this._economic_status = Math.round( Math.random() * DATA.status.length );        
+    }
+
+    // Simulate a purchase price for player to sell item to town shop
+    offerToBuyPrice( itemName, avatar ) {  
+        let bp = Object.values(ITEM_DATA).find( e => ( itemName === e.name )).price;     
+        let ec = this._economic_status;
+        return Math.min(Math.round((bp / ec) + (bp / ec) * (avatar.luck/100)), bp );
     }
 
     set location(loc) {
@@ -265,17 +287,13 @@ const DATA = {
         "Xantho",
         "Zenith",
         "Zuzana"
-    ], 
-    items: [{
-        name:   "dagger",
-        price:  3
-    }, {
-        name:   "small statue",
-        price:  1
-    }, {
-        name:   ""
-    }
-]
-
+    ],
+    status: [
+       "squalid",
+       "poor",
+       "moderate",
+       "good",
+       "rich"
+    ]
 }
 
