@@ -453,7 +453,7 @@ function buy( item ) {
         let data = ITEM_DATA[[`${tobuy.id}`]];
 
         // Add it to the avatar inventory
-        avatar.addToInventory( new Item( data.name, data.weight, data.properties, data.use ));
+        avatar.addToInventory( new Item( data.name, data.weight, data.properties, data.materials, data.use, data.efficency ));
         gameUpdate();
     }
 }
@@ -518,8 +518,9 @@ function mineTile( name, x, y ) {
         return;
     } else {
         let result = MAT.removeResource( "copper", avatar.location[0], avatar.location[1] );    
-    
-        avatar.addToInventory( new Item( name, 1, { value: result } ) );
+        
+        let item = getItemDataFromName( name );
+        avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency ) );
         updateLog( `You mine ${result} of ${name}` );
     }
 
@@ -590,6 +591,7 @@ function moveCharacter( direction ) {
         } else {
             if ( INVENTORY_SELECTION.value === "none" ) setLandscapeFeatureActions();
             updateLog( `You travel ${DIRECTION[direction]} into ${terrain.name}` );
+            updateIntructions();
         }
 
 
@@ -705,6 +707,19 @@ function updateLog( message ) {
     GAME_LOG_UI.scrollTop = GAME_LOG_UI.scrollHeight;
 }
 
+function refreshEquipmentListUI() {
+    // Get current length
+    let count = INVENTORY_SELECTION.length - 1;
+    for (let index = 0; index < count; index++) {
+        // Remove 2nd entry (first is NONE)
+        INVENTORY_SELECTION[1].remove();        
+    }
+    // Repopulate with avatar inventory 
+    avatar._inventory.forEach( e => {
+        INVENTORY_SELECTION.options[INVENTORY_SELECTION.length] = new Option( e.name, e.id );
+    });
+}
+
 function gameUpdate() {
 
     
@@ -715,7 +730,7 @@ function gameUpdate() {
     // run automated updates based on location type
     if (feature) {
         if ( feature.type === "town" ) {
-            avatar.addFood(40);
+            avatar.addFood(avatar._MAX_FOOD);
         }
     }
 
@@ -745,40 +760,38 @@ function generateColor() {
     return [r,g,b];
 }
 
+function getItemDataFromName( name ) {
+    return Object.values(ITEM_DATA).find( e => e.name === name );
+}
+
 // Init
 function init() {
     gameTime = 1;
     GAME_LOG_UI.replaceChildren();
-
     updateIntructions();
-
+    
     LAND.clear();
     MAT.clear();
-
+    
     // drawLandscape();
     LAND.generateTowns();
     
     let startTown = LAND._TOWNS[Math.floor(Math.random()*LAND._TOWNS.length)];
     
     avatar = new Avatar();
+    refreshEquipmentListUI();
     
     // Reset Shop
     SHOP_UI.classList.add("hide");
 
-
-    // avatar.location[0] = startTown.location[0] / (PIXEL_SIZE / GRID_SIZE);
-    // avatar.location[1] = startTown.location[1] / (PIXEL_SIZE / GRID_SIZE);
-    
     avatar.location = [startTown.location[0] / (LAND._PIXEL_SIZE / LAND._GRID_SIZE), startTown.location[1] / (LAND._PIXEL_SIZE / LAND._GRID_SIZE)];
     
     // Default terrain
     avatar.addValidTerrain("soil");
     
-
-
     // Default items
-    avatar.addToInventory( new Item( ITEM_DATA.pickaxe.name, ITEM_DATA.pickaxe.weight, ITEM_DATA.pickaxe.properties, ITEM_DATA.pickaxe.use ) );
-    avatar.addToInventory( new Item( ITEM_DATA.dowsingTwig.name, ITEM_DATA.dowsingTwig.weight, ITEM_DATA.dowsingTwig.properties, ITEM_DATA.dowsingTwig.use ) );    
+    avatar.addToInventory( new Item( ITEM_DATA.pickaxe.name, ITEM_DATA.pickaxe.weight, ITEM_DATA.pickaxe.properties, ITEM_DATA.pickaxe.materials, ITEM_DATA.pickaxe.use, ITEM_DATA.pickaxe.efficency ) );
+    avatar.addToInventory( new Item( ITEM_DATA.dwsngTwgCopper.name, ITEM_DATA.dwsngTwgCopper.weight, ITEM_DATA.dwsngTwgCopper.properties, ITEM_DATA.dwsngTwgCopper.materials, ITEM_DATA.dwsngTwgCopper.use, ITEM_DATA.dwsngTwgCopper.efficency ) );
     INVENTORY_SELECTION.selectedIndex = 0; 
     selectItem( INVENTORY_SELECTION.value );
     

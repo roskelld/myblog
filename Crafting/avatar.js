@@ -26,7 +26,7 @@ class Avatar {
     get weight() {
         this._weight = 0;
         this._inventory.forEach( e => { this._weight += e.weight } );
-        return this._weight;
+        return this._weight.toFixed(2);
     }
 
     get luck() {
