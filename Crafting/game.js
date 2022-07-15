@@ -39,8 +39,12 @@ const ACTION_STRINGS = {
     "Buy":      "Enter store to",
     "Sell":     "Enter store to",
     "Pray":     "Enter holy site to",
-    "Gamble":   "Enter tavern to"
+    "Gamble":   "Enter tavern to",
+    "Craft":    "Craft"
 }
+
+// Prevent arrow keys from scrolling windows 
+window.addEventListener("keydown", e => { if (e.key === INV_DOWN || e.key === INV_UP ) e.preventDefault(); }, false );
 
 const INSTRUCTION_BASE = "(WASD) Move : (\u2B06\u2B07) Equip Item : (R/F) Select Action";
 
@@ -70,10 +74,37 @@ ITEM_ACTIONS.addEventListener("focus", e => { ITEM_ACTIONS.blur(); }, false );
 
 const INSTRUCTIONS = document.querySelector("#instructions");
 
+const UI_DETAILS = document.querySelector("#details");
+const UI_DETAILS_BOX = document.querySelector("#details-box");
+
+
+// ----------------------------------------------------------------------------
+// Shop
 const SHOP_UI = document.querySelector("#shop");
 const SHOP_LIST = document.querySelector("#shop-list");
 SHOP_LIST.addEventListener("change", selectShopItem, false );
 SHOP_LIST.addEventListener("focus", e => { SHOP_LIST.blur(); }, false );
+
+// ----------------------------------------------------------------------------
+// Crafting
+const CRAFT_UI = document.querySelector("#crafting");
+
+const CRAFT_NAME = document.querySelector("#crafting-item-name");
+
+// Text of recipe
+const CRAFT_RECIPE = document.querySelector("#crafting-item-recipe");
+const CRAFT_LISTS = document.querySelector("#crafting-lists");
+
+// Storage for map of crafting items
+let crafting_recipe;
+
+const CRAFT_ITEM_TITLE = document.querySelector("#craft-item-title");
+CRAFT_ITEM_TITLE.addEventListener("keydown", e => {  }, false );
+
+// Action calls like leave and craft
+const CRAFT_ACTION_LIST = document.querySelector("#crafting-list");
+CRAFT_ACTION_LIST.addEventListener("change", selectCraftinActionItem, false );
+CRAFT_ACTION_LIST.addEventListener("focus", e => { CRAFT_ACTION_LIST.blur(); }, false );
 
 // Setup Land
 const LAND = new Land( document.getElementById("landscape"));
@@ -98,14 +129,14 @@ MAT.addResource( new Resource(
     [220,192,35], 
     ["metal","copper"], 
     { 
-        conduction: 30, 
-        density: 80, 
-        malleable: 40, 
-        ductile: 0, 
-        meltingpoint: 340, 
-        sonorous: 50, 
-        luster: 30, 
-        hardness: 40
+        conduction:     30, 
+        density:        80, 
+        malleable:      40, 
+        ductile:        0, 
+        meltingpoint:   340, 
+        sonorous:       50, 
+        luster:         30, 
+        hardness:       40
     } ) );
 
 // Game Time
@@ -115,7 +146,7 @@ let avatar;
 
 document.addEventListener("keyup", keyInput, false);
 
-function keyInput(e) {    
+function keyInput(e) {   
     const KEY_NAME = e.key;
     let direction;
 
@@ -230,13 +261,51 @@ function keyInput(e) {
                     }
                     selectShopItem();
                 break;
-                case INV_UP:
-                break;
-                case INV_DOWN:
-                break;
                 case BACK:
                 case RESTART:
                     leaveShop();
+                break;
+            }
+            break;
+        case 4:
+            switch (KEY_NAME) {
+                case USE:
+                case ACCEPT:
+                    selectCraftinActionItem( CRAFT_ACTION_LIST.value );
+                break;
+                case INV_UP:
+                    if ( CRAFT_ACTION_LIST.selectedIndex === 0 || CRAFT_ACTION_LIST.selectedIndex === -1 ) {
+                        CRAFT_ACTION_LIST.selectedIndex = CRAFT_ACTION_LIST.length - 1;
+                    } else {
+                        CRAFT_ACTION_LIST.selectedIndex--;
+                    }
+
+                    if ( CRAFT_ACTION_LIST.selectedIndex === 0 ) {
+                        INSTRUCTIONS.textContent = `(\u2B06\u2B07) Select Action : (E) Leave`;
+                    } else {
+                        let item = avatar.getItem( INVENTORY_SELECTION.value );
+                        // Update Instructions
+                        updateIntructions(item.name);
+                    }
+                break;
+                case INV_DOWN:
+                    if ( CRAFT_ACTION_LIST.selectedIndex === CRAFT_ACTION_LIST.length - 1 ) {
+                        CRAFT_ACTION_LIST.selectedIndex = 0;
+                    } else {
+                        CRAFT_ACTION_LIST.selectedIndex++;
+                    }
+
+                    if ( CRAFT_ACTION_LIST.selectedIndex === 0 ) {
+                        INSTRUCTIONS.textContent = `(\u2B06\u2B07) Select Action : (E) Leave`;
+                    } else {
+                        let item = avatar.getItem( INVENTORY_SELECTION.value );
+                        // Update Instructions
+                        updateIntructions(item.name);
+                    }
+                break;
+                case BACK:
+                case RESTART:
+                    leaveCrafting();
                 break;
             }
             break;
@@ -291,6 +360,12 @@ function selectItem( name ) {
         ITEM_ACTIONS.options[0].remove();
     }
     
+    // Clear List
+    let count = UI_DETAILS.childElementCount;
+    for (let index = 0; index < count; index++) {
+        UI_DETAILS.removeChild(UI_DETAILS.lastElementChild);       
+    }
+
     // No item equipped
     // This could be used for character actions such as camp, pray, hunt    
     if ( !item ) {
@@ -303,12 +378,28 @@ function selectItem( name ) {
         return;
     }
 
+    // Add Actions
     item.use.forEach( e => {
         ITEM_ACTIONS.options[ITEM_ACTIONS.length] = new Option( e, e );    
     });
     
     // Select first option;
     ITEM_ACTIONS.options[0].selected = true;
+
+    // Add Details
+    Object.keys(item.stats).forEach( e => { 
+        let row = document.createElement("tr");
+        let title = document.createElement("td");
+        let value = document.createElement("td");
+        title.textContent = `${e}:`;
+        value.textContent = `${item.stats[[e]]}`;
+
+        row.appendChild(title);
+        row.appendChild(value);
+
+        UI_DETAILS.appendChild(row);
+
+    } );
 
     updateIntructions( INVENTORY_SELECTION.options[INVENTORY_SELECTION.selectedIndex].text );
 }
@@ -356,11 +447,184 @@ function useItem( id ) {
         case "Sell":
             enterShop("sell");
             break;
+        case "Roll Dice":
+            rollDice(6);
+            break;
+        case "Play Song":
+            playInstrument( item.name );
+            break;
+        case "Craft":
+            enterCrafting();
+            break;            
         default:
             break;
     }
     
 }
+
+// ----------------------------------------------------------------------------
+// Crafting
+function enterCrafting() {
+
+    CRAFT_UI.classList.remove("hide");
+    // Default select Craft as the Action
+    CRAFT_ACTION_LIST.selectedIndex = 1;
+    setGameMode("crafting");  
+    // Populate recipe
+    let item = avatar.getItem( INVENTORY_SELECTION.value );
+
+    // Update Instructions
+    updateIntructions(item.name);
+
+    // Set name
+    CRAFT_NAME.textContent = item.name;
+    
+    // Create a map of entries to get mat counts
+    crafting_recipe = item._properties.reduce((a, c) => a.set(c, (a.get(c) || 0) + 1), new Map()); 
+    
+    // Generate and add recipe text
+    let message = "";
+    crafting_recipe.forEach( (count, title) => { message += `${title} * ${count}, ` } );
+    CRAFT_RECIPE.textContent = message.substr(0, message.length - 2);
+   
+    // Clear List
+    let count = CRAFT_LISTS.childElementCount;
+    for (let index = 0; index < count; index++) {
+        CRAFT_LISTS.removeChild(CRAFT_LISTS.lastElementChild);       
+    }
+
+    let crafting = avatar._inventory.filter( e => ( e._properties.includes("crafting") ) );
+
+    // Populate the build list
+    crafting_recipe.forEach( (count, title) => { 
+        
+        let list = crafting.filter( e => ( e._properties.includes(title) ) );
+
+        // console.log(list);
+
+        // Create Form 
+        let form = document.createElement("form");
+
+        form.dataset.title = title;
+
+        // Create title
+        let header = document.createElement("h3");
+        header.textContent = `${title} * 0`;
+
+        // Container
+        let container = document.createElement("div");
+        container.classList.add("selection-list");
+
+        // Items List
+        list.forEach( e => {
+            let label = document.createElement("label");
+            label.htmlFor = title;
+    
+            let input = document.createElement("input");
+            input.type = ( title === "tool" ) ? "radio" : "checkbox";
+            input.for = e.id;
+            input.value = e.id;
+            input.name = title;  
+            input.id = e.id;    
+    
+            let name = document.createElement("p");
+            name.textContent = e.name;
+    
+            label.appendChild(input);
+            label.appendChild(name);
+            container.appendChild(label);
+
+            name.addEventListener("click", () => input.click(), false );
+            input.addEventListener("change", () => updateCraftingNumbers( form, header, title, count ), false );
+        });
+        
+        // Add to DOM
+        form.appendChild(header);
+        form.appendChild(container);
+        CRAFT_LISTS.appendChild(form);
+    
+        let itemTitle = INVENTORY_SELECTION.options[INVENTORY_SELECTION.selectedIndex].text.split("(")[0];
+        itemTitle = itemTitle.substr(0, itemTitle.length -1 );
+        CRAFT_ITEM_TITLE.value = itemTitle;
+    } );
+}
+
+function updateCraftingNumbers( form, header, title, count ) {
+    let formData = new FormData(form);
+    let selectCount =  Array.from(formData.values()).length;
+
+    let current = ( selectCount > count ) ? `${count} + Bonus ${selectCount - count}` : selectCount;
+    header.textContent = `${title} * ${current}`;
+
+
+}
+
+function leaveCrafting() {
+    CRAFT_UI.classList.add("hide");    
+    setGameMode("general");
+    let feature = getLandscapeFeature( avatar.location[0], avatar.location[1] );
+    updateLog(`You leave the crafting quarter and step back onto the streets of ${feature.name} wondering what your next move might be.`);
+    updateIntructions();
+}
+
+function selectCraftinActionItem( action ) {
+
+    // Leave Crafting if LEAVE selected
+    if ( action == -1 ) { leaveCrafting(); return }
+
+    // Try to craft item if Craft selected
+    let forms = CRAFT_LISTS.querySelectorAll("form");
+
+    // Validate item can be crafted
+    let valid = true;
+    forms.forEach( form => {        
+        let data = new FormData(form);
+
+        let count = data.getAll(form.dataset.title).length;
+        let total = crafting_recipe.get(form.dataset.title);
+
+        if ( count < total ) {
+            valid = false;         
+            // console.log( `${form.dataset.title} is ready ${count} / ${total}` );
+        } else {
+            // console.log( `${form.dataset.title} is NOT ready ${count} / ${total}` );   
+        }
+    });
+
+    if ( !valid ) {
+        updateLog(`You look at the parts of your fine craft but notice that something is still missing.`);
+        return;
+    }
+
+    // Remove selected materials (not tools!)
+    forms.forEach( form => {
+        let data = new FormData(form);
+
+        for (const [key, value] of data) {
+            console.log( `${key} : ${value} ` )
+
+            if ( avatar.getItem( value)._properties.some( e => e === "material" ) ) {
+                avatar.removeFromInventory( value );
+            }
+          }
+    });
+    
+    // Add item to inventory 
+    let itemTitle = INVENTORY_SELECTION.options[INVENTORY_SELECTION.selectedIndex].text.split("(")[0];
+    itemTitle = itemTitle.substr(0, itemTitle.length -1 );
+
+    let item = getItemDataFromName( itemTitle );
+
+    console.log( item );
+
+    // Actually do some fancy formulas based on tools and materials 
+
+    avatar.addToInventory( new Item( CRAFT_ITEM_TITLE.value, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
+
+    // Rerun Init to clear all forms
+    enterCrafting();
+}
+
 
 function updateIntructions( name ) {
 
@@ -370,10 +634,15 @@ function updateIntructions( name ) {
         INSTRUCTIONS.textContent = `(\u2B06\u2B07) Select Item : (E) ${item}`;
         return;
     } else if ( getGameMode() === 2 ) {
-        // Shop (to Buy)
+        // Shop (to Sell)
         let item = ( SHOP_LIST.value == -1 ) ? "Leave shop" : `Sell ${SHOP_LIST.value}`
         INSTRUCTIONS.textContent = `(\u2B06\u2B07) Select Item : (E) ${item}`;
         return;
+    } else if ( getGameMode() === 4 ) {
+        // Crafting
+        let action = ACTION_STRINGS[ITEM_ACTIONS.options[ITEM_ACTIONS.options.selectedIndex].value];
+        INSTRUCTIONS.textContent = `(\u2B06\u2B07) Select Action : (E) ${action} ${name}`;
+        return;        
     } else if ( name === "NONE" && ITEM_ACTIONS.options.length > 0 ) {
         let noun = ACTION_STRINGS[ITEM_ACTIONS.options[ITEM_ACTIONS.options.selectedIndex].value];
         let verb = ITEM_ACTIONS.options[ITEM_ACTIONS.options.selectedIndex].value;
@@ -418,6 +687,12 @@ function enterShop( mode ) {
 
     SHOP_UI.classList.remove("hide");    
     updateIntructions();
+}
+
+function rollDice(sided) {
+    let result = Math.floor(Math.random() * sided) + 1;
+    updateLog(`You pull a bone die from your pouch and nimbly roll it. After a few bounces it settles on a ${result}`);
+    return result;
 }
 
 function leaveShop() {
@@ -520,7 +795,7 @@ function mineTile( name, x, y ) {
         let result = MAT.removeResource( "copper", avatar.location[0], avatar.location[1] );    
         
         let item = getItemDataFromName( name );
-        avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency ) );
+        avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
         updateLog( `You mine ${result} of ${name}` );
     }
 
@@ -558,6 +833,10 @@ function pray() {
         }
     }
     gameUpdate();
+}
+
+function playInstrument( instrument ) {
+    updateLog( `You take a breath and begin to play an old song on the ${instrument} filling the air with sweet emotion.` );
 }
 
 function moveCharacter( direction ) {
@@ -779,6 +1058,9 @@ function init() {
     let startTown = LAND._TOWNS[Math.floor(Math.random()*LAND._TOWNS.length)];
     
     avatar = new Avatar();
+
+    avatar.addGold(10000);
+
     refreshEquipmentListUI();
     
     // Reset Shop
@@ -790,8 +1072,37 @@ function init() {
     avatar.addValidTerrain("soil");
     
     // Default items
-    avatar.addToInventory( new Item( ITEM_DATA.pickaxe.name, ITEM_DATA.pickaxe.weight, ITEM_DATA.pickaxe.properties, ITEM_DATA.pickaxe.materials, ITEM_DATA.pickaxe.use, ITEM_DATA.pickaxe.efficency ) );
-    avatar.addToInventory( new Item( ITEM_DATA.dwsngTwgCopper.name, ITEM_DATA.dwsngTwgCopper.weight, ITEM_DATA.dwsngTwgCopper.properties, ITEM_DATA.dwsngTwgCopper.materials, ITEM_DATA.dwsngTwgCopper.use, ITEM_DATA.dwsngTwgCopper.efficency ) );
+    let item = ITEM_DATA.tool_rough_hammer;
+    avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
+    item = ITEM_DATA.dwsngTwgCopper;
+    avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
+    item = ITEM_DATA.pickaxe;
+    avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
+    item = ITEM_DATA.dagger_schematic;
+    avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
+    item = ITEM_DATA.tool_fine_hammer
+    avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
+
+    item = getItemDataFromName( "copper" );
+    avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
+    avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
+    avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
+    avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
+    avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
+    avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
+
+    item = getItemDataFromName( "iron" );
+    avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
+    avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
+
+    item = getItemDataFromName( "oak wood" );
+    avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
+    avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
+
+    item = getItemDataFromName( "Small Hut (Schematic)" );
+    avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
+
+
     INVENTORY_SELECTION.selectedIndex = 0; 
     selectItem( INVENTORY_SELECTION.value );
     

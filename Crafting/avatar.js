@@ -121,6 +121,7 @@ class Avatar {
         INVENTORY_SELECTION.options[INVENTORY_SELECTION.length] = new Option( item.name, item.id );
     }
     removeFromInventory( id ) {
+        console.log(`Remove: ${id}`);
         Object.values(INVENTORY_SELECTION.options).find( e => e.value == id ).remove();
 
         this._inventory.splice( this._inventory.findIndex( e => e.id === id ), 1);

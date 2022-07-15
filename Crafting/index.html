@@ -15,36 +15,70 @@
   
                 </select>
             </label>
-            <!-- <div class="button-bar">
-                <button id="button-leave-shop">Leave</button>
-            </div> -->
+        </div>
+        <div class="box-0 overlay hide" id="crafting">
+            <h1>Crafting</h1>
+            <h2 id="crafting-item-name"></h2>
+            <p id="crafting-item-recipe"></p>
+            <div id="crafting-lists"></div>
+            <form class="selection-list">
+                <div id="craft-item-title-box">
+                    <label for="craft-item-title">
+                        Item Name
+                        <input id="craft-item-title" name="craft-item-title" type="text" maxlength="32" onkeydown="return !(event.keyCode==13)" autocomplete="off">
+                    </label>
+                </div>
+            </form>
+            <form class="selection-list">
+                <h3>Action</h3>
+                <select name="crafting-action" id="crafting-list" size="4">
+                        <option value="-1" selected >LEAVE</option>
+                        <option value="craft">Craft</option>
+                </select>
+            </form>
         </div>
         <canvas class="box-1" id="landscape"></canvas>
         <canvas class="box-1" id="materials"></canvas>
         <canvas class="box-1" id="content"></canvas>
         <div class="box-2">
-            <div class="grid-side-panel">
-                <div class="grid-side-panel-item">Day</div>
-                <div id="game-time" class="grid-side-panel-item">0</div>
-                <div class="grid-side-panel-item">Gold</div>
-                <div id="gold" class="grid-side-panel-item">0</div>
-                <div class="grid-side-panel-item">Food</div>
-                <div id="food" class="grid-side-panel-item">0</div>
-                <div class="grid-side-panel-item">Weight</div>
-                <div id="weight" class="grid-side-panel-item">0</div>
-            </div>
+            <table>
+                <tbody>
+                    <tr>
+                        <td>Day</td><td>Food</td>
+                    </tr>
+                    <tr>
+                        <td id="game-time">0</td><td id="food">0</td>
+                    </tr>
+                    <tr>
+                        <td>Gold</td><td>Weight</td>
+                    </tr>
+                    <tr>
+                        <td id="gold"></td><td id="weight"></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
         <div class="box-3">
             <label for="inventory">Equipped          
-                <select name="inventory" id="inventory" multiple size="1">
+                <select name="inventory" id="inventory" size="4">
                     <option value="none" selected >NONE</option>
                 </select>
             </label>
         </div>
         <div class="box-6">
             <label for="action">Action
-                <select name="action" id="action" multiple size="1"></select>
+                <select name="action" id="action" size="4"></select>
             </label>
+        </div>
+        <div class="box-7">
+            <div id="details-box-grid" class="details">
+                <div class="details-box-1">
+                    <p>Details</p>
+                </div>
+                <div class="details-box-2 scroll">
+                    <table id="details"></table>
+                </div>
+            </div>
         </div>
         <div class="box-4">
             <p id="instructions">
