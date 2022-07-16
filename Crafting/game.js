@@ -60,7 +60,7 @@ CONTENT_CANVAS.width = CONTENT_CANVAS.height = 512;
 const CONTENT_CTX = CONTENT_CANVAS.getContext('2d');
 
 const UI_GAME_TIME = document.querySelector("#game-time");
-const UI_GOLD = document.querySelector("#gold");
+const UI_GOLD = document.querySelectorAll(".stat-gold");
 const UI_FOOD = document.querySelector("#food");
 const UI_WEIGHT = document.querySelector("#weight");
 
@@ -131,8 +131,14 @@ MAT.addResource( new Resource(
     [219,159,36],
     [220,192,35], 
     ["metal","copper"], 
-    { 
-    } ) );
+    {} ) );
+    
+MAT.addResource( new Resource( 
+    "iron", 
+    [125,125,125],
+    [200,200,200], 
+    ["metal","iron"], 
+    {} ) );
 
 // Game Time
 let gameTime = 1;
@@ -357,6 +363,7 @@ function selectItem( name ) {
     // clear current actions
     let items = ITEM_ACTIONS.options.length;
     for (let i = 0; i < items; i++) {
+        ITEM_ACTIONS.options[0].removeEventListener("click", () => useItem( INVENTORY_SELECTION.value ), false );
         ITEM_ACTIONS.options[0].remove();
     }
     
@@ -380,7 +387,8 @@ function selectItem( name ) {
 
     // Add Actions
     item.use.forEach( e => {
-        ITEM_ACTIONS.options[ITEM_ACTIONS.length] = new Option( e, e );    
+        ITEM_ACTIONS.options[ITEM_ACTIONS.length] = new Option( e, e );  
+        ITEM_ACTIONS.options[ITEM_ACTIONS.length - 1].addEventListener("click", () => useItem( INVENTORY_SELECTION.value ), false );
     });
     
     // Select first option;
@@ -418,10 +426,10 @@ function useItem( id ) {
 
     switch (action) {
         case "Mine":
-            mineTile( "copper", avatar.location[0], avatar.location[1] );
+            mineTile( avatar.getItem(INVENTORY_SELECTION[INVENTORY_SELECTION.selectedIndex].value).properties, avatar.location[0], avatar.location[1] );
             break;
         case "Survey":
-            surveyTile( "copper", avatar.location[0], avatar.location[1] );
+            surveyTile( avatar.getItem(INVENTORY_SELECTION[INVENTORY_SELECTION.selectedIndex].value).properties[0], avatar.location[0], avatar.location[1] );
             break;
         case "Look":
             updateLog( `You inspect the ${item.name}, it feels nice in the hand.` );
@@ -770,17 +778,18 @@ function enterShop( mode ) {
     updateIntructions();
 }
 
-function rollDice(sided) {
-    let result = Math.floor(Math.random() * sided) + 1;
-    updateLog(`You pull a bone die from your pouch and nimbly roll it. After a few bounces it settles on a ${result}`);
-    return result;
-}
-
 function leaveShop() {
     SHOP_UI.classList.add("hide");
     setGameMode("general");
     let feature = getLandscapeFeature( avatar.location[0], avatar.location[1] );
     updateLog(`You leave the shop and step back onto the streets of ${feature.name} wondering what your next move might be.`);
+}
+
+// Actions
+function rollDice(sided) {
+    let result = Math.floor(Math.random() * sided) + 1;
+    updateLog(`You pull a bone die from your pouch and nimbly roll it. After a few bounces it settles on a ${result}`);
+    return result;
 }
 
 function buy( item ) {
@@ -809,7 +818,7 @@ function buy( item ) {
         let data = ITEM_DATA[[`${tobuy.id}`]];
 
         // Add it to the avatar inventory
-        avatar.addToInventory( new Item( data.name, data.weight, data.properties, data.materials, data.use, data.efficency ));
+        avatar.addToInventory( new Item( data.name, data.weight, data.properties, data.materials, data.use, data.efficency, data.stats ));
         gameUpdate();
     }
 }
@@ -869,6 +878,10 @@ function surveyTile( name, x, y ) {
 
 function mineTile( name, x, y ) {
     if ( avatar.isDead ) return;
+
+    // Test if land has been surveyed and mine for that, 
+    // else mine for random or say that the land needs surveying
+
     if ( MAT.getResourceValueAtLocation( name, x, y ) <= 0 ) {
         updateLog( `Your efforts to mine ${name} are fruitless.` );
         return;
@@ -973,6 +986,7 @@ function setLandscapeFeatureActions(feature) {
         // clear current actions
         let items = ITEM_ACTIONS.options.length;
         for (let i = 0; i < items; i++) {
+            ITEM_ACTIONS.options[0].removeEventListener("click", () => useItem( INVENTORY_SELECTION.value ), false );
             ITEM_ACTIONS.options[0].remove();
         }
         return
@@ -985,12 +999,14 @@ function setLandscapeFeatureActions(feature) {
         // clear current actions
         let items = ITEM_ACTIONS.options.length;
         for (let i = 0; i < items; i++) {
+            ITEM_ACTIONS.options[0].removeEventListener("click", () => useItem( INVENTORY_SELECTION.value ), false );
             ITEM_ACTIONS.options[0].remove();
         }
 
         // Add Town actions
         feature.actions.forEach( e => {
             ITEM_ACTIONS.options[ITEM_ACTIONS.length] = new Option( e, e );    
+            ITEM_ACTIONS.options[ITEM_ACTIONS.length - 1].addEventListener("click", () => useItem( INVENTORY_SELECTION.value ), false );
         });
         ITEM_ACTIONS.options.selectedIndex = 0;
         updateIntructions(ITEM_ACTIONS.value);
@@ -1098,7 +1114,7 @@ function gameUpdate() {
     UI_GAME_TIME.textContent = Math.round(gameTime);
     
     // update gold
-    UI_GOLD.textContent = avatar.gold;
+    UI_GOLD.forEach( el => el.textContent = avatar.gold );
     
     // update food
     UI_FOOD.textContent = avatar.food;
@@ -1158,6 +1174,8 @@ function init() {
     let item = ITEM_DATA.tool_rough_hammer;
     avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
     item = ITEM_DATA.dwsngTwgCopper;
+    avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
+    item = ITEM_DATA.dwsngTwgIron;
     avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
     item = ITEM_DATA.pickaxe;
     avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );

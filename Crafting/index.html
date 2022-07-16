@@ -9,8 +9,9 @@
     <h1>Crafting Prototype Game</h1>
     
     <div class="grid">
-        <div class="box-1 overlay hide" id="shop">
-            <label for="shop">Shop
+        <div class="box-0 overlay hide" id="shop">
+            <label for="shop">Shop <span class="tiny-text">(▲▼)</span>
+                <p class="menu-stat-title">Gold: <span class="stat-gold">100</p>
                 <select name="shop" id="shop-list" multiple size="22">
   
                 </select>
@@ -61,20 +62,20 @@
                         <td>Gold</td><td>Weight</td>
                     </tr>
                     <tr>
-                        <td id="gold"></td><td id="weight"></td>
+                        <td class="stat-gold"></td><td id="weight"></td>
                     </tr>
                 </tbody>
             </table>
         </div>
         <div class="box-3">
-            <label for="inventory">Equipped          
+            <label for="inventory">Equipped <span class="tiny-text">(▲▼)</span>       
                 <select name="inventory" id="inventory" size="4">
                     <option value="none" selected >NONE</option>
                 </select>
             </label>
         </div>
         <div class="box-6">
-            <label for="action">Action
+            <label for="action">Action <span class="tiny-text">(R/F)</span>
                 <select name="action" id="action" size="4"></select>
             </label>
         </div>

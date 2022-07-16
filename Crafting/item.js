@@ -327,7 +327,7 @@ const ITEM_DATA = {
         },
     },
     smlhut: {
-        name:       "Small Hut (Schematic)",
+        name:       "Small Hut",
         weight:     0.05,
         price:      0.1,
         use:        ["Build", "Look"],

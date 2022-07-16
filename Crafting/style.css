@@ -171,7 +171,7 @@ select {
 
 .overlay {
     z-index: 10;
-    overflow-y: auto;
+    overflow-y: hidden;
     scroll-margin: 1px;
     scroll-padding: 1px;
     scrollbar-gutter: auto;
@@ -369,6 +369,8 @@ td {
 .details-box-1 > p {
     margin: 0;
     padding: 0;
+    font-weight: 600;
+    font-family: Arial, Helvetica, sans-serif;
     text-align: center;
 }
 
@@ -426,4 +428,23 @@ td {
     padding: 0;
     overflow-y: hidden;
     scrollbar-width: none;
+}
+
+.tiny-text {
+    font-size: xx-small;
+    font-weight: bold;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    vertical-align: middle;
+    top: -2px;
+    position: relative;
+    color: rgb(22, 132, 17);
+    letter-spacing: 0.1em;
+}
+
+.menu-stat-title {
+    display: block;
+    margin: 0;
+    font-family: monospace;
+    border-top: 1px solid #777;
+    border-bottom: 1px solid #777;
 }
