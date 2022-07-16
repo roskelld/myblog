@@ -46,7 +46,7 @@ const ACTION_STRINGS = {
 // Prevent arrow keys from scrolling windows 
 window.addEventListener("keydown", e => { if (e.key === INV_DOWN || e.key === INV_UP ) e.preventDefault(); }, false );
 
-const INSTRUCTION_BASE = "(WASD) Move : (\u2B06\u2B07) Equip Item : (R/F) Select Action";
+const INSTRUCTION_BASE = "(WASD) Move ";
 
 let lastDirection;
 let checkedTile = false;
@@ -881,8 +881,9 @@ function mineTile( name, x, y ) {
 
     // Test if land has been surveyed and mine for that, 
     // else mine for random or say that the land needs surveying
-
+    name = "copper";
     if ( MAT.getResourceValueAtLocation( name, x, y ) <= 0 ) {
+        updateLog( `Your efforts to mine ${name} are fruitless.` );
         updateLog( `Your efforts to mine ${name} are fruitless.` );
         return;
     } else {
