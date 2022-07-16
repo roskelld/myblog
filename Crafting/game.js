@@ -101,6 +101,9 @@ let crafting_recipe;
 const CRAFT_ITEM_TITLE = document.querySelector("#craft-item-title");
 CRAFT_ITEM_TITLE.addEventListener("keydown", e => {  }, false );
 
+// Crafting Output Details
+const CRAFT_DETAILS = document.querySelector("#crafting-details");
+
 // Action calls like leave and craft
 const CRAFT_ACTION_LIST = document.querySelector("#crafting-list");
 CRAFT_ACTION_LIST.addEventListener("change", selectCraftinActionItem, false );
@@ -129,14 +132,6 @@ MAT.addResource( new Resource(
     [220,192,35], 
     ["metal","copper"], 
     { 
-        conduction:     30, 
-        density:        80, 
-        malleable:      40, 
-        ductile:        0, 
-        meltingpoint:   340, 
-        sonorous:       50, 
-        luster:         30, 
-        hardness:       40
     } ) );
 
 // Game Time
@@ -147,6 +142,11 @@ let avatar;
 document.addEventListener("keyup", keyInput, false);
 
 function keyInput(e) {   
+
+    // Prevent keyboard shortcuts from taking 
+    // over when player is entering text
+    if ( document.activeElement.type === "text" ) return;
+
     const KEY_NAME = e.key;
     let direction;
 
@@ -489,9 +489,11 @@ function enterCrafting() {
    
     // Clear List
     let count = CRAFT_LISTS.childElementCount;
-    for (let index = 0; index < count; index++) {
-        CRAFT_LISTS.removeChild(CRAFT_LISTS.lastElementChild);       
-    }
+    for (let index = 0; index < count; index++) CRAFT_LISTS.removeChild(CRAFT_LISTS.lastElementChild);
+
+    count = CRAFT_DETAILS.childElementCount;
+    for (let index = 0; index < count; index++) CRAFT_DETAILS.removeChild(CRAFT_DETAILS.lastElementChild);
+    
 
     let crafting = avatar._inventory.filter( e => ( e._properties.includes("crafting") ) );
 
@@ -557,9 +559,95 @@ function updateCraftingNumbers( form, header, title, count ) {
     header.textContent = `${title} * ${current}`;
 
 
+    // Get Base Item Data 
+    let itemTitle = INVENTORY_SELECTION.options[INVENTORY_SELECTION.selectedIndex].text.split("(")[0];
+    itemTitle = itemTitle.substr(0, itemTitle.length -1 );
+    let item = getItemDataFromName( itemTitle );
+
+    // Clear List
+    let elcount = CRAFT_DETAILS.childElementCount;
+    for (let index = 0; index < elcount; index++) CRAFT_DETAILS.removeChild(CRAFT_DETAILS.lastElementChild);
+
+    let stats = getCraftingItemStats();
+    
+    // Add Details
+    Object.keys(stats).forEach( e => { 
+        let row = document.createElement("tr");
+        let title = document.createElement("td");
+        let value = document.createElement("td");
+        title.textContent = `${e}:`;
+        value.textContent = `${stats[[e]]}`;
+
+        row.appendChild(title);
+        row.appendChild(value);
+
+        CRAFT_DETAILS.appendChild(row);
+    } );
+}
+
+function getCraftingItemStats() {
+    // -----------------------------------------------------    
+    // Calculate Potential Crafted Item Values
+
+    // Get Base Item Data 
+    let itemTitle = INVENTORY_SELECTION.options[INVENTORY_SELECTION.selectedIndex].text.split("(")[0];
+    itemTitle = itemTitle.substr(0, itemTitle.length -1 );
+    let item = getItemDataFromName( itemTitle );
+
+    // Get Schematic 
+    let schematic = avatar.getItem(INVENTORY_SELECTION.options[INVENTORY_SELECTION.selectedIndex].value);
+
+    // Track all relevent stats
+    let stats = {};
+
+    // Step through each form (tool/mat category)
+    let forms = CRAFT_LISTS.querySelectorAll("form");
+    forms.forEach( form => {        
+        let data = new FormData(form);
+
+        // Step out if no mats/tools on form have been selected
+        if ( data.getAll(form.dataset.title).length === 0 ) return;      
+        
+        // Step through each selected object
+        for (const [key, value] of data) {
+            let mat = avatar.getItem( value );
+            
+            // Efficency of item (maybe should just be used for tool)
+            let efficency = mat.efficency;
+
+            // Step through each stat on the item being crafted
+            // to see if it matches one on the mat or tool
+            Object.keys(item.stats).forEach( e => {
+                if ( Object.keys(mat.stats).includes(e) ) {
+                    // Add stat key if not yet init
+                    if ( stats[[e]] === undefined ) stats[[e]] = 0;
+
+                    // Here's the garbage crafting formula 
+                    // TODO: Make this gooder
+                    // Use the tool efficency 
+                    // Use the schematic efficency
+                    // Don't just add the fucking numbers together
+                    // Incorporate the bonus as a, erm, bonus
+                    // Present as a range so that there's some vagueness
+                    stats[[e]] += mat.stats[[e]];
+                }
+            });
+        }
+
+        // Some numbers for the formula
+        // Total number of mat needed, can be used against selected 
+        let total = crafting_recipe.get(form.dataset.title);
+
+        // Selected number of mats 
+        data.getAll(form.dataset.title).length;
+    });
+
+    return stats;
+
 }
 
 function leaveCrafting() {
+    
     CRAFT_UI.classList.add("hide");    
     setGameMode("general");
     let feature = getLandscapeFeature( avatar.location[0], avatar.location[1] );
@@ -583,12 +671,7 @@ function selectCraftinActionItem( action ) {
         let count = data.getAll(form.dataset.title).length;
         let total = crafting_recipe.get(form.dataset.title);
 
-        if ( count < total ) {
-            valid = false;         
-            // console.log( `${form.dataset.title} is ready ${count} / ${total}` );
-        } else {
-            // console.log( `${form.dataset.title} is NOT ready ${count} / ${total}` );   
-        }
+        if ( count < total ) valid = false;         
     });
 
     if ( !valid ) {
@@ -596,17 +679,19 @@ function selectCraftinActionItem( action ) {
         return;
     }
 
+    // Calculate the crafted item stats
+    let stats = getCraftingItemStats();
+
     // Remove selected materials (not tools!)
     forms.forEach( form => {
         let data = new FormData(form);
 
         for (const [key, value] of data) {
-            console.log( `${key} : ${value} ` )
-
+            // console.log( `${key} : ${value} ` )
             if ( avatar.getItem( value)._properties.some( e => e === "material" ) ) {
                 avatar.removeFromInventory( value );
             }
-          }
+        }
     });
     
     // Add item to inventory 
@@ -615,11 +700,7 @@ function selectCraftinActionItem( action ) {
 
     let item = getItemDataFromName( itemTitle );
 
-    console.log( item );
-
-    // Actually do some fancy formulas based on tools and materials 
-
-    avatar.addToInventory( new Item( CRAFT_ITEM_TITLE.value, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
+    avatar.addToInventory( new Item( CRAFT_ITEM_TITLE.value, item.weight, item.properties, item.materials, item.use, item.efficency, stats ) );
 
     // Rerun Init to clear all forms
     enterCrafting();
@@ -1059,7 +1140,9 @@ function init() {
     
     avatar = new Avatar();
 
-    avatar.addGold(10000);
+    avatar._MAX_FOOD = 100;
+    avatar.addFood(100);
+    // avatar.addGold(10000);
 
     refreshEquipmentListUI();
     
@@ -1078,29 +1161,31 @@ function init() {
     avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
     item = ITEM_DATA.pickaxe;
     avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
-    item = ITEM_DATA.dagger_schematic;
-    avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
-    item = ITEM_DATA.tool_fine_hammer
-    avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
+    // item = ITEM_DATA.dagger_schematic;
+    // avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
+    // item = ITEM_DATA.tool_fine_hammer;
+    // avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
+    // item = ITEM_DATA.tool_hammer;
+    // avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
 
-    item = getItemDataFromName( "copper" );
-    avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
-    avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
-    avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
-    avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
-    avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
-    avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
+    // item = getItemDataFromName( "copper" );
+    // avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
+    // avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
+    // avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
+    // avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
+    // avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
+    // avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
 
-    item = getItemDataFromName( "iron" );
-    avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
-    avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
+    // item = getItemDataFromName( "iron" );
+    // avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
+    // avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
 
-    item = getItemDataFromName( "oak wood" );
-    avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
-    avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
+    // item = getItemDataFromName( "oak wood" );
+    // avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
+    // avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
 
-    item = getItemDataFromName( "Small Hut (Schematic)" );
-    avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
+    // item = getItemDataFromName( "Small Hut (Schematic)" );
+    // avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
 
 
     INVENTORY_SELECTION.selectedIndex = 0; 

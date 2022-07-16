@@ -171,7 +171,7 @@ select {
 
 .overlay {
     z-index: 10;
-    overflow-y: scroll;
+    overflow-y: auto;
     scroll-margin: 1px;
     scroll-padding: 1px;
     scrollbar-gutter: auto;
@@ -207,7 +207,7 @@ option:checked {
     display: list-item;
     text-align: left;
     font-weight: 400;
-    font-size: 0.7em;
+    font-size: 0.8em;
     height: 2em;
 }
 
@@ -218,18 +218,22 @@ option:checked {
 
 #crafting-lists {
     display: flex;
-    gap: 0;
+    gap: 0.5em;
     flex-wrap: wrap;
+    padding: 0 0.5em 0.5em 0.5em;
+    flex-direction: column;
 }
 
 form {
     background:rgb(50, 50, 50);
-    padding: 0;
-    margin: 0.3em;
+    /* padding: 0; */
 }
 
 #crafting-lists > form {
     flex: 1;
+    height: fit-content;
+    flex-basis: auto;
+    padding-bottom: 0.2em;
 }
 
 form > h3 {
@@ -257,24 +261,15 @@ form > h3 {
 
 #crafting > h2 {
     margin: 0;
-    padding: 0.3em 0 0 0;
-    font-size: 1.5em;
+    padding: 0.3em 0 0.5em 0;
+    font-size: 1.2em;
     line-height: 1em;
     height: fit-content;
     text-align: center;
 }
 
 #crafting > p {
-    margin: 1.5em 0;
-    padding: 0.5em 0;
-    font-size: 0.8em;
-    line-height: 1em;
-    height: fit-content;
-    text-align: center;
-    font-family: 'Courier New', Courier, monospace;
-    width: 100%;
-    background:rgb(74, 74, 74);
-    text-transform: capitalize;
+
 }
 
 label > p {
@@ -282,26 +277,22 @@ label > p {
     text-transform: capitalize;
 }
 
-#craft-item-title-box {
-    text-align: center;
-    padding: 0.3em 0;
-}
-
 #craft-item-title-box > label > input {
     width: 90%;
     text-align: center;
 }
 
-#details {
+.details-table {
     padding: 0.4em 0 0 0;
     margin: 0;
     list-style: none;
-    font-size: 0.7em;
+    font-size: 0.8em;
     font-weight: 300;
-    line-height: 1.4em;
+    line-height: 1.1em;
     background: rgb(60, 60, 60);
     width: 100%;
     height: 100%;
+    height: fit-content;
 }
 
 td {
@@ -350,8 +341,9 @@ td {
 }
 
 .box-2 > table > tbody > tr:nth-child(even) {
-    font-size: 0.7em;
-    font-weight: 300;
+    font-size: 1em;
+    font-weight: 500;
+    font-family: 'Courier New', Courier, monospace;
     background: rgb(60, 60, 60);
 }
 
@@ -359,14 +351,8 @@ td {
     display: grid;
     gap: 0;
     margin: 0;
-    /* min-height: 600px;
-    min-width: 600px;
-    height: 80vh;
-    width: 80vh;  */
     grid-template-columns: 1fr;
     grid-template-rows: repeat(14, 0.2fr);
-    /* max-height: 700px;
-    max-width: 700px; */
     overflow-x: clip;
 }
 
@@ -384,4 +370,60 @@ td {
     margin: 0;
     padding: 0;
     text-align: center;
+}
+
+.crafting-grid {
+    display: grid;
+    gap: 0;
+    margin: 0;
+    grid-template-columns: repeat(6, 1fr);
+    grid-template-rows: repeat(10, 1fr);
+    overflow-x: clip;
+}
+
+.crafting-grid-box-1 {
+    grid-column: 1 / 5;
+    grid-row: 3 / 11;
+}
+
+.crafting-grid-box-2 {
+    grid-column: 5 / 7;
+    grid-row: 1 / 8;
+}
+
+.crafting-grid-box-3 {
+    grid-column: 1 / 5;
+    grid-row: 1 / 1;
+}
+
+.crafting-grid-box-4 {
+    grid-column: 5 / 7;
+    grid-row: 9 / 11;
+    height: fit-content;
+    width: 97%;
+}
+
+.crafting-grid-box-5 {
+    grid-column: 1 / 5;
+    grid-row: 2 / 2;
+    margin: 0.8em 0;
+    font-size: 0.8em;
+    line-height: 1em;
+    height: fit-content;
+    text-align: center;
+    font-family: 'Courier New', Courier, monospace;
+    width: 100%;
+    background:rgb(74, 74, 74);
+    text-transform: capitalize;
+}
+
+#craft-item-title-box {
+    text-align: center;
+}
+
+ /* Select list */
+#crafting-list {
+    padding: 0;
+    overflow-y: hidden;
+    scrollbar-width: none;
 }

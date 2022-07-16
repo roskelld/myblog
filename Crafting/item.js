@@ -90,16 +90,12 @@ const ITEM_DATA = {
         max_efficency:  10,
         properties: [],
         materials: {
-            metal:  15,
-            cloth:  1
+            metal:  0.9,
+            cloth:  0.1
         },
         stats: {
-            sharpness:  5,
-            conduction: 20,
-            hardness:   10,
-            luster:     5,
-            sonorous:   4,
-            meltingpoint: 250
+            sharpness:      5,
+            hardness:       10,
         },
     },
     sml_statue: {
@@ -131,16 +127,12 @@ const ITEM_DATA = {
         max_efficency:  10,
         properties: [],
         materials: {
-            metal:  20,
-            cloth:  2
+            copper:  3.8,
+            leather:  0.2
         },
         stats: {
             sharpness:  5,
-            conduction: 20,
             hardness:   10,
-            luster:     5,
-            sonorous:   4,
-            meltingpoint: 250
         },
     },
     spear: {
@@ -464,7 +456,7 @@ const ITEM_DATA = {
         properties: ["charge","charge","charge","charge","charge"],
         materials: {
             liquid:  1,
-            glass:   1,
+            glass:   1
         },
         stats: {
             sharpness:  5,
@@ -488,12 +480,10 @@ const ITEM_DATA = {
             oak:   1,
         },
         stats: {
-            sharpness:  5,
+            sharpness:  10,
             conduction: 20,
             hardness:   10,
-            luster:     5,
-            sonorous:   4,
-            meltingpoint: 250
+            luster:     5
         },
     },
     tool_fine_hammer: {
@@ -509,12 +499,10 @@ const ITEM_DATA = {
             oak:   1,
         },
         stats: {
-            sharpness:  5,
+            sharpness:  15,
             conduction: 20,
             hardness:   10,
-            luster:     5,
-            sonorous:   4,
-            meltingpoint: 250
+            luster:     5
         },
     },
     tool_rough_hammer: {

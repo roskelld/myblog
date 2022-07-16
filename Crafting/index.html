@@ -19,23 +19,31 @@
         <div class="box-0 overlay hide" id="crafting">
             <h1>Crafting</h1>
             <h2 id="crafting-item-name"></h2>
-            <p id="crafting-item-recipe"></p>
-            <div id="crafting-lists"></div>
-            <form class="selection-list">
-                <div id="craft-item-title-box">
-                    <label for="craft-item-title">
-                        Item Name
-                        <input id="craft-item-title" name="craft-item-title" type="text" maxlength="32" onkeydown="return !(event.keyCode==13)" autocomplete="off">
-                    </label>
+            <div class="crafting-grid">
+                <p id="crafting-item-recipe" class="crafting-grid-box-5"></p>
+                <div id="crafting-lists" class="crafting-grid-box-1"></div>
+                <div id="crafting-output" class="crafting-grid-box-2">
+                    <div class="details-box-2 scroll">
+                        <p>Details</p>
+                        <table id="crafting-details" class="details-table"></table>
+                    </div>
                 </div>
-            </form>
-            <form class="selection-list">
-                <h3>Action</h3>
-                <select name="crafting-action" id="crafting-list" size="4">
+                <form class="selection-list crafting-grid-box-3">
+                    <div id="craft-item-title-box">
+                        <label for="craft-item-title">
+                            Item Name
+                            <input id="craft-item-title" name="craft-item-title" type="text" maxlength="32" onkeydown="return !(event.keyCode==13)" autocomplete="off">
+                        </label>
+                    </div>
+                </form>
+                <form class="selection-list crafting-grid-box-4">
+                    <h3>Action</h3>
+                    <select name="crafting-action" id="crafting-list" size="2">
                         <option value="-1" selected >LEAVE</option>
                         <option value="craft">Craft</option>
-                </select>
-            </form>
+                    </select>
+                </form>
+            </div>
         </div>
         <canvas class="box-1" id="landscape"></canvas>
         <canvas class="box-1" id="materials"></canvas>
@@ -76,7 +84,7 @@
                     <p>Details</p>
                 </div>
                 <div class="details-box-2 scroll">
-                    <table id="details"></table>
+                    <table id="details" class="details-table"></table>
                 </div>
             </div>
         </div>
