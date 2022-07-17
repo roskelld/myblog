@@ -1223,20 +1223,20 @@ function init() {
     avatar.addValidTerrain("soil");
     
     // Default items
-    let item = ITEM_DATA.tool_rough_hammer;
+    // let item = ITEM_DATA.tool_rough_hammer;
+    // avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
+    let item = ITEM_DATA.dwsngTwgCopper;
     avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
-    item = ITEM_DATA.dwsngTwgCopper;
-    avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
-    item = ITEM_DATA.dwsngTwgIron;
-    avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
+    // item = ITEM_DATA.dwsngTwgIron;
+    // avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
     item = ITEM_DATA.pickaxe_crude_cpr;
     avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
-    item = ITEM_DATA.pickaxe_fine_cpr;
-    avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
-    item = ITEM_DATA.pickaxe_crude_irn;
-    avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
-    item = ITEM_DATA.pickaxe_fine_irn;
-    avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
+    // item = ITEM_DATA.pickaxe_fine_cpr;
+    // avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
+    // item = ITEM_DATA.pickaxe_crude_irn;
+    // avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
+    // item = ITEM_DATA.pickaxe_fine_irn;
+    // avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
     // item = ITEM_DATA.dagger_schematic;
     // avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
     // item = ITEM_DATA.tool_fine_hammer;
