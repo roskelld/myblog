@@ -106,7 +106,7 @@ const CRAFT_DETAILS = document.querySelector("#crafting-details");
 
 // Action calls like leave and craft
 const CRAFT_ACTION_LIST = document.querySelector("#crafting-list");
-CRAFT_ACTION_LIST.addEventListener("change", selectCraftinActionItem, false );
+CRAFT_ACTION_LIST.addEventListener("change", () => {  selectCraftinActionItem(CRAFT_ACTION_LIST.value); }, false );
 CRAFT_ACTION_LIST.addEventListener("focus", e => { CRAFT_ACTION_LIST.blur(); }, false );
 
 // Setup Land
@@ -690,9 +690,9 @@ function leaveCrafting() {
 }
 
 function selectCraftinActionItem( action ) {
-
+    console.log(`ACtion ${action}`);
     // Leave Crafting if LEAVE selected
-    if ( action == -1 ) { leaveCrafting(); return }
+    if ( action == "-1" ) { leaveCrafting(); return; }
 
     // Try to craft item if Craft selected
     let forms = CRAFT_LISTS.querySelectorAll("form");
@@ -1238,20 +1238,20 @@ function init() {
     // avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
     // item = ITEM_DATA.pickaxe_fine_irn;
     // avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
-    // item = ITEM_DATA.dagger_schematic;
-    // avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
-    // item = ITEM_DATA.tool_fine_hammer;
-    // avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
+    //  item = ITEM_DATA.dagger_schematic;
+    //  avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
+    //  item = ITEM_DATA.tool_fine_hammer;
+    //  avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
     // item = ITEM_DATA.tool_hammer;
     // avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
 
-    // item = getItemDataFromName( "copper" );
-    // avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
-    // avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
-    // avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
-    // avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
-    // avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
-    // avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
+    //  item = getItemDataFromName( "copper" );
+    //  avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
+    //  avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
+    //  avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
+    //  avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
+    //  avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
+    //  avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
 
     // item = getItemDataFromName( "iron" );
     // avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
