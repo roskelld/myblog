@@ -838,7 +838,8 @@ function buy( item ) {
         // Remove the item from the market list
         // TODO: I think there's a bug around here where the wrong item is being removed from the town market supply 
         // TEST by buying all items and seeing error when getting last one which will list wrong item
-        feature._market.splice( e => e.name === item, 1 );
+        let index = feature._market.findIndex( e => e.name === item );
+        feature._market.splice( index, 1 );
         
         // Take the money from the avatar
         avatar.removeGold( tobuy.price );
