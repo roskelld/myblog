@@ -128,8 +128,8 @@ LAND.addTerrain( 1,     [250, 250, 250],"snow peaks",   "rock", 2.5 );
 const MAT = new Material( document.getElementById("materials"));
 MAT.addResource( new Resource( 
     "copper", 
-    [219,159,36],
-    [220,192,35], 
+    [194,115,51],
+    [194,115,51], 
     ["metal","copper"], 
     {} ) );
     
@@ -140,10 +140,33 @@ MAT.addResource( new Resource(
     ["metal","iron"], 
     {} ) );
 
+MAT.addResource( new Resource( 
+    "gold", 
+    [255,223,0],
+    [255,223,0], 
+    ["metal","gold"], 
+    {} ) );
+
+MAT.addResource( new Resource( 
+    "silver", 
+    [197,201,199],
+    [197,201,199], 
+    ["metal","silver"], 
+    {} ) );
+
+MAT.addResource( new Resource( 
+    "lead", 
+    [48,49,47],
+    [48,49,47], 
+    ["metal","lead"], 
+    {} ) );
+
 // Game Time
 let gameTime = 1;
 
 let avatar;
+
+const SELECTED_ITEM_ID = () => INVENTORY_SELECTION.options[INVENTORY_SELECTION.selectedIndex].value;
 
 document.addEventListener("keyup", keyInput, false);
 
@@ -395,18 +418,9 @@ function selectItem( name ) {
     ITEM_ACTIONS.options[0].selected = true;
 
     // Add Details
+    UI_DETAILS.appendChild(GenerateItemDetailRow( 'Efficency', item.efficency ));
     Object.keys(item.stats).forEach( e => { 
-        let row = document.createElement("tr");
-        let title = document.createElement("td");
-        let value = document.createElement("td");
-        title.textContent = `${e}:`;
-        value.textContent = `${item.stats[[e]]}`;
-
-        row.appendChild(title);
-        row.appendChild(value);
-
-        UI_DETAILS.appendChild(row);
-
+        UI_DETAILS.appendChild(GenerateItemDetailRow(e, item.stats[[e]]));
     } );
 
     updateIntructions( INVENTORY_SELECTION.options[INVENTORY_SELECTION.selectedIndex].text );
@@ -414,6 +428,18 @@ function selectItem( name ) {
 
 function selectAction() {
     updateIntructions( INVENTORY_SELECTION.options[INVENTORY_SELECTION.selectedIndex].text );
+}
+
+function GenerateItemDetailRow( title, value ) {
+    let row = document.createElement("tr");
+    let elTitle = document.createElement("td");
+    let elValue = document.createElement("td");
+    elTitle.textContent = `${title}:`;
+    elValue.textContent = `${value}`;
+
+    row.appendChild(elTitle);
+    row.appendChild(elValue);
+    return row;
 }
 
 function useItem( id ) {
@@ -426,7 +452,7 @@ function useItem( id ) {
 
     switch (action) {
         case "Mine":
-            mineTile( avatar.getItem(INVENTORY_SELECTION[INVENTORY_SELECTION.selectedIndex].value).properties, avatar.location[0], avatar.location[1] );
+            mineTile( avatar.getItem(INVENTORY_SELECTION[INVENTORY_SELECTION.selectedIndex].value).properties[0], avatar.location[0], avatar.location[1] );
             break;
         case "Survey":
             surveyTile( avatar.getItem(INVENTORY_SELECTION[INVENTORY_SELECTION.selectedIndex].value).properties[0], avatar.location[0], avatar.location[1] );
@@ -603,7 +629,7 @@ function getCraftingItemStats() {
     let item = getItemDataFromName( itemTitle );
 
     // Get Schematic 
-    let schematic = avatar.getItem(INVENTORY_SELECTION.options[INVENTORY_SELECTION.selectedIndex].value);
+    let schematic = avatar.getItem(SELECTED_ITEM_ID());
 
     // Track all relevent stats
     let stats = {};
@@ -810,6 +836,8 @@ function buy( item ) {
         SHOP_LIST.selectedIndex = 0
         
         // Remove the item from the market list
+        // TODO: I think there's a bug around here where the wrong item is being removed from the town market supply 
+        // TEST by buying all items and seeing error when getting last one which will list wrong item
         feature._market.splice( e => e.name === item, 1 );
         
         // Take the money from the avatar
@@ -878,24 +906,38 @@ function surveyTile( name, x, y ) {
 
 function mineTile( name, x, y ) {
     if ( avatar.isDead ) return;
-
-    // Test if land has been surveyed and mine for that, 
-    // else mine for random or say that the land needs surveying
-    name = "copper";
-    if ( MAT.getResourceValueAtLocation( name, x, y ) <= 0 ) {
-        updateLog( `Your efforts to mine ${name} are fruitless.` );
+    
+    let richness = MAT.getResourceValueAtLocation( name, x, y );        // 0.001 > 1
+    if ( richness <= 0 ) {
         updateLog( `Your efforts to mine ${name} are fruitless.` );
         return;
-    } else {
-        let result = MAT.removeResource( "copper", avatar.location[0], avatar.location[1] );    
+    } 
+   
+    let efficency = avatar.getItem(SELECTED_ITEM_ID()).efficency;       // 13 > 100
+    let luck = avatar.luck;                                             // 0 > 100
+    let rng = Math.random() * 100;                                      // 0 > 100      
+    let minTarget = 50;                                                 // 50           min roll target
+    let calcTarget = minTarget - luck - efficency;                      // -100 > 50    reduced by efficency and luck (can go negative)
+    let oreBlocks = 10;                                                 // 10           1 ore for every 10 points over target 
+    let oreCount = oreBlocks / richness;                                // Reduce ore based on richness of mine (min. 1 ore if success)
+    let minedOreCount = Math.max(Math.round( ( rng - ( minTarget - luck - efficency ) ) / oreCount), 1);
+
+    // Attempt to mine
+    if ( calcTarget < rng ) {     
+        updateLog( `After many swings of your ${avatar.getItem(SELECTED_ITEM_ID()).name} you successfully mine ${minedOreCount} ${name} ore.` );     
+        // remove ore from source
+        MAT.removeResource( name, avatar.location[0], avatar.location[1] );    
         
-        let item = getItemDataFromName( name );
-        avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
-        updateLog( `You mine ${result} of ${name}` );
+        // Add the mined ore to the inventory
+        for (let index = 0; index < minedOreCount; index++) {
+            let item = getItemDataFromName( name );
+            avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );           
+        }
+    } else {
+        updateLog( `Despite many swings of your ${avatar.getItem(SELECTED_ITEM_ID()).name} you fail to find any ${name} ore.` );
     }
 
     increaseGameTime(1);
-
     lastDirection = null;
     gameUpdate();
 }
@@ -962,6 +1004,15 @@ function moveCharacter( direction ) {
         
         if ( feature ) {
             setLandscapeFeatureActions(feature);
+
+            switch (feature.type) {
+                case "town":
+                    updateLog( `You stroll into the town of ${feature.name}. Its streets and people show that this is a ${feature.economicStatus} place.` );
+                    break;
+            
+                default:
+                    break;
+            }
         } else {
             if ( INVENTORY_SELECTION.value === "none" ) setLandscapeFeatureActions();
             updateLog( `You travel ${DIRECTION[direction]} into ${terrain.name}` );
@@ -1178,7 +1229,13 @@ function init() {
     avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
     item = ITEM_DATA.dwsngTwgIron;
     avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
-    item = ITEM_DATA.pickaxe;
+    item = ITEM_DATA.pickaxe_crude_cpr;
+    avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
+    item = ITEM_DATA.pickaxe_fine_cpr;
+    avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
+    item = ITEM_DATA.pickaxe_crude_irn;
+    avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
+    item = ITEM_DATA.pickaxe_fine_irn;
     avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
     // item = ITEM_DATA.dagger_schematic;
     // avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
@@ -1212,7 +1269,7 @@ function init() {
     
     avatar.addGold(10);
 
-    updateLog( `The adventures of ${avatar.name} from the town of ${startTown.name}` );
+    updateLog( `The adventures of ${avatar.name} begin in the ${startTown.economicStatus} town of ${startTown.name}` );
     gameUpdate();
     
     LAND.draw(avatar.location[0], avatar.location[1], avatar.sight);

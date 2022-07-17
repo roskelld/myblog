@@ -1,24 +1,105 @@
 'use strict'
 const ITEM_DATA = {
-    pickaxe: {
-        name:      "Pickaxe",
+    pickaxe_crude_cpr: {
+        name:      "Crude Pickaxe (Copper)",
         weight:    3,
         price:      3,
         use:        ["Mine",  "Attack", "Defend", "Throw", "Look"],
         efficency:  10,
         max_efficency:  10,
-        properties: ["copper", "iron", "gold", "silver"],
+        properties: ["copper"],
         materials: {
-            copper:    100,
+            iron:     100,
             wood:      80,            
         },
         stats: {
             sharpness:  5,
-            conduction: 20,
             hardness:   10,
-            luster:     5,
-            sonorous:   4,
-            meltingpoint: 250
+        }
+    },
+    pickaxe_crude_irn: {
+        name:      "Crude Pickaxe (Iron)",
+        weight:    3,
+        price:      3,
+        use:        ["Mine",  "Attack", "Defend", "Throw", "Look"],
+        efficency:  10,
+        max_efficency:  10,
+        properties: ["iron"],
+        materials: {
+            iron:     100,
+            wood:      80,            
+        },
+        stats: {
+            sharpness:  5,
+            hardness:   10,
+        }
+    },
+    pickaxe_crude_gld: {
+        name:      "Crude Pickaxe (Gold)",
+        weight:    3,
+        price:      3,
+        use:        ["Mine",  "Attack", "Defend", "Throw", "Look"],
+        efficency:  10,
+        max_efficency:  10,
+        properties: ["gold"],
+        materials: {
+            iron:     100,
+            wood:      80,            
+        },
+        stats: {
+            sharpness:  5,
+            hardness:   10,
+        }
+    },
+    pickaxe_fine_cpr: {
+        name:      "Fine Pickaxe (Copper)",
+        weight:     3,
+        price:      5,
+        use:        ["Mine",  "Attack", "Defend", "Throw", "Look"],
+        efficency:  12,
+        max_efficency:  10,
+        properties: ["copper"],
+        materials: {
+            iron:     100,
+            wood:      80,            
+        },
+        stats: {
+            sharpness:  10,
+            hardness:   15,
+        }
+    },
+    pickaxe_fine_irn: {
+        name:      "Fine Pickaxe (Iron)",
+        weight:     3,
+        price:      5,
+        use:        ["Mine",  "Attack", "Defend", "Throw", "Look"],
+        efficency:  12,
+        max_efficency:  10,
+        properties: ["iron"],
+        materials: {
+            iron:     100,
+            wood:      80,            
+        },
+        stats: {
+            sharpness:  10,
+            hardness:   15,
+        }
+    },
+    pickaxe_fine_gld: {
+        name:      "Fine Pickaxe (Gold)",
+        weight:     3,
+        price:      5,
+        use:        ["Mine",  "Attack", "Defend", "Throw", "Look"],
+        efficency:  12,
+        max_efficency:  10,
+        properties: ["gold"],
+        materials: {
+            iron:     100,
+            wood:      80,            
+        },
+        stats: {
+            sharpness:  10,
+            hardness:   15,
         }
     },
     dwsngTwgCopper: {

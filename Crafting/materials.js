@@ -39,11 +39,11 @@ class Material {
         this._resources.push( resource );
     }
     getResourceValueAtLocation( name, x, y ) {
-        
         let loc = LAND.convertCoordinates( x, y );
 
         // Search through all resources to find match
         let found = this._resources.find( e => e.name === name );
+        // console.log( found )
         let resource = 0;
         if ( found ) resource = found.getValue( x, y );
         
@@ -81,7 +81,7 @@ class Material {
             this._CTX.clearRect( loc_x,
                                  loc_y,
                                  (LAND._PIXEL_SIZE/LAND._GRID_SIZE), (LAND._PIXEL_SIZE/LAND._GRID_SIZE));
-            this._CTX.fillStyle = `rgba(${resource.color[0]}, ${resource.color[1]}, ${resource.color[2]}, ${result})`;
+            this._CTX.fillStyle = `rgba(${resource.color[0]}, ${resource.color[1]}, ${resource.color[2]}, ${1})`;
             this._CTX.strokeStyle = `rgb(${resource.stroke[0]}, ${resource.stroke[1]}, ${resource.stroke[2]})`;
             this._CTX.beginPath();
             this._CTX.arc(  loc_x + (LAND._PIXEL_SIZE/LAND._GRID_SIZE/2), 
@@ -109,8 +109,12 @@ class Material {
         let value = this.getResourceValueAtLocation( name, x, y );
         let resource = this.getResource( name );
         let loc = LAND.convertCoordinates( x, y );
-        // also needs withdraw amount
-        resource._map.memory[[loc.x, loc.y]] = 0;
+        // Reduces the resource by 10%
+        // resource._map.memory[[loc.x, loc.y]] -= ( value * 0.1 );
+
+        // Remove 0.1 -- That's 10 max per mine 
+        let update = Number(value.toFixed(2)) - 0.1;
+        resource._map.memory[[loc.x, loc.y]] = update;
         
         this.drawResource( name, x, y );
         return value;

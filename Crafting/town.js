@@ -28,7 +28,8 @@ class Town {
             // Get Item Data 
             let index = Math.floor(Object.keys(ITEM_DATA).length * Math.random());
             let item = ITEM_DATA[Object.keys(ITEM_DATA)[index]];
-            let price = Math.round(item.price + (this._economic_status*this._economic_status));
+            let price = Math.max( Math.round(item.price + (this._economic_status*this._economic_status)), 1);
+
             this._market.push({ name: item.name, price: price, id: Object.keys(ITEM_DATA)[index] });
         }
     }
@@ -37,11 +38,18 @@ class Town {
         this._economic_status = Math.round( Math.random() * DATA.status.length );        
     }
 
+    get economicStatus() {
+        return DATA.status[this._economic_status];
+    }
+
     // Simulate a purchase price for player to sell item to town shop
     offerToBuyPrice( itemName, avatar ) {  
         let bp = Object.values(ITEM_DATA).find( e => ( itemName === e.name )).price;     
-        let ec = this._economic_status;
-        return Math.min(Math.round((bp / ec) + (bp / ec) * (avatar.luck/100)), bp );
+        let ec = Math.max(this._economic_status, 1);        // Botch to fix maths so its at least 1 cause squalid at 0 breaks it
+
+        // let price = Math.min(Math.round((bp / ec) + (bp / ec) * (avatar.luck/100)), bp );
+        let price = Math.max( Math.round((bp / ec) + (bp / ec) * (avatar.luck/100)), 1 );
+        return price;
     }
 
     set location(loc) {
@@ -293,7 +301,8 @@ const DATA = {
        "poor",
        "moderate",
        "good",
-       "rich"
+       "wealthy",
+       "rich",
     ]
 }
 
