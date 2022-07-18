@@ -40,7 +40,8 @@ const ACTION_STRINGS = {
     "Sell":     "Enter store to",
     "Pray":     "Enter holy site to",
     "Gamble":   "Enter tavern to",
-    "Craft":    "Craft"
+    "Craft":    "Craft",
+    "Fish":     "Cast"
 }
 
 // Prevent arrow keys from scrolling windows 
