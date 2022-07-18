@@ -489,7 +489,10 @@ function useItem( id ) {
             break;
         case "Craft":
             enterCrafting();
-            break;            
+            break;               
+        case "Fish":
+            fish();
+            break;               
         default:
             break;
     }
@@ -740,7 +743,6 @@ function selectCraftinActionItem( action ) {
     enterCrafting();
 }
 
-
 function updateIntructions( name ) {
 
     if ( getGameMode() === 1 ) {
@@ -750,7 +752,7 @@ function updateIntructions( name ) {
         return;
     } else if ( getGameMode() === 2 ) {
         // Shop (to Sell)
-        let item = ( SHOP_LIST.value == -1 ) ? "Leave shop" : `Sell ${SHOP_LIST.value}`
+        let item = ( SHOP_LIST.value == -1 ) ? "Leave shop" : `Sell ${avatar.getItem(SHOP_LIST.value).name}`
         INSTRUCTIONS.textContent = `(\u2B06\u2B07) Select Item : (E) ${item}`;
         return;
     } else if ( getGameMode() === 4 ) {
@@ -785,7 +787,7 @@ function enterShop( mode ) {
         // Populate shop
         SHOP_LIST.options[0] = new Option( `LEAVE SHOP`, -1 );
         feature._market.forEach( e => {
-            SHOP_LIST.options[SHOP_LIST.length] = new Option( `Buy ${e.name} (${e.price}g)`, e.name );
+            SHOP_LIST.options[SHOP_LIST.length] = new Option( `Buy ${e.name} (${e.price.toFixed(2)}g)`, e.name );
         } );
         SHOP_LIST.selectedIndex = 0;
     }
@@ -795,7 +797,7 @@ function enterShop( mode ) {
         SHOP_LIST.options[0] = new Option( `LEAVE SHOP`, -1 );
         avatar._inventory.forEach( e => {
             let price = feature.offerToBuyPrice( e.name, avatar );
-            SHOP_LIST.options[SHOP_LIST.length] = new Option( `Sell ${e.name} for ${price} gold`, e.id );
+            SHOP_LIST.options[SHOP_LIST.length] = new Option( `Sell ${e.name} for ${price.toFixed(2)} gold`, e.id );
         } );
         SHOP_LIST.selectedIndex = 0;        
     }
@@ -816,6 +818,38 @@ function rollDice(sided) {
     let result = Math.floor(Math.random() * sided) + 1;
     updateLog(`You pull a bone die from your pouch and nimbly roll it. After a few bounces it settles on a ${result}`);
     return result;
+}
+
+function fish() {
+    // check direction has water
+    let terrain = getTerrainFromDirection(lastDirection);
+    if ( terrain.type !== "water" ) {
+        updateLog(`You excitedly pull out your ${avatar.getItem(SELECTED_ITEM_ID()).name} and prepare to cast, before realizing that you're lacking that key ingredient, a body of water to fish from.`);
+        return;
+    } else {
+        let depth = terrain.value;      // Lower the bigger catch (more food) -1 > 0
+
+        
+        let efficency = avatar.getItem(SELECTED_ITEM_ID()).efficency;       // 13 > 100
+        let luck = avatar.luck;                                             // 0 > 100
+        let rng = Math.random() * 100;                                      // 0 > 100      
+        let fishBase = 0.3;                                                 // 
+        let minTarget = 50;                                                 // 50           min roll target
+        let calcTarget = minTarget - luck - efficency;                      // -100 > 50    reduced by efficency and luck (can go negative)
+        let fishCount = fishBase * Math.abs(depth);                         // Increase fish based on depth
+        
+        let fishedTotalCount = Math.max(Math.round( ( rng - calcTarget ) * fishCount), 1);
+
+        if ( calcTarget < rng ) {
+            updateLog(`You cast your ${avatar.getItem(SELECTED_ITEM_ID()).name} and wait watching the line drift in the water. After a few hours you manage to catch ${fishedTotalCount} fish.`);
+            avatar.addFood(fishedTotalCount);
+        } else {
+            updateLog(`The gods don't seem to smile favoribly upon you today. Despite your best efforts you fail to get a bite.`)
+        }
+
+        increaseGameTime(1);
+        gameUpdate();
+    }
 }
 
 function buy( item ) {
@@ -1099,6 +1133,19 @@ function checkDirection( direction ) {
     gameUpdate();
 }
 
+function getTerrainFromDirection( direction ) {
+    let lookDirection = [...avatar.location];
+    if ( direction % 2 === 0 ) {
+        lookDirection[1] += (direction === 0) ? -1 : 1;
+    } else {
+        lookDirection[0] += (direction === 1) ? 1 : -1;
+    }
+
+    // Check to see if there's a landscape feature
+    let type = LAND.getTerrainByPosition( lookDirection[0], lookDirection[1] );
+    return type;
+}
+
 function getLandscapeFeature( x, y ) {
 
     // Step through all the landscape feature arrays (or combine them into one)
@@ -1150,8 +1197,6 @@ function refreshEquipmentListUI() {
 }
 
 function gameUpdate() {
-
-    
     if ( avatar.isDead ) return;
 
     let feature = getLandscapeFeature( avatar.location[0], avatar.location[1] );
@@ -1175,6 +1220,12 @@ function gameUpdate() {
     // update weight
     UI_WEIGHT.textContent = avatar.weight;
     
+    // Refresh Town Markets every so often
+    if ( Math.round(gameTime % 10) === 10 ) {
+        LAND._TOWNS.forEach ( e => e.generateMarket() ) 
+    }
+
+
     LAND.draw(avatar.location[0], avatar.location[1], avatar.sight);
     drawAvatar();
 }
@@ -1215,8 +1266,9 @@ function init() {
 
     refreshEquipmentListUI();
     
-    // Reset Shop
+    // Reset UI
     SHOP_UI.classList.add("hide");
+    CRAFT_UI.classList.add("hide");
 
     avatar.location = [startTown.location[0] / (LAND._PIXEL_SIZE / LAND._GRID_SIZE), startTown.location[1] / (LAND._PIXEL_SIZE / LAND._GRID_SIZE)];
     
@@ -1261,9 +1313,8 @@ function init() {
     // avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
     // avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
 
-    // item = getItemDataFromName( "Small Hut (Schematic)" );
-    // avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
-
+    item = getItemDataFromName( "Crude Fishing Rod" );
+    avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
 
     INVENTORY_SELECTION.selectedIndex = 0; 
     selectItem( INVENTORY_SELECTION.value );

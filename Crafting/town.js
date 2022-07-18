@@ -21,6 +21,8 @@ class Town {
     }
 
     generateMarket() {
+
+        this._market = [];
         // ITEM_DATA[Object.keys(ITEM_DATA)[3]].
         // Number of items to sell 
         let number = Math.round( Math.random() * 5 + this._economic_status  ); 
@@ -35,7 +37,7 @@ class Town {
     }
 
     generateStatus() {
-        this._economic_status = Math.round( Math.random() * DATA.status.length );        
+        this._economic_status = Math.round( Math.random() * (DATA.status.length - 1)) ;        
     }
 
     get economicStatus() {
@@ -47,8 +49,8 @@ class Town {
         let bp = Object.values(ITEM_DATA).find( e => ( itemName === e.name )).price;     
         let ec = Math.max(this._economic_status, 1);        // Botch to fix maths so its at least 1 cause squalid at 0 breaks it
 
-        // let price = Math.min(Math.round((bp / ec) + (bp / ec) * (avatar.luck/100)), bp );
-        let price = Math.max( Math.round((bp / ec) + (bp / ec) * (avatar.luck/100)), 1 );
+        // Current model is to scale the item price based on local economy. Garbage but something.
+        let price = Number( ((bp / 2) * ( ec + 1 )).toFixed(2) );
         return price;
     }
 
@@ -297,12 +299,18 @@ const DATA = {
         "Zuzana"
     ],
     status: [
-       "squalid",
-       "poor",
-       "moderate",
-       "good",
-       "wealthy",
-       "rich",
+        "squalid",
+        "poor",
+        "moderate",
+        "thriving",
+        "prosperous",
+        "wealthy",
+        "extravigant",
+    ],
+    terrain: [
+        "soil",
+        "rock",
+        "water"
     ]
 }
 

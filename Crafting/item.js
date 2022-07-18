@@ -627,7 +627,76 @@ const ITEM_DATA = {
             meltingpoint: 250
         },
     },
-
+    climbing_pitons: {
+        name:       "Climbing Pitons",
+        weight:     0.5,
+        price:      15,
+        use:        ["Attack", "Defend", "Throw", "Look"],
+        efficency:  -1,
+        max_efficency:  10,
+        properties: [],
+        materials: {
+            iron:  0.5
+        },
+        stats: {
+            sharpness:  5,
+            conduction: 20,
+            hardness:   10,
+            luster:     5,
+            sonorous:   4,
+            meltingpoint: 250
+        },
+    },
+    water_wings: {
+        name:       "Water Wings",
+        weight:     0.5,
+        price:      0.1,
+        use:        ["Attack", "Defend", "Throw", "Look"],
+        efficency:  -1,
+        max_efficency:  10,
+        properties: ["terrain", "water"],
+        materials: {
+            iron:  0.5
+        },
+        stats: {
+            sharpness:  5,
+            conduction: 20,
+            hardness:   10,
+            luster:     5,
+            sonorous:   4,
+            meltingpoint: 250
+        },
+    },
+    fishing_rod_crd: {
+        name:       "Crude Fishing Rod",
+        weight:     0.5,
+        price:      2,
+        use:        ["Fish", "Attack", "Defend", "Throw", "Look"],
+        efficency:  5,
+        max_efficency:  10,
+        properties: [],
+        materials: {
+            oak:  0.5
+        },
+        stats: {
+            sharpness:  5,
+        },
+    },
+    fishing_rod_fne: {
+        name:       "Fine Fishing Rod",
+        weight:     0.5,
+        price:      0.1,
+        use:        ["Fish", "Attack", "Defend", "Throw", "Look"],
+        efficency:  10,
+        max_efficency:  10,
+        properties: [],
+        materials: {
+            oak:  0.5
+        },
+        stats: {
+            sharpness:  5,
+        },
+    }
 }
 
 class Item {

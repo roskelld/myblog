@@ -53,7 +53,18 @@ class Avatar {
     }
 
     hasTerrain(terrain) {
-        return this._validTerrain.includes(terrain);
+
+        // Reduce inventory to valid terrain affecting objects
+        let filtered = avatar._inventory.filter( e => e.properties.find( e => e === "terrain" ) ); 
+
+        // Create a new array that includes character default terrains
+        let generatedTerrainList = [...this._validTerrain];
+
+        // Filter the object list down to all valid (using DATA.terrain) terrain tags
+        // I bet this can be shorter
+        filtered.forEach( e => e.properties.filter( e => { if ( DATA.terrain.indexOf(e) !== -1 ) { generatedTerrainList.push(DATA.terrain[DATA.terrain.indexOf(e)]) } } ) );
+
+        return generatedTerrainList.includes(terrain);
     }
 
     get name() {
@@ -74,7 +85,7 @@ class Avatar {
     }
 
     get gold() {
-        return this._gold;
+        return Number(this._gold.toFixed(2));
     }
     addGold(amount) {
         this._gold += amount;
