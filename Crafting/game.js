@@ -45,7 +45,8 @@ const ACTION_STRINGS = {
 }
 
 // Prevent arrow keys from scrolling windows 
-window.addEventListener("keydown", e => { if (e.key === INV_DOWN || e.key === INV_UP ) e.preventDefault(); }, false );
+window.addEventListener("keydown", e => { 
+    if (e.key === INV_DOWN || e.key === INV_UP ) e.preventDefault(); }, false );
 
 const INSTRUCTION_BASE = "(WASD) Move ";
 
@@ -65,9 +66,11 @@ const UI_GOLD = document.querySelectorAll(".stat-gold");
 const UI_FOOD = document.querySelector("#food");
 const UI_WEIGHT = document.querySelector("#weight");
 
-const INVENTORY_SELECTION = document.querySelector("#inventory");
-INVENTORY_SELECTION.addEventListener("change", selectItem, false );
-INVENTORY_SELECTION.addEventListener("focus", e => { INVENTORY_SELECTION.blur(); }, false );
+const INV_SEL = document.querySelector("#inventory");
+INV_SEL.addEventListener("change", selectItem, false );
+INV_SEL.addEventListener("focus", e => { 
+    INV_SEL.blur(); 
+}, false );
 
 const ITEM_ACTIONS = document.querySelector("#action");
 ITEM_ACTIONS.addEventListener("change", selectAction, false );
@@ -107,8 +110,12 @@ const CRAFT_DETAILS = document.querySelector("#crafting-details");
 
 // Action calls like leave and craft
 const CRAFT_ACTION_LIST = document.querySelector("#crafting-list");
-CRAFT_ACTION_LIST.addEventListener("change", () => {  selectCraftinActionItem(CRAFT_ACTION_LIST.value); }, false );
-CRAFT_ACTION_LIST.addEventListener("focus", e => { CRAFT_ACTION_LIST.blur(); }, false );
+CRAFT_ACTION_LIST.addEventListener("change", () => {  
+    selectCraftinActionItem(CRAFT_ACTION_LIST.value); 
+}, false );
+CRAFT_ACTION_LIST.addEventListener("focus", e => { 
+    CRAFT_ACTION_LIST.blur(); 
+}, false );
 
 // Setup Land
 const LAND = new Land( document.getElementById("landscape"));
@@ -131,35 +138,42 @@ MAT.addResource( new Resource(
     "copper", 
     [194,115,51],
     [194,115,51], 
-    ["metal","copper"], 
+    ["metal","copper"], 0.0355, 0.005, 0.03, 0.75,
     {} ) );
     
 MAT.addResource( new Resource( 
     "iron", 
     [125,125,125],
     [200,200,200], 
-    ["metal","iron"], 
+    ["metal","iron"], 0.15, 0.09, 0.3505, 0.95,
     {} ) );
 
 MAT.addResource( new Resource( 
     "gold", 
     [255,223,0],
     [255,223,0], 
-    ["metal","gold"], 
+    ["metal","gold"], 0.4, 2, 0.42, 1, 
     {} ) );
 
 MAT.addResource( new Resource( 
-    "silver", 
+    "tin", 
     [197,201,199],
     [197,201,199], 
-    ["metal","silver"], 
+    ["metal","tin"], 0.0382001, 0.04439, 0.25, 0.95,
     {} ) );
 
 MAT.addResource( new Resource( 
     "lead", 
     [48,49,47],
     [48,49,47], 
-    ["metal","lead"], 
+    ["metal","lead"], 0.3, 0.0100, 0.15, 0.75,
+    {} ) );
+
+MAT.addResource( new Resource( 
+    "silver", 
+    [77,79,78],
+    [77,79,78], 
+    ["metal","silver"], 0.4, 2, 0.40, 1, 
     {} ) );
 
 // Game Time
@@ -167,7 +181,7 @@ let gameTime = 1;
 
 let avatar;
 
-const SELECTED_ITEM_ID = () => INVENTORY_SELECTION.options[INVENTORY_SELECTION.selectedIndex].value;
+const SELECTED_ITEM_ID = () => INV_SEL.options[INV_SEL.selectedIndex].value;
 
 document.addEventListener("keyup", keyInput, false);
 
@@ -205,28 +219,28 @@ function keyInput(e) {
                     break;
                 case USE:
                 case ACCEPT:
-                    // if ( INVENTORY_SELECTION.selectedIndex === 0 || INVENTORY_SELECTION.selectedIndex === -1 ) return;
+                    // if ( INV_SEL.selectedIndex === 0 || INV_SEL.selectedIndex === -1 ) return;
                     if ( ITEM_ACTIONS.options.length === 0 ) return;
-                    useItem( INVENTORY_SELECTION.value );
+                    useItem( INV_SEL.value );
                     return;
                 case RESTART:
                     init();
                     return; 
                 case INV_UP:
-                    if ( INVENTORY_SELECTION.selectedIndex === 0 || INVENTORY_SELECTION.selectedIndex === -1 ) {
-                        INVENTORY_SELECTION.selectedIndex = INVENTORY_SELECTION.length - 1;
+                    if ( INV_SEL.selectedIndex === 0 || INV_SEL.selectedIndex === -1 ) {
+                        INV_SEL.selectedIndex = INV_SEL.length - 1;
                     } else {
-                        INVENTORY_SELECTION.selectedIndex--;
+                        INV_SEL.selectedIndex--;
                     }
-                    selectItem( INVENTORY_SELECTION.value );
+                    selectItem( INV_SEL.value );
                     return;
                 case INV_DOWN:
-                    if ( INVENTORY_SELECTION.selectedIndex === INVENTORY_SELECTION.length - 1 ) {
-                        INVENTORY_SELECTION.selectedIndex = 0;
+                    if ( INV_SEL.selectedIndex === INV_SEL.length - 1 ) {
+                        INV_SEL.selectedIndex = 0;
                     } else {
-                        INVENTORY_SELECTION.selectedIndex++;
+                        INV_SEL.selectedIndex++;
                     }
-                    selectItem( INVENTORY_SELECTION.value );
+                    selectItem( INV_SEL.value );
                     return;
                 case ACT_UP:
                     if ( ITEM_ACTIONS.selectedIndex === 0 || ITEM_ACTIONS.selectedIndex === -1 ) {
@@ -313,7 +327,7 @@ function keyInput(e) {
                     if ( CRAFT_ACTION_LIST.selectedIndex === 0 ) {
                         INSTRUCTIONS.textContent = `(\u2B06\u2B07) Select Action : (E) Leave`;
                     } else {
-                        let item = avatar.getItem( INVENTORY_SELECTION.value );
+                        let item = avatar.getItem( INV_SEL.value );
                         // Update Instructions
                         updateIntructions(item.name);
                     }
@@ -328,7 +342,7 @@ function keyInput(e) {
                     if ( CRAFT_ACTION_LIST.selectedIndex === 0 ) {
                         INSTRUCTIONS.textContent = `(\u2B06\u2B07) Select Action : (E) Leave`;
                     } else {
-                        let item = avatar.getItem( INVENTORY_SELECTION.value );
+                        let item = avatar.getItem( INV_SEL.value );
                         // Update Instructions
                         updateIntructions(item.name);
                     }
@@ -367,13 +381,21 @@ function selectShopItem() {
     let feature = getLandscapeFeature( avatar.location[0], avatar.location[1] );
     if ( getGameMode() === 1 ) {
         let price = feature._market[SHOP_LIST.selectedIndex-1].price;
-        updateLog(`You pick up a ${SHOP_LIST.value} from a shelf and the shop keeper looks up and shouts "${price} gold, you'll not find a better deal".`);
+        updateLog(
+            `You pick up a ${SHOP_LIST.value} from a 
+            shelf and the shop keeper looks up and 
+            shouts "${price} gold, you'll not find a 
+            better deal".`);
         return;
     }
     if ( getGameMode() === 2 ) {
-        let name = avatar.getItem( SHOP_LIST.value ).name;
-        let price = feature.offerToBuyPrice( name, avatar );
-        updateLog(`You pull a ${name} from your pack and show it to the shop keeper who quickly blerts out "${price} gold" in a way that makes it clear that it's not a negotiable offer.`);
+        const ITEM = avatar.getItem( SHOP_LIST.value );
+        let price = feature.offerToBuyPrice( ITEM );
+        updateLog(
+            `You pull a ${ITEM.name} from your pack and show it 
+            to the shop keeper who quickly blerts out 
+            "${price} gold" in a way that makes it clear 
+            that it's not a negotiable offer.`);
         return;
     }
 }
@@ -382,12 +404,12 @@ function selectItem( name ) {
     
     // Show all actions
     // Get Item
-    let item = avatar.getItem( INVENTORY_SELECTION.value );
+    let item = avatar.getItem( INV_SEL.value );
     
     // clear current actions
     let items = ITEM_ACTIONS.options.length;
     for (let i = 0; i < items; i++) {
-        ITEM_ACTIONS.options[0].removeEventListener("click", () => useItem( INVENTORY_SELECTION.value ), false );
+        ITEM_ACTIONS.options[0].removeEventListener("click", () => useItem( INV_SEL.value ), false );
         ITEM_ACTIONS.options[0].remove();
     }
     
@@ -412,7 +434,7 @@ function selectItem( name ) {
     // Add Actions
     item.use.forEach( e => {
         ITEM_ACTIONS.options[ITEM_ACTIONS.length] = new Option( e, e );  
-        ITEM_ACTIONS.options[ITEM_ACTIONS.length - 1].addEventListener("click", () => useItem( INVENTORY_SELECTION.value ), false );
+        ITEM_ACTIONS.options[ITEM_ACTIONS.length - 1].addEventListener("click", () => useItem( INV_SEL.value ), false );
     });
     
     // Select first option;
@@ -424,11 +446,11 @@ function selectItem( name ) {
         UI_DETAILS.appendChild(GenerateItemDetailRow(e, item.stats[[e]]));
     } );
 
-    updateIntructions( INVENTORY_SELECTION.options[INVENTORY_SELECTION.selectedIndex].text );
+    updateIntructions( INV_SEL.options[INV_SEL.selectedIndex].text );
 }
 
 function selectAction() {
-    updateIntructions( INVENTORY_SELECTION.options[INVENTORY_SELECTION.selectedIndex].text );
+    updateIntructions( INV_SEL.options[INV_SEL.selectedIndex].text );
 }
 
 function GenerateItemDetailRow( title, value ) {
@@ -447,19 +469,24 @@ function useItem( id ) {
     if ( avatar.isDead ) return;
     let item = avatar.getItem( id );
     
-    // Figure out logic for use action based on selected item and content at location
-    // Survey is always an option so could be a fall back given if there's no "EVENT" happening or "FEATURE"
+    // Figure out logic for use action based on selected item and content at
+    // location survey is always an option so could be a fall back given if 
+    // there's no "EVENT" happening or "FEATURE"
     let action = ITEM_ACTIONS.options[ITEM_ACTIONS.options.selectedIndex].value;
 
     switch (action) {
         case "Mine":
-            mineTile( avatar.getItem(INVENTORY_SELECTION[INVENTORY_SELECTION.selectedIndex].value).properties[0], avatar.location[0], avatar.location[1] );
+            mineTile( avatar.getItem(INV_SEL[INV_SEL.selectedIndex].value).properties[0], avatar.loc.x, avatar.loc.y );
             break;
         case "Survey":
-            surveyTile( avatar.getItem(INVENTORY_SELECTION[INVENTORY_SELECTION.selectedIndex].value).properties[0], avatar.location[0], avatar.location[1] );
+            // surveyTile( avatar.getItem(INV_SEL[INV_SEL.selectedIndex].value).properties[0], avatar.location[0], avatar.location[1] );
+            scanLandForMaterial( 
+                avatar.loc.x, 
+                avatar.loc.y, 
+                avatar.getItem(INV_SEL[INV_SEL.selectedIndex].value) );
             break;
         case "Look":
-            updateLog( `You inspect the ${item.name}, it feels nice in the hand.` );
+            updateLog(`You inspect the ${item.name}, it feels nice in the hand.`);
             break;
         case "Gamble":
             gamble();
@@ -509,7 +536,7 @@ function enterCrafting() {
     CRAFT_ACTION_LIST.selectedIndex = 1;
     setGameMode("crafting");  
     // Populate recipe
-    let item = avatar.getItem( INVENTORY_SELECTION.value );
+    let item = avatar.getItem( INV_SEL.value );
 
     // Update Instructions
     updateIntructions(item.name);
@@ -583,7 +610,7 @@ function enterCrafting() {
         form.appendChild(container);
         CRAFT_LISTS.appendChild(form);
     
-        let itemTitle = INVENTORY_SELECTION.options[INVENTORY_SELECTION.selectedIndex].text.split("(")[0];
+        let itemTitle = INV_SEL.options[INV_SEL.selectedIndex].text.split("(")[0];
         itemTitle = itemTitle.substr(0, itemTitle.length -1 );
         CRAFT_ITEM_TITLE.value = itemTitle;
     } );
@@ -598,7 +625,7 @@ function updateCraftingNumbers( form, header, title, count ) {
 
 
     // Get Base Item Data 
-    let itemTitle = INVENTORY_SELECTION.options[INVENTORY_SELECTION.selectedIndex].text.split("(")[0];
+    let itemTitle = INV_SEL.options[INV_SEL.selectedIndex].text.split("(")[0];
     itemTitle = itemTitle.substr(0, itemTitle.length -1 );
     let item = getItemDataFromName( itemTitle );
 
@@ -628,7 +655,7 @@ function getCraftingItemStats() {
     // Calculate Potential Crafted Item Values
 
     // Get Base Item Data 
-    let itemTitle = INVENTORY_SELECTION.options[INVENTORY_SELECTION.selectedIndex].text.split("(")[0];
+    let itemTitle = INV_SEL.options[INV_SEL.selectedIndex].text.split("(")[0];
     itemTitle = itemTitle.substr(0, itemTitle.length -1 );
     let item = getItemDataFromName( itemTitle );
 
@@ -733,7 +760,7 @@ function selectCraftinActionItem( action ) {
     });
     
     // Add item to inventory 
-    let itemTitle = INVENTORY_SELECTION.options[INVENTORY_SELECTION.selectedIndex].text.split("(")[0];
+    let itemTitle = INV_SEL.options[INV_SEL.selectedIndex].text.split("(")[0];
     itemTitle = itemTitle.substr(0, itemTitle.length -1 );
 
     let item = getItemDataFromName( itemTitle );
@@ -774,31 +801,33 @@ function updateIntructions( name ) {
 }
 
 function enterShop( mode ) {
-    // clear current items
-    let items = SHOP_LIST.options.length;
-    for (let i = 0; i < items; i++) {
-        SHOP_LIST.options[0].remove();
-    }
-    
-    let feature = getLandscapeFeature( avatar.location[0], avatar.location[1] );
-    updateLog(`You walk through the streets of ${feature.name} to see a shop that looks like it might have some interesting wares.`);
-    if ( mode === "buy" ) {
-        setGameMode("shop_buy");
+    const ITEM_LIST = SHOP_LIST.options.length;
+    for (let i = 0; i < ITEM_LIST; i++) SHOP_LIST.options[0].remove();          // Clear current shop menu items
+    SHOP_LIST.options[0] = new Option( `LEAVE SHOP`, -1 );                      // Set first option as shop exit
 
-        // Populate shop
-        SHOP_LIST.options[0] = new Option( `LEAVE SHOP`, -1 );
-        feature._market.forEach( e => {
-            SHOP_LIST.options[SHOP_LIST.length] = new Option( `Buy ${e.name} (${e.price.toFixed(2)}g)`, e.name );
+    const DATA = getLandscapeFeature( 
+        avatar.location[0], avatar.location[1] );                               // Get source data from location
+
+    updateLog(                                                                  // Print intro
+        `You walk through the streets of ${DATA.name} 
+        to see a shop that looks like it might have some 
+        interesting wares.`);
+
+    if ( mode === "buy" ) {
+        setGameMode("shop_buy");                                                // Set interface/controls      
+        DATA._market.forEach( e => {                                            // Populate shop
+            SHOP_LIST.options[SHOP_LIST.length] = new Option( 
+                `Buy ${e.name} (${e.price.toFixed(2)}g)`, e.name );
         } );
         SHOP_LIST.selectedIndex = 0;
     }
 
     if ( mode === "sell" ) {
-        setGameMode("shop_sell");
-        SHOP_LIST.options[0] = new Option( `LEAVE SHOP`, -1 );
+        setGameMode("shop_sell");                                               // Set interface/controls
         avatar._inventory.forEach( e => {
-            let price = feature.offerToBuyPrice( e.name, avatar );
-            SHOP_LIST.options[SHOP_LIST.length] = new Option( `Sell ${e.name} for ${price.toFixed(2)} gold`, e.id );
+            const PRICE = DATA.offerToBuyPrice( e );                            // Generate offer price
+            SHOP_LIST.options[SHOP_LIST.length] = new Option( 
+                `Sell ${e.name} for ${PRICE.toFixed(2)} gold`, e.id );
         } );
         SHOP_LIST.selectedIndex = 0;        
     }
@@ -878,15 +907,18 @@ function buy( item ) {
         
         // Take the money from the avatar
         avatar.removeGold( tobuy.price );
+
         // Get the item data
-        let data = ITEM_DATA[[`${tobuy.id}`]];
+
+        // let data = ITEM_DATA[[`${tobuy.id}`]];
+        let data = tobuy.item;
 
         // Add it to the avatar inventory
-        avatar.addToInventory( new Item( data.name, data.weight, data.properties, data.materials, data.use, data.efficency, data.stats ));
+        avatar.addToInventory( data );
         gameUpdate();
     }
 }
-
+// Player Sell
 function sell( id ) {
     // If selected LEAVE then leave the shop (Note -1 is a string)
     if ( id == -1 ) {
@@ -895,17 +927,21 @@ function sell( id ) {
     }
 
     // Get the item name
-    let name = avatar.getItem( id ).name;
+    let item = avatar.getItem( id );
 
     // Get the item price
     let feature = getLandscapeFeature( avatar.location[0], avatar.location[1] );
-    let price = feature.offerToBuyPrice( name, avatar );
+    let price = feature.offerToBuyPrice( item );
     
     // Remove the item from the player's inventory (and inventory UI)
     avatar.removeFromInventory( SHOP_LIST.value );
     // Remove the item from the market list
     SHOP_LIST.options[SHOP_LIST.selectedIndex].remove();
     
+    // Add Item to shop market
+    // use a town function so price can be set properly 
+    feature.addItemToMarket( item, price + (price * 0.1) );
+
     // Give the player the gold
     avatar.addGold( price );
     
@@ -914,22 +950,26 @@ function sell( id ) {
 }
 
 function attack() {
-    updateLog( `Your nimbly swipe your ${avatar.getItem(INVENTORY_SELECTION.value).name} in an aggressive fashion. Shame there's no one around to witness your warrior prowess.` );
+    updateLog( `Your nimbly swipe your ${avatar.getItem(INV_SEL.value).name} in an aggressive fashion. Shame there's no one around to witness your warrior prowess.` );
 }
 
 function defend() {
-    updateLog( `Holding your ${avatar.getItem(INVENTORY_SELECTION.value).name} up high, you stand your ground against the imagined attackers who vanish from your mind before they can strike.` );
+    updateLog( `Holding your ${avatar.getItem(INV_SEL.value).name} up high, you stand your ground against the imagined attackers who vanish from your mind before they can strike.` );
 }
 
 function throwItem() {
     let distance = Math.round(Math.random() * 10);
-    updateLog( `You swing your arm in a great arc launching the ${avatar.getItem(INVENTORY_SELECTION.value).name} into the air. It lands ${distance} feet in front of you. You pause and wonder what use that was before picking it back up and dusting the mud from it.` );
+    updateLog( `You swing your arm in a great arc launching the ${avatar.getItem(INV_SEL.value).name} into the air. It lands ${distance} feet in front of you. You pause and wonder what use that was before picking it back up and dusting the mud from it.` );
 }
 
 function surveyTile( name, x, y ) {
     if ( avatar.isDead ) return;
-    let result = MAT.getResourceDescriptionAtLocation( name, x, y );
-    updateLog( `Your survey for ${name} finds a ${result} source` );
+    let result = MAT.getResourceValueAtLocation( name, x, y );
+    if ( result === 0 ) {
+        updateLog( `Your survey finds no source of ${name} nearby` );
+    } else {
+        updateLog( `Your survey finds a source of ${name}` );
+    }
 
     // drawMaterial( x, y );
     MAT.drawResource( name, x, y );
@@ -940,37 +980,106 @@ function surveyTile( name, x, y ) {
     gameUpdate();
 }
 
+function scanLandForMaterial( x, y, tool ) {
+    const RES = LAND.getClosestMatTo( x, y, tool.properties[0] );
+    const LOC = LAND.convertCoordinates( x, y );
+    if ( RES === -1 ) {
+        updateLog( 
+            `You hold out your ${tool.name} but it falls 
+            limp, indicating no ${tool.properties[0]} 
+            anywhere close` );            
+    } else if ( RES.x === LOC.x && RES.y === LOC.y ) {
+        updateLog( 
+            `You hold out your ${tool.name} and it pulls 
+            straight down to the earth below your feet` ); 
+    } else {
+        const DIST = Math.distance( LOC.x, LOC.y, RES.x, RES.y );
+        console.log( DIST );
+        if ( DIST > ( tool.efficency / 10 ) ) {                                 // 10% Item efficency used for max distance
+            updateLog( 
+                `You hold out your ${tool.name} but it falls 
+                limp, indicating no ${tool.properties[0]} 
+                anywhere close` );
+            return;
+        } 
+        const DEG = Math.direction( LOC.x, LOC.y, RES.x, RES.y );
+        const DIR = degAsText( DEG );
+        const DIS_TEXT = strengthAsText(DIST, 1 );
+        updateLog( 
+            `You hold out your ${tool.name} and you feel 
+            a ${DIS_TEXT} vibration towards the ${DIR}.` );    
+    }
+}
+
 function mineTile( name, x, y ) {
     if ( avatar.isDead ) return;
+
+    // What type of material is being mined 
+    // Current setup supports metal
+    const MATS = Object.keys(DATA.material.solid[`${name}`]);
+
+    let supply = 0;
+    let type = "";
+    // Step through each valid material and see if the land has any
+    MATS.forEach( mat => {
+        let value = MAT.getResourceValueAtLocation( mat, x, y ); 
+        if ( value > 0 ) {
+            supply = value;
+            type = mat;
+            return;
+        }
+    });
+
     
-    let richness = MAT.getResourceValueAtLocation( name, x, y );        // 0.001 > 1
-    if ( richness <= 0 ) {
-        updateLog( `Your efforts to mine ${name} are fruitless.` );
+    // If no materials found at all then let the player know to give up trying
+    if ( supply <= 0 ) {
+        // Name is the type of material (from the tool) being mined
+        updateLog( 
+            `Your efforts to mine reveal that this 
+            area is barren of any ${name}.` );
+
+        increaseGameTime(1);
+        lastDirection = null;
+        gameUpdate();
         return;
     } 
    
-    let efficency = avatar.getItem(SELECTED_ITEM_ID()).efficency;       // 13 > 100
-    let luck = avatar.luck;                                             // 0 > 100
-    let rng = Math.random() * 100;                                      // 0 > 100      
-    let minTarget = 50;                                                 // 50           min roll target
-    let calcTarget = minTarget - luck - efficency;                      // -100 > 50    reduced by efficency and luck (can go negative)
-    let oreBlocks = 10;                                                 // 10           1 ore for every 10 points over target 
-    let oreCount = oreBlocks / richness;                                // Reduce ore based on richness of mine (min. 1 ore if success)
-    let minedOreCount = Math.max(Math.round( ( rng - ( minTarget - luck - efficency ) ) / oreCount), 1);
+    const ITEM_EFF = avatar.getItem(SELECTED_ITEM_ID()).efficency;              // 13 > 100     How efficient is the item at its job
+    const RNG = Math.random() * 100;                                            // 0 > 100      
+    const MIN_TARGET = 50;                                                      // 50           min roll target
+    const MODIFIER = MIN_TARGET - ITEM_EFF - ((ITEM_EFF / 100) * avatar.luck);  // -100 > 50    reduced by efficency and luck (can go negative)
+    const MOD_ROLL = Math.max( RNG - MODIFIER, 0 );                             // Random roll + modifier
+    const RESULT_INCREMENT = 10;                                                // Every increment over min is +1 mat
+    const RES = Math.floor(MOD_ROLL / RESULT_INCREMENT);
 
-    // Attempt to mine
-    if ( calcTarget < rng ) {     
-        updateLog( `After many swings of your ${avatar.getItem(SELECTED_ITEM_ID()).name} you successfully mine ${minedOreCount} ${name} ore.` );     
-        // remove ore from source
-        MAT.removeResource( name, avatar.location[0], avatar.location[1] );    
-        
-        // Add the mined ore to the inventory
-        for (let index = 0; index < minedOreCount; index++) {
-            let item = getItemDataFromName( name );
-            avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );           
+    if ( RES > 0 ) {
+        const COUNT = MAT.removeResourceSupply( 
+            type, avatar.location[0], 
+            avatar.location[1], RES );
+
+        updateLog( 
+            `After many swings of your 
+            ${avatar.getItem(SELECTED_ITEM_ID()).name} 
+            you successfully mine ${COUNT} ${type} ore.` );
+
+        // Add ore to player inventory
+        for (let i = 0; i < COUNT; i++) {
+            const ITEM = getItemDataFromName( type );
+            avatar.addToInventory( 
+                new Item( 
+                    ITEM.name, 
+                    ITEM.weight, 
+                    ITEM.properties, 
+                    ITEM.materials, 
+                    ITEM.use, 
+                    ITEM.efficency, 
+                    ITEM.stats ) );           
         }
     } else {
-        updateLog( `Despite many swings of your ${avatar.getItem(SELECTED_ITEM_ID()).name} you fail to find any ${name} ore.` );
+        updateLog( 
+            `You feel the ${type} beneath you, but the swings of your
+            ${avatar.getItem(SELECTED_ITEM_ID()).name} 
+            fails to extract any.` );
     }
 
     increaseGameTime(1);
@@ -980,15 +1089,27 @@ function mineTile( name, x, y ) {
 
 function gamble() {
     if ( avatar.gold <= 0 ) {
-        updateLog( `You enter the tavern feeling lucky, but soon realize that you're out of money and slip back out hoping no one noticed.` );
+        updateLog( 
+            `You enter the tavern feeling lucky, 
+            but soon realize that you're out of money 
+            and slip back out hoping no one noticed.` );
     } else {
         let result = Math.random() + (avatar.luck / 100);
         avatar.removeGold(1);
         if ( result >= 0.75 ) {
-            updateLog( `You enter the tavern and slap down a gold piece on the dice table. Thank the gods your numbers come up adding a nice weight of gold in your pouch.` );
+            updateLog( 
+                `You enter the tavern and slap down a 
+                gold piece on the dice table. Thank the 
+                gods your numbers come up adding a nice 
+                weight of gold in your pouch.` );
             avatar.addGold(5);
         } else {
-            updateLog( `You enter the taven and place your gold piece on the dice table. The dice roll and you feel a dark cloud cast over you. Your numbers don't come up, leaving your pouch a little lighter.` );
+            updateLog( 
+                `You enter the taven and place your gold 
+                piece on the dice table. The dice roll and 
+                you feel a dark cloud cast over you. Your 
+                numbers don't come up, leaving your pouch 
+                a little lighter.` );
         }                
     }
     gameUpdate();
@@ -996,11 +1117,16 @@ function gamble() {
 
 function pray() {
     if ( avatar.gold <= 0 ) {
-        updateLog( `You enter the holy site and find a quiet spot to pray to your god.` );
+        updateLog( 
+            `You enter the holy site and find a quiet spot 
+            to pray to your god.` );
     } else {
         let result = Math.random();
         avatar.removeGold(1);
-        updateLog( `You enter the holy site and place a gold coin as an offering hoping that your god will bring you luck` );
+        updateLog( 
+            `You enter the holy site and place a gold coin 
+            as an offering hoping that your god will bring 
+            you luck` );
         if ( result >= 0.75 ) {
             avatar.luck = 1;
         }
@@ -1009,12 +1135,14 @@ function pray() {
 }
 
 function playInstrument( instrument ) {
-    updateLog( `You take a breath and begin to play an old song on the ${instrument} filling the air with sweet emotion.` );
+    updateLog( 
+        `You take a breath and begin to play an old song 
+        on the ${instrument} filling the air with sweet 
+        emotion.` );
 }
 
 function moveCharacter( direction ) {
     if ( avatar.isDead ) return;
-    // console.log( `Move ${direction}` );
     
     let lookDirection = [...avatar.location];
     if ( direction % 2 === 0 ) {
@@ -1023,9 +1151,7 @@ function moveCharacter( direction ) {
         lookDirection[0] += (direction === 1) ? 1 : -1;
     }
 
-    // let value = getTerrainValueByPosition( avatar.location[0], avatar.location[1] );
     let terrain = LAND.getTerrainByPosition( lookDirection[0], lookDirection[1] );
-
     // Check move is valid   
     if ( avatar.hasTerrain( terrain.type ) ) {
 
@@ -1034,24 +1160,33 @@ function moveCharacter( direction ) {
         } else {
             avatar.location[0] += (direction === 1) ? 1 : -1;
         }
-        
         // Check to see if there's a landscape feature
-        let feature = getLandscapeFeature( lookDirection[0], lookDirection[1] );
-        
-        if ( feature ) {
-            setLandscapeFeatureActions(feature);
+        const FEATURE = getLandscapeFeature( direction[0], direction[1] );
 
-            switch (feature.type) {
+        if ( FEATURE !== undefined ) {
+            const TYPE = (Array.isArray(FEATURE.type)) ? FEATURE.type[0] : FEATURE.type; // Get Feature type
+            switch ( TYPE ) {
                 case "town":
-                    updateLog( `You stroll into the town of ${feature.name}. Its streets and people show that this is a ${feature.economicStatus} place.` );
+                    updateLog( 
+                        `You stroll into the town of ${FEATURE.name}. 
+                        Its streets and people show that this is a 
+                        ${FEATURE.economicStatus} place.` );  
                     break;
-            
                 default:
+                    if ( INV_SEL.value === "none" ) 
+                        setLandscapeFeatureActions();
+                    updateLog( 
+                        `You travel ${DIRECTION[direction]} 
+                        into ${terrain.name}` );
+                    updateIntructions();
                     break;
             }
         } else {
-            if ( INVENTORY_SELECTION.value === "none" ) setLandscapeFeatureActions();
-            updateLog( `You travel ${DIRECTION[direction]} into ${terrain.name}` );
+            if ( INV_SEL.value === "none" ) 
+            setLandscapeFeatureActions();
+            updateLog( 
+                `You travel ${DIRECTION[direction]} 
+                into ${terrain.name}` );
             updateIntructions();
         }
 
@@ -1074,27 +1209,27 @@ function setLandscapeFeatureActions(feature) {
         // clear current actions
         let items = ITEM_ACTIONS.options.length;
         for (let i = 0; i < items; i++) {
-            ITEM_ACTIONS.options[0].removeEventListener("click", () => useItem( INVENTORY_SELECTION.value ), false );
+            ITEM_ACTIONS.options[0].removeEventListener("click", () => useItem( INV_SEL.value ), false );
             ITEM_ACTIONS.options[0].remove();
         }
         return
     }
-    if ( feature.type = "town" ) {
+    if ( feature.type === "town" ) {
 
         // Select first inventory option (unequip items and reveal town actions)
-        INVENTORY_SELECTION.options.selectedIndex = 0;
+        INV_SEL.options.selectedIndex = 0;
 
         // clear current actions
         let items = ITEM_ACTIONS.options.length;
         for (let i = 0; i < items; i++) {
-            ITEM_ACTIONS.options[0].removeEventListener("click", () => useItem( INVENTORY_SELECTION.value ), false );
+            ITEM_ACTIONS.options[0].removeEventListener("click", () => useItem( INV_SEL.value ), false );
             ITEM_ACTIONS.options[0].remove();
         }
 
         // Add Town actions
         feature.actions.forEach( e => {
             ITEM_ACTIONS.options[ITEM_ACTIONS.length] = new Option( e, e );    
-            ITEM_ACTIONS.options[ITEM_ACTIONS.length - 1].addEventListener("click", () => useItem( INVENTORY_SELECTION.value ), false );
+            ITEM_ACTIONS.options[ITEM_ACTIONS.length - 1].addEventListener("click", () => useItem( INV_SEL.value ), false );
         });
         ITEM_ACTIONS.options.selectedIndex = 0;
         updateIntructions(ITEM_ACTIONS.value);
@@ -1121,13 +1256,32 @@ function checkDirection( direction ) {
     }
 
     // Check to see if there's a landscape feature
-    let feature = getLandscapeFeature( lookDirection[0], lookDirection[1] );
+    const FEAT = getLandscapeFeature( lookDirection[0], lookDirection[1] );
+    if ( FEAT !== undefined ) {
+        const TYPE = (Array.isArray(FEAT.type)) ? FEAT.type[0] : FEAT.type;     // Get Feature type
+        
+        switch ( TYPE ) {
+            case "town":
+                updateLog( 
+                    `You can see the ${FEAT.type} of 
+                    ${FEAT.name} to the 
+                    ${DIRECTION[direction]}` );    
+                break;
+            default:
+                const TERRAIN = LAND.getTerrainByPosition( 
+                                lookDirection[0], lookDirection[1] );
+                updateLog( 
+                    `You can see a path ${DIRECTION[direction]}
+                     into ${TERRAIN.name}` );
+                break;
+        }
 
-    if ( feature ) {
-        updateLog( `You can see the ${feature.type} of ${feature.name} to the ${DIRECTION[direction]}` );
     } else {
-        let terrain = LAND.getTerrainByPosition( lookDirection[0], lookDirection[1] );
-        updateLog( `You can see a path ${DIRECTION[direction]} into ${terrain.name}` );
+        const TERRAIN = LAND.getTerrainByPosition( 
+                    lookDirection[0], lookDirection[1] );
+        updateLog( 
+        `You can see a path ${DIRECTION[direction]}
+        into ${TERRAIN.name}` );
     }
 
     checkedTile = true;
@@ -1151,12 +1305,19 @@ function getLandscapeFeature( x, y ) {
 
     // Step through all the landscape feature arrays (or combine them into one)
     let feature = LAND._TOWNS.find( e => (
-        x === ( e.location[0] / (LAND._PIXEL_SIZE / LAND._GRID_SIZE) ) && 
-        y === ( e.location[1] / (LAND._PIXEL_SIZE / LAND._GRID_SIZE) )  
+        x === ( e.location.x ) && 
+        y === ( e.location.y )  
     ) );
 
     // NEXT
-
+    if ( feature === undefined ) {
+        MAT._resources.forEach( e => {
+            if ( MAT.getResourceValueAtLocation( e.name, x, y ) > 0 ) {
+                feature = e;
+                return feature;
+            }
+        })
+    }
     return feature;
 }
 
@@ -1186,14 +1347,14 @@ function updateLog( message ) {
 
 function refreshEquipmentListUI() {
     // Get current length
-    let count = INVENTORY_SELECTION.length - 1;
+    let count = INV_SEL.length - 1;
     for (let index = 0; index < count; index++) {
         // Remove 2nd entry (first is NONE)
-        INVENTORY_SELECTION[1].remove();        
+        INV_SEL[1].remove();        
     }
     // Repopulate with avatar inventory 
     avatar._inventory.forEach( e => {
-        INVENTORY_SELECTION.options[INVENTORY_SELECTION.length] = new Option( e.name, e.id );
+        INV_SEL.options[INV_SEL.length] = new Option( e.name, e.id );
     });
 }
 
@@ -1221,8 +1382,8 @@ function gameUpdate() {
     // update weight
     UI_WEIGHT.textContent = avatar.weight;
     
-    // Refresh Town Markets every so often
-    if ( Math.round(gameTime % 10) === 10 ) {
+    // Refresh Town Markets every ~10 days
+    if ( Math.round(gameTime % 10) === 0 ) {
         LAND._TOWNS.forEach ( e => e.generateMarket() ) 
     }
 
@@ -1254,6 +1415,8 @@ function init() {
     LAND.clear();
     MAT.clear();
     
+    MAT._resources.forEach( e => e.generateMap( true ) );
+
     // drawLandscape();
     LAND.generateTowns();
     
@@ -1271,7 +1434,10 @@ function init() {
     SHOP_UI.classList.add("hide");
     CRAFT_UI.classList.add("hide");
 
-    avatar.location = [startTown.location[0] / (LAND._PIXEL_SIZE / LAND._GRID_SIZE), startTown.location[1] / (LAND._PIXEL_SIZE / LAND._GRID_SIZE)];
+    // console.log( startTown );
+
+    avatar.location = [startTown.location.x,
+                        startTown.location.y];
     
     // Default terrain
     avatar.addValidTerrain("soil");
@@ -1279,11 +1445,11 @@ function init() {
     // Default items
     // let item = ITEM_DATA.tool_rough_hammer;
     // avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
-    let item = ITEM_DATA.dwsngTwgCopper;
+    let item = ITEM_DATA.dwsngTwg;
     avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
-    // item = ITEM_DATA.dwsngTwgIron;
-    // avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
-    item = ITEM_DATA.pickaxe_crude_cpr;
+    item = ITEM_DATA.dwsngTwgIron;
+    avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
+    item = ITEM_DATA.pickaxe;
     avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
     // item = ITEM_DATA.pickaxe_fine_cpr;
     // avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
@@ -1314,11 +1480,11 @@ function init() {
     // avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
     // avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
 
-    item = getItemDataFromName( "Crude Fishing Rod" );
+    item = getItemDataFromName( "Fishing Rod" );
     avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
 
-    INVENTORY_SELECTION.selectedIndex = 0; 
-    selectItem( INVENTORY_SELECTION.value );
+    INV_SEL.selectedIndex = 0; 
+    selectItem( INV_SEL.value );
     
     avatar.addGold(10);
 
@@ -1328,7 +1494,12 @@ function init() {
     LAND.draw(avatar.location[0], avatar.location[1], avatar.sight);
     drawAvatar();
 
+    // MAT._resources[0].generateMap();
+    // MAT._resources[0].drawMap();
+    // LAND.drawAll();  
+
 }
 
-
 init();
+
+

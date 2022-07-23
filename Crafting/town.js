@@ -4,7 +4,7 @@ class Town {
         this.type = "town";
         this.color = generateColor();
         this.stroke = [];
-        this._location = [];
+        this._location = { x: 0, y: 0 };
         this._revealed = false;
         this.generateName();
         this._actions = ["Buy", "Sell", "Pray", "Gamble"];
@@ -26,14 +26,76 @@ class Town {
         // ITEM_DATA[Object.keys(ITEM_DATA)[3]].
         // Number of items to sell 
         let number = Math.round( Math.random() * 5 + this._economic_status  ); 
+
         for (let index = 0; index < number; index++) {
             // Get Item Data 
-            let index = Math.floor(Object.keys(ITEM_DATA).length * Math.random());
-            let item = ITEM_DATA[Object.keys(ITEM_DATA)[index]];
-            let price = Math.max( Math.round(item.price + (this._economic_status*this._economic_status)), 1);
 
-            this._market.push({ name: item.name, price: price, id: Object.keys(ITEM_DATA)[index] });
+            // Generate item for store
+            // Limit store item quality for gameplay purposes
+            // 
+            let quality = this.genItemQuality();
+            // Item Name 
+            // Replace this with a new dataset look up that uses 
+            // item type and weights based on input of town type
+            // More military, more weapons etc...
+
+            // let price = Math.max( Math.round(item.price + (this._economic_status*this._economic_status)), 1);
+
+            let item = genItem( quality );
+            // let price = this.genItemSalePrice( item );
+
+            // this._market.push({ name: item.name, price: quality, item: item });
+            this.addItemToMarket( item, 0 );
         }
+
+        // console.log(`${this.name} has a ${this.economicStatus} market with ${this.genItemQuality()} quality grade items`);
+    }
+
+    genItemQuality() {
+        let maxQuality = 20;
+        let increment = maxQuality / DATA.status.length;        // Based on number of economic types
+        let qualityMulti = this._economic_status + 1
+        let quality = Math.max( qualityMulti, Math.round(Math.random() * qualityMulti * increment) );
+        return quality;
+    }
+
+    genItemSalePrice( item ) {
+        // If item is material, then price should reflect abundance
+        if ( item.properties.includes( "material" ) ) {            
+            let highest_total = 0;
+            MAT._resources.forEach( e => {
+                if ( e.total > highest_total ) 
+                    highest_total = e.total;
+            } );
+            const RESOURCE = MAT.getResource( item.name );
+
+            if ( RESOURCE !== null ) {
+                const PRICE = Math.round( highest_total / RESOURCE.total );     // Calculate price based against most abundant resource
+                const MKT_PRC = PRICE * ( 1 + this._economic_status * 0.1 );    // Tweak based on local economy
+                return MKT_PRC;
+            }
+
+            console.error(`Missing Resource: ${item.name}`);                    // Track missing resources
+        }
+
+        // TEMP CODE
+        if ( item.efficency === - 1 ) {
+            const DATA = Object.values(ITEM_DATA)
+                            .find( e => e.name === item._name );
+            const PRICE = DATA.price * ( 1+ this._economic_status * 0.1 );
+            return PRICE;
+        }
+
+        // TEMP CODE
+        const PRICE = item.efficency * ( 1+ this._economic_status * 0.1 );
+        return PRICE;
+    }
+
+    addItemToMarket( item, price ) {
+        if ( price === 0 ) price = this.genItemSalePrice( item );
+        price = this.genItemSalePrice( item );
+        if ( price === Infinity ) return;                                       // Infinity means no supply
+        this._market.push({ name: item.name, price: price, item: item });
     }
 
     generateStatus() {
@@ -45,22 +107,26 @@ class Town {
     }
 
     // Simulate a purchase price for player to sell item to town shop
-    offerToBuyPrice( itemName, avatar ) {  
-        let bp = Object.values(ITEM_DATA).find( e => ( itemName === e.name )).price;     
-        let ec = Math.max(this._economic_status, 1);        // Botch to fix maths so its at least 1 cause squalid at 0 breaks it
-
-        // Current model is to scale the item price based on local economy. Garbage but something.
-        let price = Number( ((bp / 2) * ( ec + 1 )).toFixed(2) );
-        return price;
+    offerToBuyPrice( item ) {  
+        // GARBAGE PRICING!
+        // Take base price minus 10%
+        const BASE_PRC = this.genItemSalePrice( item );
+        const PRICE = BASE_PRC - ( BASE_PRC * 0.1 );
+        return PRICE;
     }
 
-    set location(loc) {
-        this._location[0] = loc[0];
-        this._location[1] = loc[1];
+    set location( loc ) {
+        this._location = loc;
     }
 
     get location() {
-        return this._location;
+        return {                                                                // Convert the location to normal values
+            x: this._location.x / (LAND._PIXEL_SIZE / LAND._GRID_SIZE),
+            y: this._location.y / (LAND._PIXEL_SIZE / LAND._GRID_SIZE)
+        }
+    }
+    get loc() {                                                                 // Shorthand function
+        return this.location;                                   
     }
 
     get actions() {
@@ -68,9 +134,8 @@ class Town {
     }
 
     draw(land) { 
-        // console.log(loc);
-        let x = this._location[0];
-        let y = this._location[1];
+        const x = this._location.x;
+        const y = this._location.y;
 
         // LANDSCAPE_CTX.strokeStyle = `rgb(${this.stroke[0]},${this.stroke[1]},${this.stroke[2]})`;
         land._CTX.strokeStyle = `rgb(${Math.max(0,this.color[0]-30)},${Math.max(0,this.color[1]-30)},${Math.max(0,this.color[2]-30)})`;
@@ -91,226 +156,3 @@ class Town {
         land._CTX.stroke(roof);
     }
 }
-
-const DATA = {
-    towns: [
-        "Aerilon",
-        "Aquarin",
-        "Aramoor",
-        "Azmar",
-        "Begger’s Hole",
-        "Black Hollow",
-        "Blue Field",
-        "Briar Glen",
-        "Brickelwhyte",
-        "Broken Shield",
-        "Boatwright",
-        "Bullmar",
-        "Carran",
-        "City of Fire",
-        "Coalfell",
-        "Cullfield",
-        "Darkwell",
-        "Deathfall",
-        "Doonatel",
-        "Dry Gulch",
-        "Easthaven",
-        "Ecrin",
-        "Erast",
-        "Far Water",
-        "Firebend",
-        "Fool’s March",
-        "Frostford",
-        "Goldcrest",
-        "Goldenleaf",
-        "Greenflower",
-        "Garen’s Well",
-        "Haran",
-        "Hillfar",
-        "Hogsfeet",
-        "Hollyhead",
-        "Hull",
-        "Hwen",
-        "Icemeet",
-        "Ironforge",
-        "Irragin",
-        "Jarren’s Outpost",
-        "Jongvale",
-        "Kara’s Vale",
-        "Knife’s Edge",
-        "Lakeshore",
-        "Leeside",
-        "Lullin",
-        "Marren’s Eve",
-        "Millstone",
-        "Moonbright",
-        "Mountmend",
-        "Nearon",
-        "New Cresthill",
-        "Northpass",
-        "Nuxvar",
-        "Oakheart",
-        "Oar’s Rest",
-        "Old Ashton",
-        "Orrinshire",
-        "Ozryn",
-        "Pavv",
-        "Pella’s Wish",
-        "Pinnella Pass",
-        "Pran",
-        "Quan Ma",
-        "Queenstown",
-        "Ramshorn",
-        "Red Hawk",
-        "Rivermouth",
-        "Saker Keep",
-        "Seameet",
-        "Ship’s Haven",
-        "Silverkeep",
-        "South Warren",
-        "Snake’s Canyon",
-        "Snowmelt",
-        "Squall’s End",
-        "Swordbreak",
-        "Tarrin",
-        "Three Streams",
-        "Trudid",
-        "Ubbin Falls",
-        "Ula’ree",
-        "Veritas",
-        "Violl’s Garden",
-        "Wavemeet",
-        "Whiteridge",
-        "Willowdale",
-        "Windrip",
-        "Wintervale",
-        "Wellspring",
-        "Westwend",
-        "Wolfden",
-        "Xan’s Bequest",
-        "Xynnar",
-        "Yarrin",
-        "Yellowseed",
-        "Zao Ying",
-        "Zeffari",
-        "Zumka"
-    ],
-
-    names: [
-        "Acca",
-        "Adelina",
-        "Aedre",
-        "Aldietha",
-        "Alyva",
-        "Anina",
-        "Anthea",
-        "Athelyna",
-        "Avice",
-        "Ayleth",
-        "Bellaflor",
-        "Bencelina",
-        "Brangwine",
-        "Brise",
-        "Catel",
-        "Cearo",
-        "Ceday",
-        "Damisona",
-        "Danae",
-        "Desislava",
-        "Diera",
-        "Eadlin",
-        "Elwyna",
-        "Emengar",
-        "Emmalina",
-        "Eshina",
-        "Estrilda",
-        "Everill",
-        "Gabella",
-        "Gatty",
-        "Goodeth",
-        "Felice",
-        "Flossie",
-        "Hadley",
-        "Heryeth",
-        "Hildeth",
-        "Honora",
-        "Ingerith",
-        "Jacquelle",
-        "Jocosa",
-        "Kyneburg",
-        "Leffeda",
-        "Lella",
-        "Letecia",
-        "Letha",
-        "Lewen",
-        "Linden",
-        "Livilda",
-        "Livith",
-        "Lorelle",
-        "Maerwynn",
-        "Marden",
-        "Maryell",
-        "Melisende",
-        "Merewald",
-        "Merona",
-        "Milburegh",
-        "Myla",
-        "Nixie",
-        "Nura",
-        "Olyffe",
-        "Orella",
-        "Oriana",
-        "Osyth",
-        "Pavia",
-        "Pechel",
-        "Petronella",
-        "Protasia",
-        "Questa",
-        "Radella",
-        "Raisa",
-        "Raziah",
-        "Rheda",
-        "Rhoswen",
-        "Rusalka",
-        "Sabine",
-        "Sanchia",
-        "Scholace",
-        "Seburuh",
-        "Sebille",
-        "Sedille",
-        "Selova",
-        "Sheera",
-        "Sigerith",
-        "Sinnie",
-        "Sunniva",
-        "Sunngifu",
-        "Theldry",
-        "Tenanye",
-        "Tianna",
-        "Titha",
-        "Toma",
-        "Tycelin",
-        "Uta",
-        "Wasila",
-        "Wendelin",
-        "Wilmot",
-        "Xantho",
-        "Zenith",
-        "Zuzana"
-    ],
-    status: [
-        "squalid",
-        "poor",
-        "moderate",
-        "thriving",
-        "prosperous",
-        "wealthy",
-        "extravigant",
-    ],
-    terrain: [
-        "soil",
-        "rock",
-        "water"
-    ]
-}
-

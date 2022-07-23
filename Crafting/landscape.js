@@ -93,7 +93,7 @@ class Land {
     
             let town = new Town();
     
-            town.location = [x,y];
+            town.location = { x: x, y: y };
     
             this._TOWNS.push(town);           
         }
@@ -124,10 +124,8 @@ class Land {
                     // Draw towns (on top of drawn land)
                     this._TOWNS.forEach( town => { 
                         if ( town._revealed === true ) return;                
-                        let loc = {
-                            x: town.location[0] / (LAND._PIXEL_SIZE / LAND._GRID_SIZE),
-                            y: town.location[1] / (LAND._PIXEL_SIZE / LAND._GRID_SIZE)
-                        };
+                        let loc = town.location;
+
                         if ( x + offset_x === loc.x && y + offset_y === loc.y ) {
                             town._revealed = true;
                         };
@@ -163,6 +161,31 @@ class Land {
         // Return a valid list of actions the player can perform
         
     }
+
+    getClosestMatTo( x, y, name ) {
+        const LOC = LAND.convertCoordinates( x, y );
+        // Get the mat 
+        const MATERIAL = MAT.getResource( name );
+
+        if ( MATERIAL === null ) return -1;
+
+        const ARRAY = Object.keys(MATERIAL._memory);
+
+        ARRAY.sort( (a, b) => {
+            // Create a coords
+            a = { x: Number(a.split(",")[0]), y: Number(a.split(",")[1]) };     // Convert text to array and number
+            b = { x: Number(b.split(",")[0]), y: Number(b.split(",")[1]) };
+            return ( Math.distance( LOC.x, LOC.y, a.x, a.y ) >
+            Math.distance( LOC.x, LOC.y, b.x, b.y ) );                          // Return closer mat
+
+        });
+        
+        const DEST = { 
+            x: Number(ARRAY[0].split(",")[0]), 
+            y: Number(ARRAY[0].split(",")[1]) 
+        };
+        return DEST;
+    }
 }
 
 class Terrain {
@@ -178,6 +201,5 @@ class Terrain {
     get name() { return this._name; }
     get type() { return this._type; }
     get difficulty() { return this._difficulty; }
-
 }
 

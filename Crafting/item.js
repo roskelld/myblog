@@ -1,113 +1,28 @@
 'use strict'
 const ITEM_DATA = {
-    pickaxe_crude_cpr: {
-        name:      "Crude Pickaxe (Copper)",
-        weight:    3,
+    pickaxe: {
+        name:      "Pickaxe",
+        weight:     3,
         price:      3,
         use:        ["Mine",  "Attack", "Defend", "Throw", "Look"],
         efficency:  10,
         max_efficency:  10,
-        properties: ["copper"],
+        properties: ["metal"],
         materials: {
-            iron:     100,
-            wood:      80,            
+            metal:     3,
+            wood:      1,            
         },
         stats: {
             sharpness:  5,
             hardness:   10,
         }
     },
-    pickaxe_crude_irn: {
-        name:      "Crude Pickaxe (Iron)",
-        weight:    3,
-        price:      3,
-        use:        ["Mine",  "Attack", "Defend", "Throw", "Look"],
-        efficency:  10,
-        max_efficency:  10,
-        properties: ["iron"],
-        materials: {
-            iron:     100,
-            wood:      80,            
-        },
-        stats: {
-            sharpness:  5,
-            hardness:   10,
-        }
-    },
-    pickaxe_crude_gld: {
-        name:      "Crude Pickaxe (Gold)",
-        weight:    3,
-        price:      3,
-        use:        ["Mine",  "Attack", "Defend", "Throw", "Look"],
-        efficency:  10,
-        max_efficency:  10,
-        properties: ["gold"],
-        materials: {
-            iron:     100,
-            wood:      80,            
-        },
-        stats: {
-            sharpness:  5,
-            hardness:   10,
-        }
-    },
-    pickaxe_fine_cpr: {
-        name:      "Fine Pickaxe (Copper)",
-        weight:     3,
-        price:      5,
-        use:        ["Mine",  "Attack", "Defend", "Throw", "Look"],
-        efficency:  12,
-        max_efficency:  10,
-        properties: ["copper"],
-        materials: {
-            iron:     100,
-            wood:      80,            
-        },
-        stats: {
-            sharpness:  10,
-            hardness:   15,
-        }
-    },
-    pickaxe_fine_irn: {
-        name:      "Fine Pickaxe (Iron)",
-        weight:     3,
-        price:      5,
-        use:        ["Mine",  "Attack", "Defend", "Throw", "Look"],
-        efficency:  12,
-        max_efficency:  10,
-        properties: ["iron"],
-        materials: {
-            iron:     100,
-            wood:      80,            
-        },
-        stats: {
-            sharpness:  10,
-            hardness:   15,
-        }
-    },
-    pickaxe_fine_gld: {
-        name:      "Fine Pickaxe (Gold)",
-        weight:     3,
-        price:      5,
-        use:        ["Mine",  "Attack", "Defend", "Throw", "Look"],
-        efficency:  12,
-        max_efficency:  10,
-        properties: ["gold"],
-        materials: {
-            iron:     100,
-            wood:      80,            
-        },
-        stats: {
-            sharpness:  10,
-            hardness:   15,
-        }
-    },
-    dwsngTwgCopper: {
-        name:       "Dowsing Twig (copper)",
+    dwsngTwg: {
+        name:       "Dowsing Twig",
         weight:     0.5,
         price:      3,
         use:        ["Survey", "Look", "Attack", "Throw", "Defend"],
-        efficency:  10,
+        efficency:  4,
         max_efficency:  10,
         properties: ["copper"],
         materials: {
@@ -123,11 +38,11 @@ const ITEM_DATA = {
         }
     },
     dwsngTwgIron: {
-        name:       "Dowsing Twig (iron)",
+        name:       "Dowsing Twig",
         weight:     0.5,
         price:      3,
         use:        ["Survey", "Look", "Attack", "Throw", "Defend"],
-        efficency:  10,
+        efficency:  4,
         max_efficency:  10,
         properties: ["iron"],
         materials: {
@@ -240,10 +155,10 @@ const ITEM_DATA = {
     copper_ore: {
         name:       "copper",
         weight:     3,
-        price:      10,
+        price:      -1,
         use:        ["Attack", "Defend", "Throw", "Look"],
         efficency:  -1,
-        max_efficency:  10,
+        max_efficency:  -1,
         properties: ["crafting", "material", "metal", "copper"],
         materials: {
             copper:  100,
@@ -259,13 +174,35 @@ const ITEM_DATA = {
             hardness:       89,     // Brinell BHN
         },
     },
+    tin_ore: {
+        name:       "tin",
+        weight:     3,
+        price:      -1,
+        use:        ["Attack", "Defend", "Throw", "Look"],
+        efficency:  -1,
+        max_efficency:  -1,
+        properties: ["crafting", "material", "metal", "tin"],
+        materials: {
+            tin:  100,
+        },
+        stats: {
+            conduction:     386, 
+            density:        8.93, 
+            malleable:      0, 
+            ductile:        0.62, 
+            meltingpoint:   1083, 
+            sonorous:       0, 
+            luster:         0, 
+            hardness:       89,     // Brinell BHN
+        },
+    },
     gold_ore: {
         name:       "gold",
         weight:     3,
-        price:      10,
+        price:      -1,
         use:        ["Attack", "Defend", "Throw", "Look"],
         efficency:  -1,
-        max_efficency:  10,
+        max_efficency:  -1,
         properties: ["crafting", "material", "metal", "gold"],
         materials: {
             copper:  100,
@@ -367,50 +304,10 @@ const ITEM_DATA = {
             meltingpoint: 250
         },
     },
-    lngswrd_schematic: {
-        name:       "Long Sword (Schematic)",
-        weight:     0.05,
-        price:      0.1,
-        use:        ["Craft", "Look"],
-        efficency:  -1,
-        max_efficency:  10,
-        properties: ["tool", "copper","iron"],
-        materials: {
-            paper:  1
-        },
-        stats: {
-            sharpness:  5,
-            conduction: 20,
-            hardness:   10,
-            luster:     5,
-            sonorous:   4,
-            meltingpoint: 250
-        },
-    },
-    smlhut_schematic: {
-        name:       "Small Hut (Schematic)",
-        weight:     0.05,
-        price:      0.1,
-        use:        ["Craft", "Look"],
-        efficency:  -1,
-        max_efficency:  10,
-        properties: ["tool", "copper", "iron", "wood"],
-        materials: {
-            paper:  1
-        },
-        stats: {
-            sharpness:  5,
-            conduction: 20,
-            hardness:   10,
-            luster:     5,
-            sonorous:   4,
-            meltingpoint: 250
-        },
-    },
     smlhut: {
         name:       "Small Hut",
         weight:     0.05,
-        price:      0.1,
+        price:      100,
         use:        ["Build", "Look"],
         efficency:  -1,
         max_efficency:  10,
@@ -447,36 +344,16 @@ const ITEM_DATA = {
             meltingpoint: 250
         },
     },
-    hltpotion_schematic: {
-        name:       "Potion of Healing (Schematic)",
-        weight:     0.05,
-        price:      0.1,
-        use:        ["Craft", "Look"],
-        efficency:  -1,
-        max_efficency:  -1,
-        properties: ["tool", "copper","iron"],
-        materials: {
-            paper:  1
-        },
-        stats: {
-            sharpness:  5,
-            conduction: 20,
-            hardness:   10,
-            luster:     5,
-            sonorous:   4,
-            meltingpoint: 250
-        },
-    },
     lute: {
         name:       "Lute",
         weight:     0.05,
         price:      0.1,
         use:        ["Play Song", "Look"],
-        efficency:  -1,
-        max_efficency:  -1,
+        efficency:  5,
+        max_efficency:  5,
         properties: [],
         materials: {
-            paper:  1
+            wood:  1
         },
         stats: {
             sharpness:  5,
@@ -492,8 +369,8 @@ const ITEM_DATA = {
         weight:     0.05,
         price:      0.1,
         use:        ["Shoot", "Throw", "Look"],
-        efficency:  -1,
-        max_efficency:  -1,
+        efficency:  13,
+        max_efficency:  13,
         properties: [],
         materials: {
             paper:  1
@@ -567,70 +444,10 @@ const ITEM_DATA = {
             luster:     5
         },
     },
-    tool_fine_hammer: {
-        name:       "Fine Hammer",
-        weight:     0.05,
-        price:      0.1,
-        use:        ["Attack", "Defend", "Throw", "Look"],
-        efficency:  20,
-        max_efficency:  20,
-        properties: ["crafting", "tool"],
-        materials: {
-            iron:  1,
-            oak:   1,
-        },
-        stats: {
-            sharpness:  15,
-            conduction: 20,
-            hardness:   10,
-            luster:     5
-        },
-    },
-    tool_rough_hammer: {
-        name:       "Rough Hammer",
-        weight:     0.05,
-        price:      0.1,
-        use:        ["Attack", "Defend", "Throw", "Look"],
-        efficency:  5,
-        max_efficency:  5,
-        properties: ["crafting", "tool"],
-        materials: {
-            iron:  1,
-            beech:   1,
-        },
-        stats: {
-            sharpness:  5,
-            conduction: 20,
-            hardness:   10,
-            luster:     5,
-            sonorous:   4,
-            meltingpoint: 250
-        },
-    },
-    dagger_schematic: {
-        name:       "Dagger (Schematic)",
-        weight:     0.05,
-        price:      0.1,
-        use:        ["Craft", "Look"],
-        efficency:  -1,
-        max_efficency:  10,
-        properties: ["tool", "metal", "metal", "metal", "metal"],
-        materials: {
-            paper:  1
-        },
-        stats: {
-            sharpness:  5,
-            conduction: 20,
-            hardness:   10,
-            luster:     5,
-            sonorous:   4,
-            meltingpoint: 250
-        },
-    },
     climbing_pitons: {
         name:       "Climbing Pitons",
         weight:     0.5,
-        price:      15,
+        price:      40,
         use:        ["Attack", "Defend", "Throw", "Look"],
         efficency:  -1,
         max_efficency:  10,
@@ -650,7 +467,7 @@ const ITEM_DATA = {
     water_wings: {
         name:       "Water Wings",
         weight:     0.5,
-        price:      0.1,
+        price:      50,
         use:        ["Attack", "Defend", "Throw", "Look"],
         efficency:  -1,
         max_efficency:  10,
@@ -667,27 +484,12 @@ const ITEM_DATA = {
             meltingpoint: 250
         },
     },
-    fishing_rod_crd: {
-        name:       "Crude Fishing Rod",
+    fishing_rod: {
+        name:       "Fishing Rod",
         weight:     0.5,
-        price:      2,
+        price:      20,
         use:        ["Fish", "Attack", "Defend", "Throw", "Look"],
         efficency:  5,
-        max_efficency:  10,
-        properties: [],
-        materials: {
-            oak:  0.5
-        },
-        stats: {
-            sharpness:  5,
-        },
-    },
-    fishing_rod_fne: {
-        name:       "Fine Fishing Rod",
-        weight:     0.5,
-        price:      0.1,
-        use:        ["Fish", "Attack", "Defend", "Throw", "Look"],
-        efficency:  10,
         max_efficency:  10,
         properties: [],
         materials: {
@@ -712,7 +514,16 @@ class Item {
         this._stats = stats;
     }
     get name() {
-        return this._name;
+        const QUALITY = this.efficencyName;
+        const TYPE = this.itemType;
+
+        if ( QUALITY === "" ) {
+            return `${this._name}`;
+        } else if ( TYPE !== "" ) {
+            return `${QUALITY} ${this._name} (${TYPE})`;
+        } else {
+            return `${QUALITY} ${this._name}`;
+        }
     }
     get weight() {
         return this._weight;
@@ -735,7 +546,128 @@ class Item {
     get stats() {
         return this._stats;
     }
+    get efficencyName() {
+        if ( this.efficency === -1 ) return "";
+        if ( this.efficency < 1 ) return DATA.item_quality[0];
+        if ( this.efficency < 10 ) return DATA.item_quality[1];
+        if ( this.efficency < 25 ) return DATA.item_quality[2];
+        if ( this.efficency < 50 ) return DATA.item_quality[3];
+        if ( this.efficency < 75 ) return DATA.item_quality[4];
+        if ( this.efficency < 100 ) return DATA.item_quality[5];
+        if ( this.efficency < 125 ) return DATA.item_quality[6];
+        if ( this.efficency < 150 ) return DATA.item_quality[7];
+        return DATA.item_quality[8];
+    }
+
+    get itemType() {
+        // Does the item have a specific subtype for its purpose?
+        // Data is not well setup for this so for now it's going to
+        // be a bit hardcoded for mining and surveying
+        if ( this.use.some( e => e === "Mine" || e === "Survey" ) ) {
+            return this.properties[0];
+        } else {
+            return "";
+        }
+    }
+
+    
     genID() {
         return Math.random().toString(16).substr(2, 8);
+    }
+}
+
+// Item Functions
+
+function genItem( quality ) {
+    // TODO: Change how this works
+    // Pure random and relies on ITEM_DATA
+    let index = Math.floor(Object.keys(ITEM_DATA).length * Math.random());
+    let itemName = Object.keys(ITEM_DATA)[index];
+
+
+    // TODO: generate stats from materials
+    // generate materials
+    // generate price based on materials and quality
+    const data = ITEM_DATA[itemName];
+
+    // Scrappy fix: ignore requested quality (efficiency) if item type has none
+    if ( data.efficency === -1 ) {
+        return new Item( 
+            data.name, 
+            data.weight, 
+            data.properties, 
+            data.materials, 
+            data.use, 
+            -1, 
+            data.stats );
+    } else {
+        return new Item( 
+            data.name, 
+            data.weight, 
+            data.properties, 
+            data.materials, 
+            data.use, 
+            quality, 
+            data.stats );
+    }
+
+    // return {
+    //     name:       data.name,
+    //     weight:     data.weight,
+    //     price:      quality,
+    //     use:        data.use,
+    //     efficency:  quality,
+    //     properties: data.properties,
+    //     materials:  data.materials,
+    //     stats:      data.stats,
+    // }
+}
+
+// pickaxe: {
+//     name:      "Pickaxe",
+//     weight:     3,
+//     price:      3,
+//     use:        ["Mine",  "Attack", "Defend", "Throw", "Look"],
+//     efficency:  10,
+//     max_efficency:  10,
+//     properties: ["metal"],
+//     materials: {
+//         metal:     3,
+//         wood:      1,            
+//     },
+//     stats: {
+//         sharpness:  5,
+//         hardness:   10,
+//     }
+// },
+
+
+function genSchmatic( item, quality ) {
+    const materials = Object.keys(item.materials);
+    const matCount = Object.values(item.materials);
+
+    const properties = [];
+    materials.forEach( (mat, idx) => {
+        for (let index = 0; index < matCount[idx]; index++) {
+            properties.push(mat);                
+        }
+    })
+
+    console.log(properties);
+
+    return {
+        name:       `${item.name} (Schematic)`,
+        weight:     0.05,
+        price:      quality,
+        use:        ["Craft", "Look"],
+        efficency:  quality,
+        properties: properties,
+        materials: {
+            papyrus:    1,
+            ink:        1,
+        },
+        stats: {
+
+        }
     }
 }

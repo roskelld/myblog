@@ -1,0 +1,66 @@
+<html>
+<head>
+<script src='perlin.js'></script>
+</head>
+<body>
+    <h1>Crafting Material Distribution and Density</h1>
+<canvas id='cnvs'></canvas>
+<script>
+'use strict';
+let cnvs = document.getElementById('cnvs');
+cnvs.width = cnvs.height = 512;
+let ctx = cnvs.getContext('2d');
+
+const GRID_SIZE = 4;
+const RESOLUTION = 16;
+const COLOR_SCALE = 250;
+
+let pixel_size = cnvs.width / RESOLUTION;
+let num_pixels = GRID_SIZE / RESOLUTION;
+
+const CLAMP_MIN = 0;
+const SPREAD = 0.302
+const CLAMP_MAX = Math.min(CLAMP_MIN + SPREAD, 1);
+// Min amount per pocket to provide 1 resource
+// 0.00001 - Crazy Dense (all the resources in the world)
+// 0.5 - Almost none, maybe double numbers
+const POCKET_DENSITY = 0.29;
+
+console.log( `CLAMP_MIN ${CLAMP_MIN} -> ${CLAMP_MAX} CLAMP_MAX`  );
+
+let total = 0;
+
+
+let perlin = new Perlin();
+
+for (let y = 0; y < GRID_SIZE; y += num_pixels / GRID_SIZE){
+    for (let x = 0; x < GRID_SIZE; x += num_pixels / GRID_SIZE){
+        let value = perlin.get(x, y);
+        
+        // If the value is outside of the accepted ranges
+        // or does not yield at least 1 resource then clear it
+        if ( value < CLAMP_MIN || value > CLAMP_MAX || (Math.abs(value) / POCKET_DENSITY) < 1 ) {
+            value = -1;
+        } else {           
+            total += Math.floor(Math.abs(value) / POCKET_DENSITY );
+        }
+
+        let v = parseInt(Math.abs(value) * COLOR_SCALE);
+        if ( value === -1 ) {
+            ctx.fillStyle = 'rgb(0,0,0)';
+        } else {            
+            ctx.fillStyle = 'hsl('+v+',50%,50%)';
+        }
+        ctx.fillRect(
+            x / GRID_SIZE * cnvs.width,
+            y / GRID_SIZE * cnvs.width,
+            pixel_size,
+            pixel_size
+        );
+    }
+
+}
+console.log(`Total: ${total}`);
+</script>
+</body>
+</html>

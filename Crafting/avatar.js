@@ -80,6 +80,10 @@ class Avatar {
         return this._location;
     }
 
+    get loc() {                                                                 // Cleaner loc function
+        return { x: this._location[0], y: this._location[1] }
+    }
+
     get mapLocation() {
         return LAND.convertCoordinates( this.location[0], this.location[1] );
     }
@@ -129,10 +133,10 @@ class Avatar {
 
     addToInventory( item ) {
         this._inventory.push(item);
-        INVENTORY_SELECTION.options[INVENTORY_SELECTION.length] = new Option( item.name, item.id );
+        INV_SEL.options[INV_SEL.length] = new Option( item.name, item.id );
     }
     removeFromInventory( id ) {
-        Object.values(INVENTORY_SELECTION.options).find( e => e.value == id ).remove();
+        Object.values(INV_SEL.options).find( e => e.value == id ).remove();
 
         this._inventory.splice( this._inventory.findIndex( e => e.id === id ), 1);
     }
