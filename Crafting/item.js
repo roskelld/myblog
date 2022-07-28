@@ -502,48 +502,59 @@ const ITEM_DATA = {
 }
 
 class Item {
-    constructor( name, weight, properties, materials, use, efficency, stats ) {
-        this._name = name;
+    constructor( data, name, weight, properties, materials, use, efficency, stats ) {
+        this._data = data;
         this._weight = weight;
         this._materials = materials;
         this._use = use;
-        this._id = this.genID();
+        this._id = genID();
         this._properties = properties;
         this._efficency = efficency;
         this._max_efficency = efficency;
         this._stats = stats;
+        this._name = name;
     }
-    get name() {
-        const QUALITY = this.efficencyName;
-        const TYPE = this.itemType;
+    get name() {     
+        const NAME = ( this._name == undefined ) ? this._data.name :this._name;
+        
+        const QUALITY = qualityAsText( this.efficency );
 
-        if ( QUALITY === "" ) {
-            return `${this._name}`;
-        } else if ( TYPE !== "" ) {
-            return `${QUALITY} ${this._name} (${TYPE})`;
+        if ( this.efficency === -1 ) {
+            return `${NAME}`;
         } else {
-            return `${QUALITY} ${this._name}`;
+            return `${QUALITY} ${NAME}`;
         }
     }
     get weight() {
+        if ( this._weight === undefined ) return this._data.weight;
         return this._weight;
     }
     get use() {
-        return this._use;
+        if ( this._use === undefined ) {
+            return this._data.use;
+        } else {
+            return this._use;
+        }
     }
     get id() {
+        if ( this._id === undefined ) this._id = genID();
         return this._id;
     }
     get properties() {
+        if ( this._properties === undefined )  return this._data.properties;
         return this._properties;
+
     }
     get materials() {
+        if ( this._materials === undefined ) return [];
         return this._materials;
     }
     get efficency() {
+        if ( this._efficency === undefined ) return this._data.efficency;
         return this._efficency;
     }
     get stats() {
+        if ( this._stats === undefined ) return this._data.stats;
         return this._stats;
     }
     get efficencyName() {
@@ -558,7 +569,10 @@ class Item {
         if ( this.efficency < 150 ) return DATA.item_quality[7];
         return DATA.item_quality[8];
     }
-
+    hasType( type ) {
+        if ( this._data.type === undefined ) return false;
+        return this._data.type.includes( type );
+    }
     get itemType() {
         // Does the item have a specific subtype for its purpose?
         // Data is not well setup for this so for now it's going to
@@ -569,30 +583,92 @@ class Item {
             return "";
         }
     }
-
+    get description() {
+        const DESC = this.data.description;                                     // Find base description
     
-    genID() {
-        return Math.random().toString(16).substr(2, 8);
+        // Find and replace any tags with text
+        const ARY = DESC.split("|");                                                // Hunt out any property tags to replace
+        ARY.forEach( (prop, i) => {
+            const TAGS = this[[prop]];                                              // try to make valid item data entry
+            if ( TAGS !== undefined ) {
+                ARY[i] = "";                                                        // Clear tag text in OG array
+                if ( TAGS.length === 1 ) {
+                    ARY[i] = this[[prop]][0];                                       // Add property tag
+                } else {
+                    TAGS.forEach( (tag, y) => { 
+                        ARY[i] += (TAGS.length-1 === y) ? `& ${tag}` : ` ${tag}, `; // Add multiple tags and end list
+                    } );
+                }
+            }
+        });
+        return ARY.join('');                                                    // Return generate description text
+    }
+    get data() {
+        return this._data;
+    }
+}
+
+class Schematic extends Item {
+    constructor( craft_data_ref, quality ) {
+        super();
+        this._craft_data_ref = craft_data_ref;
+        this._efficency = quality;
+        this._data = DATA.schematic;       
+    }
+    get craftData() {
+        return this._craft_data_ref;
+    }
+    get name() {
+        const QUALITY = qualityAsText(this._efficency);
+        const ITEM = this._craft_data_ref.name;
+        if (QUALITY === "") {
+            return `${ITEM} (Schematic)`;
+        } else {
+            return `${QUALITY} ${ITEM} (Schematic)`;
+        }
+    }
+    get description() {
+        return `Schematic for crafting a ${qualityAsText(this.efficency)} 
+                ${this.craftData.name}.`
+    }
+    get stats() {
+        return {};                                                              // Schematics have no stats beyond efficency
+    }
+    get properties() {
+        return [];
+    }
+}
+
+class CraftMat extends Item {
+    constructor( data ) {
+        super();
+        this._data = data; 
+    }
+    hasType( type ) {
+        if ( type === "crafting " ) return true;
+        if ( this._data.type === undefined ) return false;
+        return this._data.type.includes( type );
     }
 }
 
 // Item Functions
 
-function genItem( quality ) {
+function genRandomItem( quality ) {
     // TODO: Change how this works
-    // Pure random and relies on ITEM_DATA
-    let index = Math.floor(Object.keys(ITEM_DATA).length * Math.random());
-    let itemName = Object.keys(ITEM_DATA)[index];
+    // Pure random, needs to select based on commonality and theme
+    let index = Math.floor(Object.keys(DATA.items).length * Math.random());
+    let itemName = Object.keys(DATA.items)[index];
 
 
     // TODO: generate stats from materials
     // generate materials
     // generate price based on materials and quality
-    const data = ITEM_DATA[itemName];
+    const data = DATA.items[itemName];
 
     // Scrappy fix: ignore requested quality (efficiency) if item type has none
     if ( data.efficency === -1 ) {
         return new Item( 
+            DATA.items[itemName],
             data.name, 
             data.weight, 
             data.properties, 
@@ -602,6 +678,7 @@ function genItem( quality ) {
             data.stats );
     } else {
         return new Item( 
+            DATA.items[itemName],
             data.name, 
             data.weight, 
             data.properties, 
@@ -611,63 +688,43 @@ function genItem( quality ) {
             data.stats );
     }
 
-    // return {
-    //     name:       data.name,
-    //     weight:     data.weight,
-    //     price:      quality,
-    //     use:        data.use,
-    //     efficency:  quality,
-    //     properties: data.properties,
-    //     materials:  data.materials,
-    //     stats:      data.stats,
-    // }
 }
 
-// pickaxe: {
-//     name:      "Pickaxe",
-//     weight:     3,
-//     price:      3,
-//     use:        ["Mine",  "Attack", "Defend", "Throw", "Look"],
-//     efficency:  10,
-//     max_efficency:  10,
-//     properties: ["metal"],
-//     materials: {
-//         metal:     3,
-//         wood:      1,            
-//     },
-//     stats: {
-//         sharpness:  5,
-//         hardness:   10,
-//     }
-// },
+function genRandomSchmaticItem( quality ) {
+    const IDX = Math.floor(Object.keys(DATA.items).length * Math.random());
+    return createSchmaticItem( Object.values(DATA.item)[IDX], quality );
+}
 
+function createSchmaticItem( item_data, quality ) {
+    // const ITEM = getItemDataFromName( ItemName );
+    // const materials = Object.keys(ITEM.materials);
+    // const matCount = Object.values(ITEM.materials);
 
-function genSchmatic( item, quality ) {
-    const materials = Object.keys(item.materials);
-    const matCount = Object.values(item.materials);
+    // const properties = [];
+    // materials.forEach( (mat, idx) => {                                          // Generate schematic recipe from item mats
+    //     for (let index = 0; index < matCount[idx]; index++) {
+    //         properties.push(mat);                
+    //     }
+    // });
+    // const SCHEMATIC = new Item(
+    //     `${ITEM.name} (Schematic)`, 
+    //     DATA.items.schematic.weight, 
+    //     properties, 
+    //     DATA.items.schematic.materials, 
+    //     DATA.items.schematic.use, 
+    //     quality, {});
 
-    const properties = [];
-    materials.forEach( (mat, idx) => {
-        for (let index = 0; index < matCount[idx]; index++) {
-            properties.push(mat);                
-        }
-    })
+    // return SCHEMATIC;
+    return new Schematic( item_data, quality )
+}
 
-    console.log(properties);
-
-    return {
-        name:       `${item.name} (Schematic)`,
-        weight:     0.05,
-        price:      quality,
-        use:        ["Craft", "Look"],
-        efficency:  quality,
-        properties: properties,
-        materials: {
-            papyrus:    1,
-            ink:        1,
-        },
-        stats: {
-
-        }
+function createMaterialItem( name ) {
+    const ITEM_DATA = Object.values(DATA.materials)
+                                    .find( e => e.name === name );
+    if ( ITEM_DATA === undefined ) {
+        console.error(`No Material Named ${name} found - Add it to the data?`);
+        return
     }
+    const ITEM = new CraftMat(ITEM_DATA);
+    return ITEM;
 }

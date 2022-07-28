@@ -26,25 +26,39 @@ h2 {
     scrollbar-gutter: auto;
     scrollbar-width: thin;
     width: 99%;
+    font-size: 0.8em;
 }
 
 #log p {
-    line-height: 1.1em;
+    line-height: 1em;
     font-family: 'Courier New', Courier, monospace;
     font-weight: 400;
-    margin: 0.1em;
+    margin: 0.1em 0 0.3em 0;
 }
 
 #log p:last-child::before {
     content: "> ";
+    font-weight: 900;
+    animation: 1.8s linear infinite condemned_blink_effect;
 }
+@keyframes condemned_blink_effect {
+    0% {
+      visibility: hidden;
+    }
+    50% {
+      visibility: hidden;
+    }
+    100% {
+      visibility: visible;
+    }
+  }
 
 #log p:last-child {
-    line-height: 1.2em;
+    line-height: 1em;
     color:rgb(22, 132, 17);
     font-family: Verdana, Geneva, Tahoma, sans-serif;
-    font-weight: 800;
-    margin-top: 1em;
+    font-weight: 500;
+    margin-top: 0.2em;
 }
 
 canvas {
@@ -92,18 +106,22 @@ canvas {
     grid-row: 3 / 5;
 }
 .box-4 {
-    grid-column: 1 / 13;
-    grid-row: 10 / 10;
+    grid-column: 1 / 10;
+    grid-row: 12 / 12;
 }
 .box-5 {
-    grid-column: 1 / 13;
-    grid-row: 11 / 13;
+    grid-column: 1 / 10;
+    grid-row: 10 / 12;
 }
 .box-6 {
     grid-column: 10 / 13;
     grid-row: 5 / 7;
 }
 .box-7 {
+    grid-column: 10 / 13;
+    grid-row: 10 / 13;
+}
+.box-8 {
     grid-column: 10 / 13;
     grid-row: 7 / 10;
 }
@@ -235,6 +253,11 @@ form {
     height: fit-content;
     flex-basis: auto;
     padding-bottom: 0.2em;
+    overflow-x: hidden;
+    scroll-margin: 1px;
+    scroll-padding: 1px;
+    scrollbar-gutter: auto;
+    scrollbar-width: thin;
 }
 
 form > h3 {
@@ -267,6 +290,7 @@ form > h3 {
     line-height: 1em;
     height: fit-content;
     text-align: center;
+    text-transform: capitalize;
 }
 
 #crafting > p {
@@ -281,6 +305,7 @@ label > p {
 #craft-item-title-box > label > input {
     width: 90%;
     text-align: center;
+    text-transform: capitalize;
 }
 
 .details-table {
@@ -298,7 +323,7 @@ label > p {
 }
 
 td {
-    width: 50%;
+    min-width: 33.33%;
 }
 
 #details > tr > td:nth-child(odd) {
@@ -449,4 +474,23 @@ td {
     font-family: monospace;
     border-top: 1px solid #777;
     border-bottom: 1px solid #777;
+}
+
+#description-title {
+    margin: 0.1em 0;
+    padding: 0;
+    font-weight: 600;
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
+}
+
+#item-description {
+    background:rgb(48, 48, 48);
+    color: rgb(168, 168, 168);
+    height: 100%;
+    margin: 0;
+    padding: 0.3em;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 0.8em;
+    font-weight: 500;
 }

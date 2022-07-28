@@ -49,3 +49,22 @@ function strengthAsText( str, max ) {
     const NUM = DATA.strength.length;
     return DATA.strength[Math.round(str / max * NUM)];
 }
+
+function randomColor() {
+    let color = `#${Math.floor(Math.random()*16777215).toString(16)}`;
+    let r = Math.round(Math.random() * 255);
+    let g = Math.round(Math.random() * 255);
+    let b = Math.round(Math.random() * 255);
+    return [r,g,b];
+}
+
+function qualityAsText( quality, max = 150 ) {
+    const NUM = DATA.item_quality.length;
+    if ( quality <= 0 ) quality = 1;
+    if ( quality >= max ) quality = max-1;
+    return DATA.item_quality[Math.floor(quality / max * NUM)];
+}
+
+function genID( length = 8 ) {
+    return Math.random().toString(16).substring(2, 2 + length);                 // Return random string
+}

@@ -2,7 +2,7 @@ class Town {
     constructor() {
         this.name = "";
         this.type = "town";
-        this.color = generateColor();
+        this.color = randomColor();
         this.stroke = [];
         this._location = { x: 0, y: 0 };
         this._revealed = false;
@@ -21,11 +21,8 @@ class Town {
     }
 
     generateMarket() {
-
-        this._market = [];
-        // ITEM_DATA[Object.keys(ITEM_DATA)[3]].
-        // Number of items to sell 
-        let number = Math.round( Math.random() * 5 + this._economic_status  ); 
+        this._market = [];        
+        let number = Math.round( Math.random() * 5 + this._economic_status  );  // Number of items to sell 
 
         for (let index = 0; index < number; index++) {
             // Get Item Data 
@@ -39,10 +36,18 @@ class Town {
             // item type and weights based on input of town type
             // More military, more weapons etc...
 
-            // let price = Math.max( Math.round(item.price + (this._economic_status*this._economic_status)), 1);
+            // Decide on what to add 
+            const RNG = Math.round(Math.random() * 100);
+            let item
+            if ( RNG < 5 ) {
+                item = genRandomItem( quality );
+            } else if ( RNG < 15 ) {
+                item = genRandomSchmaticItem( quality );
+            } else {
+                item = genRandomItem( quality );
+            }
 
-            let item = genItem( quality );
-            // let price = this.genItemSalePrice( item );
+            if ( item === undefined ) return;
 
             // this._market.push({ name: item.name, price: quality, item: item });
             this.addItemToMarket( item, 0 );
@@ -58,8 +63,8 @@ class Town {
         let quality = Math.max( qualityMulti, Math.round(Math.random() * qualityMulti * increment) );
         return quality;
     }
-
     genItemSalePrice( item ) {
+        // console.log( item );
         // If item is material, then price should reflect abundance
         if ( item.properties.includes( "material" ) ) {            
             let highest_total = 0;
@@ -90,22 +95,18 @@ class Town {
         const PRICE = item.efficency * ( 1+ this._economic_status * 0.1 );
         return PRICE;
     }
-
     addItemToMarket( item, price ) {
         if ( price === 0 ) price = this.genItemSalePrice( item );
         price = this.genItemSalePrice( item );
         if ( price === Infinity ) return;                                       // Infinity means no supply
         this._market.push({ name: item.name, price: price, item: item });
     }
-
     generateStatus() {
         this._economic_status = Math.round( Math.random() * (DATA.status.length - 1)) ;        
     }
-
     get economicStatus() {
         return DATA.status[this._economic_status];
     }
-
     // Simulate a purchase price for player to sell item to town shop
     offerToBuyPrice( item ) {  
         // GARBAGE PRICING!
@@ -114,11 +115,9 @@ class Town {
         const PRICE = BASE_PRC - ( BASE_PRC * 0.1 );
         return PRICE;
     }
-
     set location( loc ) {
         this._location = loc;
     }
-
     get location() {
         return {                                                                // Convert the location to normal values
             x: this._location.x / (LAND._PIXEL_SIZE / LAND._GRID_SIZE),
@@ -128,11 +127,9 @@ class Town {
     get loc() {                                                                 // Shorthand function
         return this.location;                                   
     }
-
     get actions() {
         return this._actions;
     }
-
     draw(land) { 
         const x = this._location.x;
         const y = this._location.y;

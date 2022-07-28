@@ -78,9 +78,16 @@ ITEM_ACTIONS.addEventListener("focus", e => { ITEM_ACTIONS.blur(); }, false );
 
 const INSTRUCTIONS = document.querySelector("#instructions");
 
+// ----------------------------------------------------------------------------
+// ITEM DETAILS
+
 const UI_DETAILS = document.querySelector("#details");
 const UI_DETAILS_BOX = document.querySelector("#details-box");
 
+// ----------------------------------------------------------------------------
+// ITEM DESCRIPTION
+
+const ITEM_DESC = document.querySelector("#item-description");
 
 // ----------------------------------------------------------------------------
 // Shop
@@ -111,7 +118,7 @@ const CRAFT_DETAILS = document.querySelector("#crafting-details");
 // Action calls like leave and craft
 const CRAFT_ACTION_LIST = document.querySelector("#crafting-list");
 CRAFT_ACTION_LIST.addEventListener("change", () => {  
-    selectCraftinActionItem(CRAFT_ACTION_LIST.value); 
+    selectCraftingMenuActionItem(CRAFT_ACTION_LIST.value); 
 }, false );
 CRAFT_ACTION_LIST.addEventListener("focus", e => { 
     CRAFT_ACTION_LIST.blur(); 
@@ -315,7 +322,7 @@ function keyInput(e) {
             switch (KEY_NAME) {
                 case USE:
                 case ACCEPT:
-                    selectCraftinActionItem( CRAFT_ACTION_LIST.value );
+                    selectCraftingMenuActionItem( CRAFT_ACTION_LIST.value );
                 break;
                 case INV_UP:
                     if ( CRAFT_ACTION_LIST.selectedIndex === 0 || CRAFT_ACTION_LIST.selectedIndex === -1 ) {
@@ -380,11 +387,11 @@ function selectShopItem() {
     } 
     let feature = getLandscapeFeature( avatar.location[0], avatar.location[1] );
     if ( getGameMode() === 1 ) {
-        let price = feature._market[SHOP_LIST.selectedIndex-1].price;
+        const PRICE = feature._market[SHOP_LIST.selectedIndex-1].price.toFixed(2);
         updateLog(
             `You pick up a ${SHOP_LIST.value} from a 
             shelf and the shop keeper looks up and 
-            shouts "${price} gold, you'll not find a 
+            shouts "${PRICE} gold, you'll not find a 
             better deal".`);
         return;
     }
@@ -401,7 +408,6 @@ function selectShopItem() {
 }
 
 function selectItem( name ) {
-    
     // Show all actions
     // Get Item
     let item = avatar.getItem( INV_SEL.value );
@@ -409,7 +415,8 @@ function selectItem( name ) {
     // clear current actions
     let items = ITEM_ACTIONS.options.length;
     for (let i = 0; i < items; i++) {
-        ITEM_ACTIONS.options[0].removeEventListener("click", () => useItem( INV_SEL.value ), false );
+        ITEM_ACTIONS.options[0]
+        .removeEventListener("click", () => useItem( INV_SEL.value ), false );
         ITEM_ACTIONS.options[0].remove();
     }
     
@@ -419,10 +426,9 @@ function selectItem( name ) {
         UI_DETAILS.removeChild(UI_DETAILS.lastElementChild);       
     }
 
-    // No item equipped
-    // This could be used for character actions such as camp, pray, hunt    
-    if ( !item ) {
-        setLandscapeFeatureActions();
+    if ( !item ) {                                                              // No item equipped
+        setLandscapeFeatureActions();                                           // This could be used for character actions such as camp, pray, hunt     
+        setItemDescription();                                                   // Clear item description
         return;
     }
     
@@ -434,17 +440,22 @@ function selectItem( name ) {
     // Add Actions
     item.use.forEach( e => {
         ITEM_ACTIONS.options[ITEM_ACTIONS.length] = new Option( e, e );  
-        ITEM_ACTIONS.options[ITEM_ACTIONS.length - 1].addEventListener("click", () => useItem( INV_SEL.value ), false );
+        ITEM_ACTIONS.options[ITEM_ACTIONS.length - 1]
+            .addEventListener("click", () => useItem( INV_SEL.value ), false );
     });
     
     // Select first option;
     ITEM_ACTIONS.options[0].selected = true;
 
     // Add Details
-    UI_DETAILS.appendChild(GenerateItemDetailRow( 'Efficency', item.efficency ));
+    UI_DETAILS.appendChild(
+        GenerateItemDetailRow( 'Efficency', item.efficency ));
     Object.keys(item.stats).forEach( e => { 
         UI_DETAILS.appendChild(GenerateItemDetailRow(e, item.stats[[e]]));
     } );
+
+    // Add Description
+    setItemDescription( item );
 
     updateIntructions( INV_SEL.options[INV_SEL.selectedIndex].text );
 }
@@ -476,17 +487,20 @@ function useItem( id ) {
 
     switch (action) {
         case "Mine":
-            mineTile( avatar.getItem(INV_SEL[INV_SEL.selectedIndex].value).properties[0], avatar.loc.x, avatar.loc.y );
+            mineTile(avatar.getItem(
+                    INV_SEL[INV_SEL.selectedIndex].value).properties[0], 
+                    avatar.loc.x, avatar.loc.y );
             break;
         case "Survey":
-            // surveyTile( avatar.getItem(INV_SEL[INV_SEL.selectedIndex].value).properties[0], avatar.location[0], avatar.location[1] );
             scanLandForMaterial( 
                 avatar.loc.x, 
                 avatar.loc.y, 
                 avatar.getItem(INV_SEL[INV_SEL.selectedIndex].value) );
             break;
         case "Look":
-            updateLog(`You inspect the ${item.name}, it feels nice in the hand.`);
+            updateLog(
+                `You inspect the ${item.name}, 
+                it feels nice in the hand.`);
             break;
         case "Gamble":
             gamble();
@@ -530,90 +544,99 @@ function useItem( id ) {
 // ----------------------------------------------------------------------------
 // Crafting
 function enterCrafting() {
+    const FEAT = getLandscapeFeature( avatar.location[0], avatar.location[1] );
+    console.log( FEAT );
+    if ( FEAT === undefined || FEAT.type !== "town" ) {
+        updateLog(
+            `Alas you cannot craft unless you're in a town.`);
+        return;
+    }
 
-    CRAFT_UI.classList.remove("hide");
-    // Default select Craft as the Action
-    CRAFT_ACTION_LIST.selectedIndex = 1;
-    setGameMode("crafting");  
-    // Populate recipe
-    let item = avatar.getItem( INV_SEL.value );
+    CRAFT_UI.classList.remove("hide");                                          // Show Crafting UI
+    CRAFT_ACTION_LIST.selectedIndex = 1;                                        // Default select Craft as the Action
+    setGameMode("crafting");                                                    // Set controls
+    const SCHEMATIC = avatar.getItem(SELECTED_ITEM_ID());                       // Get Schematic Data
+    updateIntructions(SCHEMATIC.name);                                          // Update Instructions  
+    CRAFT_NAME.textContent = SCHEMATIC.name;                                    // Set crafting page title           
+    CRAFT_ITEM_TITLE.value = SCHEMATIC.craftData.name;                          // Set default name to item name
+    let TOOL_ITEMS = [];                                                        // Collect all valid tools
 
-    // Update Instructions
-    updateIntructions(item.name);
-
-    // Set name
-    CRAFT_NAME.textContent = item.name;
-    
-    // Create a map of entries to get mat counts
-    crafting_recipe = item._properties.reduce((a, c) => a.set(c, (a.get(c) || 0) + 1), new Map()); 
-    
-    // Generate and add recipe text
-    let message = "";
-    crafting_recipe.forEach( (count, title) => { message += `${title} * ${count}, ` } );
-    CRAFT_RECIPE.textContent = message.substr(0, message.length - 2);
+    let message = "";                                                           // Generate and add recipe text
+    Object.keys(SCHEMATIC.craftData.materials).forEach( 
+        (title) => { 
+            message += `${title} * ${SCHEMATIC.craftData.materials[[title]]} `  // Material type and amount needed
+        })
+    CRAFT_RECIPE.textContent = message.substring(0, message.length - 1);        // Add the recipe to the UI 
    
-    // Clear List
-    let count = CRAFT_LISTS.childElementCount;
-    for (let index = 0; index < count; index++) CRAFT_LISTS.removeChild(CRAFT_LISTS.lastElementChild);
+    
+    let count = CRAFT_LISTS.childElementCount;                                  // Clear Material Lists
+    for (let index = 0; index < count; index++) 
+        CRAFT_LISTS.removeChild(CRAFT_LISTS.lastElementChild);
 
     count = CRAFT_DETAILS.childElementCount;
-    for (let index = 0; index < count; index++) CRAFT_DETAILS.removeChild(CRAFT_DETAILS.lastElementChild);
+    for (let index = 0; index < count; index++) 
+        CRAFT_DETAILS.removeChild(CRAFT_DETAILS.lastElementChild);
     
-
-    let crafting = avatar._inventory.filter( e => ( e._properties.includes("crafting") ) );
-
+    const CRAFT_ITEMS = avatar._inventory.filter( 
+                                        e => ( e.hasType("crafting") ) );       // Get all crafting (Mats & tools) items
+    
     // Populate the build list
-    crafting_recipe.forEach( (count, title) => { 
-        
-        let list = crafting.filter( e => ( e._properties.includes(title) ) );
+    Object.keys(SCHEMATIC.craftData.materials).forEach( title => {
+        const MAT_COUNT = SCHEMATIC.craftData.materials[[title]];               // Get number of mats needed to craft item
+        const MAT_LIST = CRAFT_ITEMS
+                    .filter( e => e.properties.includes(title)   )              // Filter mat list to matching type
+                    .filter( e => !e.properties.includes("tool") );             // Filter out any tools
+                    
+        AddCraftingMaterialListUI( MAT_LIST, MAT_COUNT, title );                // Add Material list UI
 
-        // console.log(list);
-
-        // Create Form 
-        let form = document.createElement("form");
-
-        form.dataset.title = title;
-
-        // Create title
-        let header = document.createElement("h3");
-        header.textContent = `${title} * 0`;
-
-        // Container
-        let container = document.createElement("div");
-        container.classList.add("selection-list");
-
-        // Items List
-        list.forEach( e => {
-            let label = document.createElement("label");
-            label.htmlFor = title;
-    
-            let input = document.createElement("input");
-            input.type = ( title === "tool" ) ? "radio" : "checkbox";
-            input.for = e.id;
-            input.value = e.id;
-            input.name = title;  
-            input.id = e.id;    
-    
-            let name = document.createElement("p");
-            name.textContent = e.name;
-    
-            label.appendChild(input);
-            label.appendChild(name);
-            container.appendChild(label);
-
-            name.addEventListener("click", () => input.click(), false );
-            input.addEventListener("change", () => updateCraftingNumbers( form, header, title, count ), false );
-        });
-        
-        // Add to DOM
-        form.appendChild(header);
-        form.appendChild(container);
-        CRAFT_LISTS.appendChild(form);
-    
-        let itemTitle = INV_SEL.options[INV_SEL.selectedIndex].text.split("(")[0];
-        itemTitle = itemTitle.substr(0, itemTitle.length -1 );
-        CRAFT_ITEM_TITLE.value = itemTitle;
+        const TOOLS = CRAFT_ITEMS
+                        .filter( e => e.properties.includes(title)  )
+                        .filter( e => e.properties.includes("tool") );          // Filter to only valid tools
+        // let array = TOOL_ITEMS.concat( TOOLS );                                 // Merge array with current tools
+        // TOOL_ITEMS = array;                                                     // update to new tool array
+        AddCraftingMaterialListUI( TOOLS, 1, `${title} Tools`, true );        // Add Tools list
     } );
+    
+    // AddCraftingMaterialListUI( TOOL_ITEMS, TOOL_ITEMS.length, "Tools" );        // Add Tools list
+}
+
+function AddCraftingMaterialListUI( MAT_LIST, MAT_COUNT, title, tool = false ) {
+    const FORM = document.createElement("form");                                // Create Form to list mats in
+    FORM.dataset.title = title;                                                 // Set Mat as form title
+   
+    const HEADER = document.createElement("h3");
+    HEADER.textContent = `${title} * 0`;                                        // Setup form header with current select number
+    
+    const CONTAINER = document.createElement("div");                            // Container for UI elements
+    CONTAINER.classList.add("selection-list");
+    
+    MAT_LIST.forEach( e => {                                                    // Add UI el for each Mat
+        const LABEL = document.createElement("label");
+        LABEL.htmlFor = title;
+
+        const INPUT = document.createElement("input");
+        INPUT.type = ( tool ) ? "radio" : "checkbox";                           // Can only pick one tool per mat to use
+        INPUT.for = e.id;
+        INPUT.value = e.id;
+        INPUT.name = title;  
+        INPUT.id = e.id;    
+
+        const NAME = document.createElement("p");
+        NAME.textContent = e.name;
+
+        LABEL.appendChild(INPUT);
+        LABEL.appendChild(NAME);
+        CONTAINER.appendChild(LABEL);
+
+        NAME.addEventListener("click", () => INPUT.click(), false );
+        INPUT.addEventListener("change", 
+            () => updateCraftingNumbers( 
+                    FORM, HEADER, title, MAT_COUNT ), false );                  // Event to update UI when (de)selected
+    });
+            
+    FORM.appendChild(HEADER);                                                   // Add to DOM
+    FORM.appendChild(CONTAINER);
+    CRAFT_LISTS.appendChild(FORM);
 }
 
 function updateCraftingNumbers( form, header, title, count ) {
@@ -641,7 +664,7 @@ function updateCraftingNumbers( form, header, title, count ) {
         let title = document.createElement("td");
         let value = document.createElement("td");
         title.textContent = `${e}:`;
-        value.textContent = `${stats[[e]]}`;
+        value.textContent = `${stats[[e]].toFixed(2)}`;
 
         row.appendChild(title);
         row.appendChild(value);
@@ -651,124 +674,107 @@ function updateCraftingNumbers( form, header, title, count ) {
 }
 
 function getCraftingItemStats() {
-    // -----------------------------------------------------    
-    // Calculate Potential Crafted Item Values
+    const SCHEMATIC = avatar.getItem(SELECTED_ITEM_ID());
+    const STATS = {};                                                           // Track all relevent stats
+    const FORMS = CRAFT_LISTS.querySelectorAll("form");                         
+    const TOOLS = {};                                                           // Track the tool stats
 
-    // Get Base Item Data 
-    let itemTitle = INV_SEL.options[INV_SEL.selectedIndex].text.split("(")[0];
-    itemTitle = itemTitle.substr(0, itemTitle.length -1 );
-    let item = getItemDataFromName( itemTitle );
-
-    // Get Schematic 
-    let schematic = avatar.getItem(SELECTED_ITEM_ID());
-
-    // Track all relevent stats
-    let stats = {};
-
-    // Step through each form (tool/mat category)
-    let forms = CRAFT_LISTS.querySelectorAll("form");
-    forms.forEach( form => {        
-        let data = new FormData(form);
-
-        // Step out if no mats/tools on form have been selected
-        if ( data.getAll(form.dataset.title).length === 0 ) return;      
+    FORMS.forEach( form => {                                                    // Step through each form (tool/mat category)
+        const FORM_DATA = new FormData(form);     
+        if ( FORM_DATA.getAll(form.dataset.title).length === 0 ) return;        // Step out if no mats/tools on form have been selected              
         
-        // Step through each selected object
-        for (const [key, value] of data) {
-            let mat = avatar.getItem( value );
-            
-            // Efficency of item (maybe should just be used for tool)
-            let efficency = mat.efficency;
-
-            // Step through each stat on the item being crafted
-            // to see if it matches one on the mat or tool
-            Object.keys(item.stats).forEach( e => {
-                if ( Object.keys(mat.stats).includes(e) ) {
-                    // Add stat key if not yet init
-                    if ( stats[[e]] === undefined ) stats[[e]] = 0;
-
-                    // Here's the garbage crafting formula 
-                    // TODO: Make this gooder
-                    // Use the tool efficency 
-                    // Use the schematic efficency
-                    // Don't just add the fucking numbers together
-                    // Incorporate the bonus as a, erm, bonus
-                    // Present as a range so that there's some vagueness
-                    stats[[e]] += mat.stats[[e]];
+        for (const [key, value] of FORM_DATA) {                                 // Step through each selected object
+            const ITEM = avatar.getItem( value );                                
+            Object.keys(SCHEMATIC.craftData.stats).forEach( e => {              // Step through each stat on the item being crafted
+                if ( STATS[[e]] === undefined ) STATS[[e]] = 0;                 // Add stat key if not yet init
+                
+                if ( ITEM.properties.includes( "tool" ) ) {
+                    if ( TOOLS[[e]] === undefined ) TOOLS[[e]] = 0;             // Add stat key if not yet init
+                    TOOLS[[e]] += ITEM.efficency;
+                    return;
+                }
+                if ( Object.keys(ITEM.stats).includes(e) ) {                    
+                    STATS[[e]] += ITEM.stats[[e]];
                 }
             });
         }
-
-        // Some numbers for the formula
-        // Total number of mat needed, can be used against selected 
-        let total = crafting_recipe.get(form.dataset.title);
-
-        // Selected number of mats 
-        data.getAll(form.dataset.title).length;
     });
 
-    return stats;
+    Object.keys(STATS).forEach( stat => {                                       // Step through each stat and apply tool and schematic values
+        const TOOL_QUAL = ( TOOLS[[stat]] === undefined ) ? 0 : TOOLS[[stat]];  // Tool Quality
+        const SHEM_QUAL = SCHEMATIC.efficency;                                  // Schematic Quality
+        STATS[[stat]] = ((STATS[[stat]] + TOOL_QUAL ) 
+                            * (TOOL_QUAL / 100) * (SHEM_QUAL / 100));           // Stat Calc
+    });
 
+    return STATS;                                                               // Spit out statty goodness
 }
 
 function leaveCrafting() {
-    
     CRAFT_UI.classList.add("hide");    
     setGameMode("general");
-    let feature = getLandscapeFeature( avatar.location[0], avatar.location[1] );
-    updateLog(`You leave the crafting quarter and step back onto the streets of ${feature.name} wondering what your next move might be.`);
+    const FEAT = getLandscapeFeature( avatar.location[0], avatar.location[1] );
+    updateLog(
+        `You leave the crafting quarter and step back
+         onto the streets of ${FEAT.name} wondering 
+         what your next move might be.`);
     updateIntructions();
 }
 
-function selectCraftinActionItem( action ) {
-    console.log(`ACtion ${action}`);
+function selectCraftingMenuActionItem( action ) {
+    const SCHEMATIC = avatar.getItem(SELECTED_ITEM_ID());
+
     // Leave Crafting if LEAVE selected
     if ( action == "-1" ) { leaveCrafting(); return; }
 
     // Try to craft item if Craft selected
-    let forms = CRAFT_LISTS.querySelectorAll("form");
+    const FORMS = CRAFT_LISTS.querySelectorAll("form");
 
-    // Validate item can be crafted
     let valid = true;
-    forms.forEach( form => {        
-        let data = new FormData(form);
-
-        let count = data.getAll(form.dataset.title).length;
-        let total = crafting_recipe.get(form.dataset.title);
-
-        if ( count < total ) valid = false;         
+    FORMS.forEach( form => {                                                    // Validate item can be crafted      
+        const FORM_DATA = new FormData(form);
+        const COUNT = FORM_DATA.getAll(form.dataset.title).length;
+        const TOTAL = SCHEMATIC.craftData.materials[[form.dataset.title]];
+        if ( COUNT < TOTAL ) valid = false;                                     // If there are too few materials invalidate
     });
 
     if ( !valid ) {
-        updateLog(`You look at the parts of your fine craft but notice that something is still missing.`);
+        updateLog(
+            `You look at the parts of your fine craft
+             but notice that something is still missing.`);
         return;
     }
-
-    // Calculate the crafted item stats
-    let stats = getCraftingItemStats();
-
-    // Remove selected materials (not tools!)
-    forms.forEach( form => {
-        let data = new FormData(form);
-
-        for (const [key, value] of data) {
-            // console.log( `${key} : ${value} ` )
-            if ( avatar.getItem( value)._properties.some( e => e === "material" ) ) {
-                avatar.removeFromInventory( value );
+    
+    const DATA = SCHEMATIC.craftData;                                           // Get all the base item data
+    const NAME = CRAFT_ITEM_TITLE.value;                                        // Set custom item name from input field
+    const STATS = getCraftingItemStats();                                       // Get calculated stats
+    const EFFICENCY = SCHEMATIC.efficency;                                      // Write code to calculate efficency                 
+    const MATERIALS = {};                                                       // 
+        
+    FORMS.forEach( form => {                                                    // Remove selected materials (not tools!)
+        const FORM_DATA = new FormData(form);
+        for (const [KEY, VAL] of FORM_DATA) {
+            if ( avatar.getItem(VAL).properties.some( e => e === "material") ) {// Ensure that only materials are being destroyed
+                const MAT = avatar.getItem(VAL).name;                           // Get the material name
+                if ( MATERIALS[[MAT]] === undefined ) MATERIALS[[MAT]] = 0;     // Setup mat as value if not already
+                MATERIALS[[MAT]]++;
+                avatar.removeFromInventory( VAL );                              // Destroy mat
             }
         }
     });
-    
-    // Add item to inventory 
-    let itemTitle = INV_SEL.options[INV_SEL.selectedIndex].text.split("(")[0];
-    itemTitle = itemTitle.substr(0, itemTitle.length -1 );
 
-    let item = getItemDataFromName( itemTitle );
+    avatar.addToInventory( 
+        new Item( 
+            DATA, 
+            NAME, 
+            undefined, 
+            undefined, 
+            MATERIALS, 
+            undefined, 
+            EFFICENCY, 
+            STATS ) );                                                          // Add the crafted item to inventory
 
-    avatar.addToInventory( new Item( CRAFT_ITEM_TITLE.value, item.weight, item.properties, item.materials, item.use, item.efficency, stats ) );
-
-    // Rerun Init to clear all forms
-    enterCrafting();
+    enterCrafting();                                                            // Rerun Init to clear all forms
 }
 
 function updateIntructions( name ) {
@@ -950,7 +956,7 @@ function sell( id ) {
 }
 
 function attack() {
-    updateLog( `Your nimbly swipe your ${avatar.getItem(INV_SEL.value).name} in an aggressive fashion. Shame there's no one around to witness your warrior prowess.` );
+    updateLog( `You nimbly swipe your ${avatar.getItem(INV_SEL.value).name} in an aggressive fashion. Shame there's no one around to witness your warrior prowess.` );
 }
 
 function defend() {
@@ -994,7 +1000,6 @@ function scanLandForMaterial( x, y, tool ) {
             straight down to the earth below your feet` ); 
     } else {
         const DIST = Math.distance( LOC.x, LOC.y, RES.x, RES.y );
-        console.log( DIST );
         if ( DIST > ( tool.efficency / 10 ) ) {                                 // 10% Item efficency used for max distance
             updateLog( 
                 `You hold out your ${tool.name} but it falls 
@@ -1064,16 +1069,8 @@ function mineTile( name, x, y ) {
 
         // Add ore to player inventory
         for (let i = 0; i < COUNT; i++) {
-            const ITEM = getItemDataFromName( type );
-            avatar.addToInventory( 
-                new Item( 
-                    ITEM.name, 
-                    ITEM.weight, 
-                    ITEM.properties, 
-                    ITEM.materials, 
-                    ITEM.use, 
-                    ITEM.efficency, 
-                    ITEM.stats ) );           
+            const ITEM = createMaterialItem( type );
+            avatar.addToInventory( ITEM );           
         }
     } else {
         updateLog( 
@@ -1097,12 +1094,12 @@ function gamble() {
         let result = Math.random() + (avatar.luck / 100);
         avatar.removeGold(1);
         if ( result >= 0.75 ) {
+            avatar.addGold(5);
             updateLog( 
                 `You enter the tavern and slap down a 
                 gold piece on the dice table. Thank the 
-                gods your numbers come up adding a nice 
-                weight of gold in your pouch.` );
-            avatar.addGold(5);
+                gods your numbers come up adding ${5} 
+                gold in your pouch.` );
         } else {
             updateLog( 
                 `You enter the taven and place your gold 
@@ -1358,6 +1355,11 @@ function refreshEquipmentListUI() {
     });
 }
 
+function setItemDescription( item ) {
+    if ( item === undefined ) { ITEM_DESC.textContent = ""; return }            // Clear description if no item given
+    ITEM_DESC.textContent = item.description;    
+}
+
 function gameUpdate() {
     if ( avatar.isDead ) return;
 
@@ -1392,18 +1394,9 @@ function gameUpdate() {
     drawAvatar();
 }
 
-function generateColor() {
-    let color = `#${Math.floor(Math.random()*16777215).toString(16)}`;
-    let r = Math.round(Math.random() * 255);
-    let g = Math.round(Math.random() * 255);
-    let b = Math.round(Math.random() * 255);
-    // let rgb = [Math.round(Math.random() * 255),Math.round(Math.random() * 255),Math.round(Math.random() * 255)];
-    // console.log(rgb);
-    return [r,g,b];
-}
-
 function getItemDataFromName( name ) {
-    return Object.values(ITEM_DATA).find( e => e.name === name );
+    // return Object.values(ITEM_DATA).find( e => e.name === name );
+    return Object.values(DATA.item).find( e => e.name === name );
 }
 
 // Init
@@ -1443,52 +1436,41 @@ function init() {
     avatar.addValidTerrain("soil");
     
     // Default items
-    // let item = ITEM_DATA.tool_rough_hammer;
-    // avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
-    let item = ITEM_DATA.dwsngTwg;
-    avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
-    item = ITEM_DATA.dwsngTwgIron;
-    avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
-    item = ITEM_DATA.pickaxe;
-    avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
-    // item = ITEM_DATA.pickaxe_fine_cpr;
-    // avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
-    // item = ITEM_DATA.pickaxe_crude_irn;
-    // avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
-    // item = ITEM_DATA.pickaxe_fine_irn;
-    // avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
-    //  item = ITEM_DATA.dagger_schematic;
-    //  avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
-    //  item = ITEM_DATA.tool_fine_hammer;
-    //  avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
-    // item = ITEM_DATA.tool_hammer;
-    // avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
+    // avatar.addToInventory( new Item( DATA.items.tool_hammer ) );
+    // avatar.addToInventory( new Item( DATA.items.tool_hammer, undefined, undefined, undefined, undefined, undefined, 140 ) );
+    avatar.addToInventory( new Item( DATA.items.dowsing_twig ) );
+    // avatar.addToInventory( new Item( DATA.items.tool_needle ) );
+    // avatar.addToInventory( new Item( DATA.items.tool_needle, undefined, undefined, undefined, undefined, undefined, 150 ) );
+    // item = DATA.item.divining_rod;
+    // avatar.addToInventory( new Item( DATA.item.divining_rod, item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
+    // item = DATA.items.pickaxe;
+    avatar.addToInventory( new Item( DATA.items.pickaxe, undefined, undefined, undefined, undefined, undefined, 10 ) );
+    // avatar.addToInventory( genRandomSchmaticItem( 70 ) );
+    // avatar.addToInventory( genRandomSchmaticItem( 10 ) );
+    // for (let index = 0; index < 10; index++) {      
+    //     avatar.addToInventory( createMaterialItem("copper") );
+    // }
 
-    //  item = getItemDataFromName( "copper" );
-    //  avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
-    //  avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
-    //  avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
-    //  avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
-    //  avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
-    //  avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
+    // avatar.addToInventory( createMaterialItem("iron") );
+    // avatar.addToInventory( createMaterialItem("iron") );
 
-    // item = getItemDataFromName( "iron" );
-    // avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
-    // avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
+    // avatar.addToInventory( createMaterialItem("oak wood") );
+    // avatar.addToInventory( createMaterialItem("Leather (Pig)") );
+    // avatar.addToInventory( createMaterialItem("Leather (Pig)") );
+    
+    
+    // item = DATA.item.fishing_rod;
+    // avatar.addToInventory( new Item( DATA.item.fishing_rod, item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
 
-    // item = getItemDataFromName( "oak wood" );
-    // avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
-    // avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
-
-    item = getItemDataFromName( "Fishing Rod" );
-    avatar.addToInventory( new Item( item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
 
     INV_SEL.selectedIndex = 0; 
     selectItem( INV_SEL.value );
     
     avatar.addGold(10);
 
-    updateLog( `The adventures of ${avatar.name} begin in the ${startTown.economicStatus} town of ${startTown.name}` );
+    updateLog( 
+        `The adventures of ${avatar.name} begin in the 
+        ${startTown.economicStatus} town of ${startTown.name}` );
     gameUpdate();
     
     LAND.draw(avatar.location[0], avatar.location[1], avatar.sight);
@@ -1496,8 +1478,7 @@ function init() {
 
     // MAT._resources[0].generateMap();
     // MAT._resources[0].drawMap();
-    // LAND.drawAll();  
-
+    // LAND.drawAll();
 }
 
 init();

@@ -53,22 +53,26 @@
             <table>
                 <tbody>
                     <tr>
-                        <td>Day</td><td>Food</td>
+                        <td>Day</td>
                     </tr>
                     <tr>
-                        <td id="game-time">0</td><td id="food">0</td>
+                        <td id="game-time">0</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table>
+                <tbody>
+                    <tr>
+                        <td>Food</td><td>Gold</td><td>Weight</td>
                     </tr>
                     <tr>
-                        <td>Gold</td><td>Weight</td>
-                    </tr>
-                    <tr>
-                        <td class="stat-gold"></td><td id="weight"></td>
+                        <td id="food">0</td><td class="stat-gold"></td><td id="weight"></td>
                     </tr>
                 </tbody>
             </table>
         </div>
         <div class="box-3">
-            <label for="inventory">Equipped <span class="tiny-text">(▲▼)</span>       
+            <label for="inventory">Selected <span class="tiny-text">(▲▼)</span>       
                 <select name="inventory" id="inventory" size="4">
                     <option value="none" selected >NONE</option>
                 </select>
@@ -79,6 +83,12 @@
                 <select name="action" id="action" size="4"></select>
             </label>
         </div>
+        <div class="box-4">
+            <p id="instructions">
+                (WASD) Move : (E) Survey : (R) Mine : (ENTER) Restart
+            </p>
+        </div>
+        <div id="log" class="box-5"></div>
         <div class="box-7">
             <div id="details-box-grid" class="details">
                 <div class="details-box-1">
@@ -89,12 +99,14 @@
                 </div>
             </div>
         </div>
-        <div class="box-4">
-            <p id="instructions">
-                (WASD) Move : (E) Survey : (R) Mine : (ENTER) Restart
-            </p>
+        <div class="box-8">
+            <div id="description-box-grid" class="">
+                <div class="description-box">
+                    <p id="description-title">Description</p>
+                </div>
+                <p id="item-description" class="">Item description goes here</p>
+            </div>
         </div>
-        <div id="log" class="box-5"></div>
     </div>
     </body>
     <script src="lib.js" charset="utf-8"></script>
