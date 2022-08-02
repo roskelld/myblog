@@ -6,7 +6,7 @@ class Land {
         this._CTX = this._CANVAS.getContext('2d');
         this._CANVAS.width = this._CANVAS.height = 512;
 
-        this._map = new Perlin();
+        this._map = new Perlin( SEED );
         this._terrain = [];
 
         this._GRID_SIZE = 4;
@@ -55,7 +55,7 @@ class Land {
     }
     clear() {
         this._CTX.clearRect(0,0,this._CANVAS.width, this._CANVAS.height);
-        this._map.seed();
+        this._map.init();
 
         // Generate land
         for (let y = 0; y < this._GRID_SIZE; y += this._NUM_PIXELS / this._GRID_SIZE){
@@ -63,7 +63,6 @@ class Land {
                 this._map.get(x, y);            
             }
         }
-
     }
     // Converts to the Perlin map coordinates
     convertCoordinates( x, y ) {
@@ -78,13 +77,13 @@ class Land {
         // Valid terrain height (essentially terrain type)
         let minHeight = -0.27;
         let maxHeight = 0.2;
-        let minTowns = 3;
+        let minTowns = 8;
         let maxTowns = 10;
         // Find valid town sites
         // Hunt through the LANDSCAPE to find valid land heights (current assessment)
-        let sites = Object.entries(Object.values(this._map)[1]).filter( e => e[1] > minHeight && e[1] < maxHeight ); 
+        let sites = Object.entries(this._map.memory).filter( e => e[1] > minHeight && e[1] < maxHeight ); 
     
-        let numberOfTowns = Math.max( minTowns, Math.ceil(Math.random() * maxTowns ));
+        let numberOfTowns = Math.max( minTowns, Math.ceil(Math.rndseed( SEED ) * maxTowns ));
         for (let index = 0; index < numberOfTowns; index++) {
             
             let location = sites[Math.floor(Math.random()*sites.length)];
@@ -99,20 +98,13 @@ class Land {
         }
     }
     draw(x, y, radius) {
-        // Draw circle 
-        // Write a formula for this sheesh!
-        // let loop = [[0,0],[0,1],[1,0],[0,-1],[-1,0],[0,2],[1,2],[1,1],[2,1],[2,0],[2,-1],[1,-1],[1,-2],[0,-2],[-1,-2],[-1,-1],[-2,-1],[-2,0],[-2,1],[-1,1],[-1,2]];
-
         for ( let offset_x = 0 - radius; offset_x <= 0 + radius; offset_x++ ) {
             for( let offset_y = 0 - radius; offset_y <= 0 + radius; offset_y++) {
                 if ( Math.abs(offset_x) + Math.abs(offset_y) <= radius + (radius/2) ) {
-
+                    
                     let results = this.convertCoordinates( x + offset_x, y + offset_y );
-    
                     let result = this._map.get(results.x, results.y);
-
                     let terrain = this.getTerrainColor(result);
-                    // console.log(`${result} ${terrain[0]}, ${terrain[1]}, ${terrain[2]}`);
                 
                     this._CTX.fillStyle = `rgb(${terrain[0]}, ${terrain[1]}, ${terrain[2]})`;
                     this._CTX.fillRect(
@@ -130,8 +122,6 @@ class Land {
                             town._revealed = true;
                         };
                     } );
-
-
                 }
             }
         }
@@ -153,15 +143,14 @@ class Land {
                     this._PIXEL_SIZE,
                     this._PIXEL_SIZE
                 );
-                // console.log(`x: ${x} y: ${y} :: ${result} :: ${getTerrainName(result)}`);
             }
         }
+        this._TOWNS.forEach(e => e.draw(this) );
     }
     getContentTypes() {
         // Return a valid list of actions the player can perform
         
     }
-
     getClosestMatTo( x, y, name ) {
         const LOC = LAND.convertCoordinates( x, y );
         // Get the mat 
@@ -185,6 +174,11 @@ class Land {
             y: Number(ARRAY[0].split(",")[1]) 
         };
         return DEST;
+    }
+    getTerrainType( x, y ) {
+        const LOC = LAND.convertCoordinates( x, y ); 
+        const TERRAIN = this._map.get( LOC.x, LOC.y );
+        return this.getTerrainName( TERRAIN );
     }
 }
 

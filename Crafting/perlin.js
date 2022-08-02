@@ -2,12 +2,16 @@
 'use strict';
 
 class Perlin {
-    constructor() {
-        this.seed();
+    constructor( seed ) {
+        this._seed_Val = ( seed === undefined ) ? new Date().getTime() : seed;
+        this._callcount = 0;
+        this.init();
     }
-
     randVector() {
-        let theta = Math.random() * 2 * Math.PI;
+        // let theta = Math.random() * 2 * Math.PI;
+        let theta = Math.rndseed(this._seed_Val + this._callcount) * 2 * Math.PI;
+        this._callcount++;
+        // console.log( `${this._seed_Val} : ${theta}` );
         return {x: Math.cos(theta), y: Math.sin(theta)};
     }
 
@@ -31,7 +35,7 @@ class Perlin {
         return a + this.smootherStep(x) * (b-a);
     }
 
-    seed() {
+    init() {
         this.gradients = {};
         this.memory = {};
     }
@@ -50,5 +54,12 @@ class Perlin {
         let v = this.interp(y-yf, xt, xb);
         this.memory[[x,y]] = v;
         return v;
+    }
+    read(x, y) {
+        if (this.memory.hasOwnProperty([x,y])) {
+            return this.memory[[x,y]];
+        } else {
+            return -100;
+        }
     }
 }

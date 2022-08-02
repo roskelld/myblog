@@ -469,7 +469,7 @@ const DATA = {
             type:           ["tool"],
             description:    "A tool for mining metals."
         },
-        woodaxe: {
+        wood_axe: {
             name:           "Wood Axe",
             weight:         3,
             price:          3,

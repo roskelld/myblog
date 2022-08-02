@@ -67,7 +67,7 @@ class Material {
     }
     clear() {
         this._CTX.clearRect(0,0, this._CANVAS.width, this._CANVAS.height);
-        this._resources.forEach( e => e._map.seed() );
+        this._resources.forEach( e => e._map.init() );
     }
     removeResourceSupply( name, x, y, count ) {
         let resource = this.getResource( name );
@@ -156,7 +156,7 @@ class Resource {
     generateMap( reset = false ) {
         if ( reset ) {
             this.clearDraw();
-            this._map.seed();
+            this._map.init();
             this._memory = {};
         }
         let total_supply = 0;

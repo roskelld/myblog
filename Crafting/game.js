@@ -1,9 +1,15 @@
 'use strict';
+// const SEED = 3108197869694201;
+const SEED = new Date().getTime();
 
 // Controls
 const MOVE_NORTH = "w";
+const MOVE_NORTH_EAST = "9";
 const MOVE_EAST = "d";
+const MOVE_SOUTH_EAST = "3";
 const MOVE_SOUTH = "s";
+const MOVE_SOUTH_WEST = "1";
+const MOVE_NORTH_WEST = "7";
 const MOVE_WEST = "a";
 const USE = "e";
 const ACCEPT = "Enter";
@@ -48,7 +54,7 @@ const ACTION_STRINGS = {
 window.addEventListener("keydown", e => { 
     if (e.key === INV_DOWN || e.key === INV_UP ) e.preventDefault(); }, false );
 
-const INSTRUCTION_BASE = "(WASD) Move ";
+const INSTRUCTION_BASE = `(${MOVE_NORTH}${MOVE_WEST}${MOVE_SOUTH}${MOVE_EAST}) Move `;
 
 let lastDirection;
 let checkedTile = false;
@@ -534,11 +540,13 @@ function useItem( id ) {
             break;               
         case "Fish":
             fish();
-            break;               
+            break;   
+        case "Chop":
+            ChopTree();  
+            break;          
         default:
             break;
     }
-    
 }
 
 // ----------------------------------------------------------------------------
@@ -888,6 +896,48 @@ function fish() {
     }
 }
 
+function ChopTree() {
+    
+    const TERRAIN = LAND.getTerrainType( avatar.loc.x, avatar.loc.y );
+    if ( TERRAIN !== "forest" ) {
+        updateLog(
+            `You can swing all you like, but you need 
+            to be in the forest to see the trees.`);
+        return;
+    }
+
+    const ITEM_EFF = avatar.getItem(SELECTED_ITEM_ID()).efficency;              // 13 > 100     How efficient is the item at its job
+    const RNG = Math.random() * 100;                                            // 0 > 100      
+    const MIN_TARGET = 50;                                                      // 50           min roll target
+    const MODIFIER = MIN_TARGET - ITEM_EFF - ((ITEM_EFF / 100) * avatar.luck);  // -100 > 50    reduced by efficency and luck (can go negative)
+    const MOD_ROLL = Math.max( RNG - MODIFIER, 0 );                             // Random roll + modifier
+    const RESULT_INCREMENT = 10;                                                // Every increment over min is +1 mat
+    const RES = Math.floor(MOD_ROLL / RESULT_INCREMENT);
+
+    if ( RES > 0 ) {
+        const COUNT = 1;
+        updateLog( 
+            `After many swings of your 
+            ${avatar.getItem(SELECTED_ITEM_ID()).name} 
+            you successfully chop ${COUNT} wood.` );
+
+        // Add wood to player inventory
+        for (let i = 0; i < COUNT; i++) {
+            const ITEM = createMaterialItem( "oak wood" )
+            avatar.addToInventory( ITEM );           
+        }
+    } else {
+        updateLog( 
+            `You strike a tree with your
+            ${avatar.getItem(SELECTED_ITEM_ID()).name} 
+            but fail to fell it.` );
+    }
+
+    increaseGameTime(1);
+    lastDirection = null;
+    gameUpdate();
+}
+
 function buy( item ) {
     // If selected LEAVE then leave the shop (Note -1 is a string)
     if ( item == -1 ) {
@@ -1035,14 +1085,12 @@ function mineTile( name, x, y ) {
         }
     });
 
-    
     // If no materials found at all then let the player know to give up trying
     if ( supply <= 0 ) {
         // Name is the type of material (from the tool) being mined
         updateLog( 
             `Your efforts to mine reveal that this 
             area is barren of any ${name}.` );
-
         increaseGameTime(1);
         lastDirection = null;
         gameUpdate();
@@ -1441,6 +1489,7 @@ function init() {
     avatar.addToInventory( new Item( DATA.items.dowsing_twig ) );
     // avatar.addToInventory( new Item( DATA.items.tool_needle ) );
     // avatar.addToInventory( new Item( DATA.items.tool_needle, undefined, undefined, undefined, undefined, undefined, 150 ) );
+    avatar.addToInventory( new Item( DATA.items.wood_axe, undefined, undefined, undefined, undefined, undefined, 150 ) );
     // item = DATA.item.divining_rod;
     // avatar.addToInventory( new Item( DATA.item.divining_rod, item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
     // item = DATA.items.pickaxe;
