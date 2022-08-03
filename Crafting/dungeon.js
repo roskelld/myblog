@@ -8,8 +8,8 @@ class Dungeon {
         this._CANVAS = canvas;
         this._CTX = this._CANVAS.getContext('2d');
         this._CANVAS.width = this._CANVAS.height = 512;
-        this._GRID_SIZE = 5;
-        this._RESOLUTION = 9;
+        this._GRID_SIZE = 3;
+        this._RESOLUTION = 7;
         this._PIXEL_SIZE = this._CANVAS.width / this._RESOLUTION;
         this._NUM_PIXELS = this._GRID_SIZE / this._RESOLUTION;
         this.PIXEL = this._CANVAS.width / this._RESOLUTION / this._GRID_SIZE;   
