@@ -29,6 +29,8 @@ Math.distance = ( ax, ay, bx, by ) => {
     return Math.hypot(X,Y);
 }
 
+Math.clamp = (num, min, max) => Math.min(Math.max(num, min), max);
+
 function degAsText( deg ) {
     if ( deg === -1 ) return DATA.directions[0];
     const NUM = DATA.directions.length - 1;                                     // Account for the -1
@@ -57,10 +59,10 @@ function strengthAsText( str, max ) {
 }
 
 function randomColor() {
-    let color = `#${Math.floor(Math.random()*16777215).toString(16)}`;
-    let r = Math.round(Math.random() * 255);
-    let g = Math.round(Math.random() * 255);
-    let b = Math.round(Math.random() * 255);
+    // let color = `#${Math.floor(Math.random()*16777215).toString(16)}`;
+    const r = Math.round(Math.random() * 255);
+    const g = Math.round(Math.random() * 255);
+    const b = Math.round(Math.random() * 255);
     return [r,g,b];
 }
 
@@ -114,6 +116,7 @@ function spiral( r ) {
 }
   
 // Version 4.0
+// https://github.com/PimpTrizkit/PJs/wiki/12.-Shade,-Blend-and-Convert-a-Web-Color-(pSBC.js)
 function shadeRGBColor(color, percent) {
     var f=color.split(","),
         t=percent<0?0:255,

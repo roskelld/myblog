@@ -2,14 +2,14 @@
 const DGN_CVS = document.querySelector("#content");
 const SEED = 11051978169694201;
 const COL = [80,100,40];
-const RANGE = 4;
+const RANGE = 5;
 class Dungeon {
     constructor( canvas ) {
         this._CANVAS = canvas;
         this._CTX = this._CANVAS.getContext('2d');
         this._CANVAS.width = this._CANVAS.height = 512;
-        this._GRID_SIZE = 3;
-        this._RESOLUTION = 5;
+        this._GRID_SIZE = 5;
+        this._RESOLUTION = 9;
         this._PIXEL_SIZE = this._CANVAS.width / this._RESOLUTION;
         this._NUM_PIXELS = this._GRID_SIZE / this._RESOLUTION;
         this.PIXEL = this._CANVAS.width / this._RESOLUTION / this._GRID_SIZE;   
@@ -32,29 +32,39 @@ class Dungeon {
             this._CANVAS.width / this._RESOLUTION / this._GRID_SIZE
         );
     }
-    drawRadius( x, y, r ) {
-        const POS = this._pos;
+    genMapRadius( x, y, r ) {                                                   // Generate map data based on vision radius & sight-lines
         const INC = this._NUM_PIXELS / this._GRID_SIZE;
-        const MATRIX = spiral(r);
+        const MATRIX = spiral(r);                                               // Generate viewing cells as spiral
 
-        const CHK = new Array(DATA.directions.length).fill(true);
-
+        const CHK = new Array(DATA.directions.length).fill(true);               // Create array of view directions to check vision
+        const LAST = { dir: 0, ring: 0, chk: false };                           // Track previous view for comparison
         MATRIX.forEach( (loc, i) => {
             if (Math.abs(loc[0]) + Math.abs(loc[1]) <= r + (r/2)) {
-                const dir = degAsCardinalNum( Math.direction(POS.x, POS.y, POS.x + loc[0], POS.y + loc[1]));
-                // const dirText = degAsText( Math.direction(POS.x, POS.y, POS.x + loc[0], POS.y + loc[1]));
-                if (!CHK[dir]) return;
-                let tmp = {       
-                    x: Number(((POS.x + loc[0]) * INC).toFixed(3)), 
-                    y: Number(((POS.y + loc[1]) * INC).toFixed(3))
-                };       
-                //  Convert current cell to Map Data
-                const MAP_X = (tmp.x % 1 !== 0) ? (tmp.x).toFixed(3) : tmp.x;          
-                const MAP_Y = (tmp.y % 1 !== 0) ? (tmp.y).toFixed(3) : tmp.y;
+                const DIR = degAsCardinalNum( 
+                    Math.direction( x, y, x + loc[0], y + loc[1]));             // Convert to DATA.directions number
+                const DIR_TEXT = degAsText( 
+                    Math.direction( x, y, x + loc[0], y + loc[1])); 
+                if ( DIR !== LAST.dir ) CHK[LAST.dir] = LAST.chk;               // Only commit results when changing direction
+                if ( Math.abs(loc[0]) > LAST.ring || 
+                    Math.abs(loc[1]) > LAST.ring ) {                            // If stepped out a ring layer then treat as above
+                    CHK[LAST.dir] = LAST.chk;
+                }                                                               
+                if (!CHK[DIR]) return;                                          // Don't draw if view is blocked
+                const TDR = {       
+                    x: Number(((x + loc[0]) * INC).toFixed(3)), 
+                    y: Number(((y + loc[1]) * INC).toFixed(3))
+                };                                                              // Convert loc to map coord                
+                const MAP_X = (TDR.x % 1 !== 0) ? (TDR.x).toFixed(3) : TDR.x;   // Cull unneeded decimals
+                const MAP_Y = (TDR.y % 1 !== 0) ? (TDR.y).toFixed(3) : TDR.y;
                 
-                let res = this._map.get( MAP_X, MAP_Y ); 
-                if (i===0) return; // Don't check the underfoot tile
-                if ( res > 0 ) CHK[dir] = false;
+                const RES = this._map.get( MAP_X, MAP_Y );                      // Get or generate map data
+                if (i===0) return;                                              // Don't perform occlusion on standing cell
+                if ( RES > 0 ) {                                                // Record vision block for next cycle
+                    LAST.dir = DIR; 
+                    LAST.chk = false; 
+                    LAST.ring = Math.max(Math.abs(loc[0]), Math.abs(loc[1]));   // Check if the spiral has stepped out a layer
+                }                                                               
+                // console.log(`${i}: ${DIR} ${DIR_TEXT} - ${LAST.dir} : ${LAST.chk} : ${LAST.ring}`);  
                 // console.log(`${dir} ${dirText} - ${loc[0]},${loc[1]} - ${res} ${CHK}`); 
             }
         });  
@@ -92,48 +102,46 @@ class Dungeon {
             default: break;
         }
 
-        this.drawRadius( this._pos.x, this._pos.y, RANGE);
+        this.genMapRadius( this._pos.x, this._pos.y, RANGE);
         this.drawMap();
         this.drawAvatar()
     }
     drawMap() {
-        this.clear();        
-        let C = [COL[0],COL[1],COL[2]];
-        const POS = this._pos;
-        const INC = DGN._NUM_PIXELS / DGN._GRID_SIZE;                         
-        const OFF = Math.floor((this._GRID_SIZE * this._RESOLUTION) / 2 ) * INC;
-        for ( let y = 0; y < this._GRID_SIZE; y += INC ){                       // GRID 4
+        this.clear();                                                           // Clear the screen
+        const POS = this._pos;                                                  // Player position
+        const INC = this._NUM_PIXELS / this._GRID_SIZE;                           // Pixel increment
+        const OFF = Math.floor((this._GRID_SIZE * this._RESOLUTION) / 2 ) * INC;// Offset to center of grid
+        for ( let y = 0; y < this._GRID_SIZE; y += INC ){                       
             for ( let x = 0; x < this._GRID_SIZE; x += INC ){
-                let tmp = { 
+                const TDR = {                                                   // Center the target based on player loc to get map data
                     x: Number((( x - OFF ) + ( POS.x * INC )).toFixed(3)),
                     y: Number((( y - OFF ) + ( POS.y * INC )).toFixed(3))
-                };                                                              // Recenter using OFF and add position offset based on increment
-                const MAP_X = (tmp.x % 1 !== 0) ? tmp.x.toFixed(3) : tmp.x;          
-                const MAP_Y = (tmp.y % 1 !== 0) ? tmp.y.toFixed(3) : tmp.y;
-                const MAP = this._map.read( MAP_X, MAP_Y );
-                
+                };                                                              
+                const MAP_X = (TDR.x % 1 !== 0) ? TDR.x.toFixed(3) : TDR.x;          
+                const MAP_Y = (TDR.y % 1 !== 0) ? TDR.y.toFixed(3) : TDR.y;
+                const MAP = this._map.read( MAP_X, MAP_Y );                     // Read the map data: -100 if none                
                 const LOC = {  
                     x: x / this._GRID_SIZE * this._CANVAS.width,
                     y: y / this._GRID_SIZE * this._CANVAS.width
                 }
-
-                // let ALPHA = 0;//h % 2 * 255;
-                // ALPHA = ( MAP > 0 ) ? 255 : 0;
-                let input = Math.max( Math.abs(y - OFF), Math.abs(x - OFF) );
-                let ALPHA = Math.lerp(0,-2, input/this._GRID_SIZE);
-                if ( MAP === -100 ) {
-                    // C[0] = C[1] = C[2] = 0; 
-                    // ALPHA = 255;                   
+                if ( MAP === -100 ) {                                           // No data draw black
                     this._CTX.fillStyle = `rgb(0,0,0)`;
-                } else if ( MAP < 0 ) {
-                    this._CTX.fillStyle = shadeRGBColor("rgb(30,40,30)",ALPHA);
+                    this._CTX.fillRect( LOC.x, LOC.y, this.PIXEL, this.PIXEL );
                 } else {
-                    this._CTX.fillStyle = shadeRGBColor("rgb(115,115,115)",ALPHA);
+                    const INPUT = Math.max(Math.abs(y-OFF),Math.abs(x-OFF));    // Ugh. Generate sim light fall off
+                    const DRP_OFF = (((Math.abs(y-OFF)+
+                                       Math.abs(x-OFF))/INC)/(INC*RANGE))/2;
+                    const ALPHA = Math.lerp(0,-(Math.clamp(DRP_OFF,0, 2)), 
+                                                INPUT/this._GRID_SIZE);
+                    if ( MAP < 0 ) {                                            
+                        this._CTX.fillStyle = 
+                                    shadeRGBColor("rgb(30,40,30)",ALPHA);       // Floor
+                    } else {                                                        
+                        this._CTX.fillStyle = 
+                                    shadeRGBColor("rgb(115,115,115)",ALPHA);    // Wall
+                    }
+                    this._CTX.fillRect( LOC.x, LOC.y, this.PIXEL, this.PIXEL ); // Draw
                 }
-                // shadeRGBColor()
-                // console.log(ALPHA);
-                // this._CTX.fillStyle = `rgba(${C[0]},${C[1]},${C[2]},${ALPHA})`;
-                this._CTX.fillRect( LOC.x, LOC.y, this.PIXEL, this.PIXEL );
 
                 // this._CTX.font = `${40*INC}px monospace`;
                 // this._CTX.fillStyle = "white";
@@ -160,7 +168,7 @@ class Dungeon {
 
 const DGN = new Dungeon( DGN_CVS );
 window.addEventListener("keydown", e => DGN.move(e), false );
-DGN.drawRadius( DGN._pos.x, DGN._pos.y, RANGE);
+DGN.genMapRadius( DGN._pos.x, DGN._pos.y, RANGE);
 DGN.drawMap();
 DGN.drawAvatar();
 
