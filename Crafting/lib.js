@@ -36,6 +36,12 @@ function degAsText( deg ) {
         Math.floor(((deg+(360/NUM)/2)%360)/(360/NUM)) + 1];                     // +1 to skip the -1 text
 }
 
+function degAsCardinalNum( deg ) {
+    if ( deg === -1 ) return 0;
+    const NUM = DATA.directions.length - 1;                                     // Account for the -1
+    return Math.floor(((deg+(360/NUM)/2)%360)/(360/NUM)) + 1;                     // +1 to skip the -1 text
+}
+
 function dirAsText( ax, ay, bx, by ) {
     return degAsText( Math.direction( ax, ay, bx, by ) );
 }
@@ -67,4 +73,53 @@ function qualityAsText( quality, max = 150 ) {
 
 function genID( length = 8 ) {
     return Math.random().toString(16).substring(2, 2 + length);                 // Return random string
+}
+
+// Generate array of values that simulate a spiral (r,d,l,u)
+function spiral( r ) {
+    r = (r * 2) + 1;
+    const X = r;
+    const Y = r;
+    const HR = (X - 1) / 2;
+    const VR = (Y - 1) / 2;
+    const TT = X * Y;
+    const MATRIX = [];
+    let step = 1;
+    let iy = 0;
+    let ix = 0;
+    let dx = 1;
+    let dy = 0;
+  
+    while(MATRIX.length < TT) {
+        if((ix <= HR && ix >= (HR * -1)) && (iy <= VR && (iy >= (VR * -1)))) {
+            MATRIX.push([ix, iy]);
+        }
+        ix += dx;
+        iy += dy;
+
+        if(dx !== 0) {                                                          // check direction           
+            if(ix === step && iy === (step * -1)) step++;                       // increase step
+            if(ix === step || (ix === step * -1)) {                             // horizontal range reached
+                dy = (ix === iy)? (dx * -1) : dx;
+                dx = 0;  
+            }
+            } else {
+            if(iy === step || (iy === step * -1)) {                             // vertical range reached
+                dx = (ix === iy)? (dy * -1) : dy;
+                dy = 0;
+            }
+        }
+    }
+    return MATRIX; 
+}
+  
+// Version 4.0
+function shadeRGBColor(color, percent) {
+    var f=color.split(","),
+        t=percent<0?0:255,
+        p=percent<0?percent*-1:percent,
+        R=parseInt(f[0].slice(4)),
+        G=parseInt(f[1]),
+        B=parseInt(f[2]);
+    return `rgb(${(Math.round((t-R)*p)+R)},${(Math.round((t-G)*p)+G)},${(Math.round((t-B)*p)+B)})`;
 }

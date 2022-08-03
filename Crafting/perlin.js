@@ -8,14 +8,14 @@ class Perlin {
         this.init();
     }
     randVector() {
-        // let theta = Math.random() * 2 * Math.PI;
         let theta = Math.rndseed(this._seed_Val + this._callcount) * 2 * Math.PI;
         this._callcount++;
-        // console.log( `${this._seed_Val} : ${theta}` );
         return {x: Math.cos(theta), y: Math.sin(theta)};
     }
 
     dotProdGrid(x, y, vx, vy) {
+        if ( Number.isInteger(x) ) x = x + 0.001;   // Fudge to prevent whole numbers returning 0
+        if ( Number.isInteger(y) ) y = y + 0.001;
         let g_vect;
         let d_vect = {x: x - vx, y: y - vy};
         if (this.gradients[[vx,vy]]){
@@ -41,7 +41,7 @@ class Perlin {
     }
     get(x, y) {
         if (this.memory.hasOwnProperty([x,y]))
-        return this.memory[[x,y]];
+            return this.memory[[x,y]];
         let xf = Math.floor(x);
         let yf = Math.floor(y);
         //interpolate

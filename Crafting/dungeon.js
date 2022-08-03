@@ -1,8 +1,8 @@
 'use strict'
 const DGN_CVS = document.querySelector("#content");
-const SEED = 3108197869694201;
+const SEED = 11051978169694201;
 const COL = [80,100,40];
-
+const RANGE = 4;
 class Dungeon {
     constructor( canvas ) {
         this._CANVAS = canvas;
@@ -34,39 +34,33 @@ class Dungeon {
     }
     drawRadius( x, y, r ) {
         const POS = this._pos;
-        const INC = this._NUM_PIXELS / this._GRID_SIZE; 
-        for (let ox = 0 - r; ox <= r; ox++) {
-            for(let oy = 0 - r; oy <= r; oy++) {
-                if (Math.abs(ox) + Math.abs(oy) <= r + (r/2)) {                 // Manage shitty circle radius
+        const INC = this._NUM_PIXELS / this._GRID_SIZE;
+        const MATRIX = spiral(r);
 
-                    // let tmp = { x: (x-OFF)+(POS.x*INC), y: (y-OFF)+(POS.y*INC) };
-                    let tmp = {       
-                        x: Number(((POS.x + ox) * INC).toFixed(3)), 
-                        y: Number(((POS.y + oy) * INC).toFixed(3))
-                    };       
-                    //  Convert current cell to Map Data
-                    const MAP_X = (tmp.x % 1 !== 0) ? (tmp.x).toFixed(3) : tmp.x;          
-                    const MAP_Y = (tmp.y % 1 !== 0) ? (tmp.y).toFixed(3) : tmp.y;
-                    
-                    // console.log( `${ox},${oy}`);
-                    // console.log( `${MAP_X},${MAP_Y}`);
-                    this._map.get( MAP_X, MAP_Y );   
-                }
+        const CHK = new Array(DATA.directions.length).fill(true);
+
+        MATRIX.forEach( (loc, i) => {
+            if (Math.abs(loc[0]) + Math.abs(loc[1]) <= r + (r/2)) {
+                const dir = degAsCardinalNum( Math.direction(POS.x, POS.y, POS.x + loc[0], POS.y + loc[1]));
+                // const dirText = degAsText( Math.direction(POS.x, POS.y, POS.x + loc[0], POS.y + loc[1]));
+                if (!CHK[dir]) return;
+                let tmp = {       
+                    x: Number(((POS.x + loc[0]) * INC).toFixed(3)), 
+                    y: Number(((POS.y + loc[1]) * INC).toFixed(3))
+                };       
+                //  Convert current cell to Map Data
+                const MAP_X = (tmp.x % 1 !== 0) ? (tmp.x).toFixed(3) : tmp.x;          
+                const MAP_Y = (tmp.y % 1 !== 0) ? (tmp.y).toFixed(3) : tmp.y;
+                
+                let res = this._map.get( MAP_X, MAP_Y ); 
+                if (i===0) return; // Don't check the underfoot tile
+                if ( res > 0 ) CHK[dir] = false;
+                // console.log(`${dir} ${dirText} - ${loc[0]},${loc[1]} - ${res} ${CHK}`); 
             }
-        }
+        });  
     }
     clear() {
         this._CTX.clearRect(0,0,this._CANVAS.width, this._CANVAS.height);
-    }
-    camera( x, y ) {
-        // console.log( x );
-        // x = (x / this._GRID_SIZE * this._CANVAS.width) - (this._pos.x + this._camera.y)
-        // y = (y / this._GRID_SIZE * this._CANVAS.width) - (this._pos.y + this._camera.y)
-
-        const RES = this.convertCoordinates( 
-                                (this._pos.x - this._camera.x) + x, 
-                                (this._pos.y - this._camera.y) + y );
-        return { x: RES.x, y: RES.y } 
     }
     move( dir ) {
         dir = dir.key;
@@ -79,7 +73,7 @@ class Dungeon {
             const MAP_X = (tmp.x % 1 !== 0) ? tmp.x.toFixed(3) : tmp.x;          
             const MAP_Y = (tmp.y % 1 !== 0) ? tmp.y.toFixed(3) : tmp.y;
             const MAP = this._map.read( MAP_X, MAP_Y );                         // Get cell data from next cell
-            if ( MAP > 0 ) return;                                              // Cannot walk through walls
+            if ( MAP >= 0 ) return;                                              // Cannot walk through walls
 
             this._pos.x = this._pos.x + x;
             this._pos.y = this._pos.y + y;
@@ -98,7 +92,7 @@ class Dungeon {
             default: break;
         }
 
-        this.drawRadius( this._pos.x, this._pos.y, 2);
+        this.drawRadius( this._pos.x, this._pos.y, RANGE);
         this.drawMap();
         this.drawAvatar()
     }
@@ -123,20 +117,25 @@ class Dungeon {
                     y: y / this._GRID_SIZE * this._CANVAS.width
                 }
 
-                let ALPHA = 0;//h % 2 * 255;
-                ALPHA = ( MAP > 0 ) ? 255 : 0;
-                
+                // let ALPHA = 0;//h % 2 * 255;
+                // ALPHA = ( MAP > 0 ) ? 255 : 0;
+                let input = Math.max( Math.abs(y - OFF), Math.abs(x - OFF) );
+                let ALPHA = Math.lerp(0,-2, input/this._GRID_SIZE);
                 if ( MAP === -100 ) {
-                    C[0] = C[1] = C[2] = 0; 
-                    ALPHA = 255;                   
-                } else 
-                {
-                    C = [COL[0],COL[1],COL[2]];
+                    // C[0] = C[1] = C[2] = 0; 
+                    // ALPHA = 255;                   
+                    this._CTX.fillStyle = `rgb(0,0,0)`;
+                } else if ( MAP < 0 ) {
+                    this._CTX.fillStyle = shadeRGBColor("rgb(30,40,30)",ALPHA);
+                } else {
+                    this._CTX.fillStyle = shadeRGBColor("rgb(115,115,115)",ALPHA);
                 }
-                this._CTX.fillStyle = `rgba(${C[0]},${C[1]},${C[2]},${ALPHA})`;
+                // shadeRGBColor()
+                // console.log(ALPHA);
+                // this._CTX.fillStyle = `rgba(${C[0]},${C[1]},${C[2]},${ALPHA})`;
                 this._CTX.fillRect( LOC.x, LOC.y, this.PIXEL, this.PIXEL );
 
-                // this._CTX.font = `${70*INC}px monospace`;
+                // this._CTX.font = `${40*INC}px monospace`;
                 // this._CTX.fillStyle = "white";
                 // this._CTX.textAlign = "center";
                 // this._CTX.fillText(`${MAP_X},${MAP_Y}`, LOC.x + (this.PIXEL/2), LOC.y + (this.PIXEL/1.05)); 
@@ -146,12 +145,12 @@ class Dungeon {
     drawAvatar() {
         const SIZE = this._RESOLUTION * this._GRID_SIZE;                        // WIDTH & HEIGHT OF GRID
         const PIXEL = this.PIXEL;                                               // PIXEL SIZE
-        this._CTX.strokeStyle = 'rgb(60,60,60)';
-        for (let x = 0; x < SIZE; x++) {
-            for (let y = 0; y < SIZE; y++) {
-                this._CTX.strokeRect( x * PIXEL, y * PIXEL, PIXEL, PIXEL );            
-            }
-        }
+        // this._CTX.strokeStyle = 'rgb(60,60,60)';
+        // for (let x = 0; x < SIZE; x++) {
+        //     for (let y = 0; y < SIZE; y++) {
+        //         this._CTX.strokeRect( x * PIXEL, y * PIXEL, PIXEL, PIXEL );            
+        //     }
+        // }
         this._CTX.strokeStyle = 'white';
         this._CTX.strokeRect( 
                     PIXEL * ((SIZE-1)/2), 
@@ -161,7 +160,7 @@ class Dungeon {
 
 const DGN = new Dungeon( DGN_CVS );
 window.addEventListener("keydown", e => DGN.move(e), false );
-DGN.drawRadius( DGN._pos.x, DGN._pos.y, 2);
+DGN.drawRadius( DGN._pos.x, DGN._pos.y, RANGE);
 DGN.drawMap();
 DGN.drawAvatar();
 
