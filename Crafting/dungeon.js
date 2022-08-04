@@ -1,6 +1,5 @@
 'use strict'
-const DGN_CVS = document.querySelector("#content");
-const SEED = 11051978169694201;
+// const DGN_CVS = document.querySelector("#content");
 const COL = [80,100,40];
 const RANGE = 5;
 class Dungeon {
@@ -75,7 +74,7 @@ class Dungeon {
     move( dir ) {
         dir = dir.key;
         const updatePOS = ( x, y ) => {
-            const INC = DGN._NUM_PIXELS / DGN._GRID_SIZE; 
+            const INC = this._NUM_PIXELS / this._GRID_SIZE; 
             let tmp = {       
                 x: Number(((this._pos.x + x) * INC).toFixed(3)), 
                 y: Number(((this._pos.y + y) * INC).toFixed(3))
@@ -83,7 +82,7 @@ class Dungeon {
             const MAP_X = (tmp.x % 1 !== 0) ? tmp.x.toFixed(3) : tmp.x;          
             const MAP_Y = (tmp.y % 1 !== 0) ? tmp.y.toFixed(3) : tmp.y;
             const MAP = this._map.read( MAP_X, MAP_Y );                         // Get cell data from next cell
-            if ( MAP >= 0 ) return;                                              // Cannot walk through walls
+            if ( MAP >= 0 ) return;                                             // Cannot walk through walls
 
             this._pos.x = this._pos.x + x;
             this._pos.y = this._pos.y + y;
@@ -104,7 +103,8 @@ class Dungeon {
 
         this.genMapRadius( this._pos.x, this._pos.y, RANGE);
         this.drawMap();
-        this.drawAvatar()
+        this.drawAvatar();
+        if ( this._pos.x === 0 && this._pos.y === 0 ) this.exit();
     }
     drawMap() {
         this.clear();                                                           // Clear the screen
@@ -124,23 +124,30 @@ class Dungeon {
                     x: x / this._GRID_SIZE * this._CANVAS.width,
                     y: y / this._GRID_SIZE * this._CANVAS.width
                 }
-                if ( MAP === -100 ) {                                           // No data draw black
-                    this._CTX.fillStyle = `rgb(0,0,0)`;
-                    this._CTX.fillRect( LOC.x, LOC.y, this.PIXEL, this.PIXEL );
-                } else {
-                    const INPUT = Math.max(Math.abs(y-OFF),Math.abs(x-OFF));    // Ugh. Generate sim light fall off
-                    const DRP_OFF = (((Math.abs(y-OFF)+
-                                       Math.abs(x-OFF))/INC)/(INC*RANGE))/2;
-                    const ALPHA = Math.lerp(0,-(Math.clamp(DRP_OFF,0, 2)), 
-                                                INPUT/this._GRID_SIZE);
-                    if ( MAP < 0 ) {                                            
-                        this._CTX.fillStyle = 
-                                    shadeRGBColor("rgb(30,40,30)",ALPHA);       // Floor
-                    } else {                                                        
-                        this._CTX.fillStyle = 
-                                    shadeRGBColor("rgb(115,115,115)",ALPHA);    // Wall
-                    }
-                    this._CTX.fillRect( LOC.x, LOC.y, this.PIXEL, this.PIXEL ); // Draw
+                const INPUT = Math.max(Math.abs(y-OFF),Math.abs(x-OFF));        // Ugh. Generate sim light fall off
+                const DRP_OFF = (((Math.abs(y-OFF)+
+                                   Math.abs(x-OFF))/INC)/(INC*RANGE))/2;
+                const SHD = Math.lerp(0,-(Math.clamp(DRP_OFF,0, 2)), 
+                                            INPUT/this._GRID_SIZE);             // Shaded version of color
+                switch (MAP) {
+                    case -100:
+                        this._CTX.fillStyle = `rgb(0,0,0)`;
+                        this._CTX.fillRect(LOC.x,LOC.y,this.PIXEL,this.PIXEL);
+                        break;
+                    case -10:
+                        this._CTX.fillStyle=shadeRGBColor(`rgb(255,255,0)`,SHD);
+                        this._CTX.fillRect(LOC.x,LOC.y,this.PIXEL,this.PIXEL);
+                        break;
+                    default:
+                        if ( MAP < 0 ) {                                            
+                            this._CTX.fillStyle = 
+                                        shadeRGBColor("rgb(30,40,30)",SHD);     // Floor
+                        } else {                                                        
+                            this._CTX.fillStyle = 
+                                        shadeRGBColor("rgb(115,115,115)",SHD);  // Wall
+                        }
+                        this._CTX.fillRect(LOC.x,LOC.y,this.PIXEL,this.PIXEL);  // Draw
+                        break;
                 }
 
                 // this._CTX.font = `${40*INC}px monospace`;
@@ -164,11 +171,21 @@ class Dungeon {
                     PIXEL * ((SIZE-1)/2), 
                     PIXEL * ((SIZE-1)/2), PIXEL, PIXEL );                       // SIZE-1 / 2 is half the grid
     }
+    init() {
+        this.genMapRadius( this._pos.x, this._pos.y, RANGE);
+        this._map.memory[["0,0"]] = -10;
+        this.drawMap();
+        this.drawAvatar();
+        this._abort = new AbortController();                                    // Used to clean up listener on exit
+        window.addEventListener("keydown", e => 
+                    this.move(e), { signal: this._abort.signal } );
+    }
+    exit() {
+        this._abort.abort();                                                    // Remove keyboard listener
+        // Fix all these references to not be hard coded
+        LAND.clear();
+        LAND.drawSeen();
+        drawAvatar();
+        setGameMode("general") ;
+    }
 }
-
-const DGN = new Dungeon( DGN_CVS );
-window.addEventListener("keydown", e => DGN.move(e), false );
-DGN.genMapRadius( DGN._pos.x, DGN._pos.y, RANGE);
-DGN.drawMap();
-DGN.drawAvatar();
-

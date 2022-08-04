@@ -1,6 +1,6 @@
 'use strict';
-// const SEED = 3108197869694201;
-const SEED = new Date().getTime();
+const SEED = 3108197869694201;
+// const SEED = new Date().getTime();
 
 // Controls
 const MOVE_NORTH = "w";
@@ -19,6 +19,31 @@ const INV_UP = "ArrowUp";
 const ACT_DOWN = "f";
 const ACT_UP = "r";
 const BACK = "q";
+
+const controls = {
+    move: {
+        n:  ["w","ArrowUp","8"],
+        ne: ["9"],
+        e:  ["d","ArrowRight","6"],
+        se: ["3"],
+        s:  ["s","ArrowDown","2"],
+        sw: ["1"],
+        w:  ["a","ArrowLeft","4"],
+        nw: ["7"],
+    },
+    use:    ["e","5"],
+    accept: ["Enter"],
+    back:   ["q","0"],
+    restart:["Escape"],
+    inv: {
+        up: ["r","-"],
+        dn: ["f","+"],
+    },
+    act: {
+        up: ["t","/"],
+        dn: ["g","*"], 
+    }
+};
 
 const NAV = { North: 0, East: 1, South: 2, West: 3 };
 const DIRECTION = { 0: "north", 1: "east", 2: "south", 3: "west" };
@@ -52,7 +77,9 @@ const ACTION_STRINGS = {
 
 // Prevent arrow keys from scrolling windows 
 window.addEventListener("keydown", e => { 
-    if (e.key === INV_DOWN || e.key === INV_UP ) e.preventDefault(); }, false );
+    if (controls.move.n.includes(e.key) || controls.move.s.includes(e.key) ) 
+        e.preventDefault(); 
+}, false );
 
 const INSTRUCTION_BASE = `(${MOVE_NORTH}${MOVE_WEST}${MOVE_SOUTH}${MOVE_EAST}) Move `;
 
@@ -131,18 +158,18 @@ CRAFT_ACTION_LIST.addEventListener("focus", e => {
 }, false );
 
 // Setup Land
-const LAND = new Land( document.getElementById("landscape"));
+const LAND = new Land(document.getElementById("landscape"));
 
-LAND.addTerrain( 1,     [250,250,250],  "snow peaks",   "rock", 3 );
-LAND.addTerrain( -0.5,  [13,34,97],     "deep lake",    "water", 2 );
-LAND.addTerrain( -0.4,  [27,50,118],    "lake",         "water", 1.5 );
-LAND.addTerrain( -0.3,  [24, 131, 195], "shallow lake", "water", 1.2 );
-LAND.addTerrain( -0.27, [186, 166, 126],"sandy beaches","soil", 1.1 );
-LAND.addTerrain( 0,     [22, 132 ,17],  "grass lands",  "soil", 1 );
-LAND.addTerrain( 0.2,   [23, 67, 21],   "forest",       "soil", 1.2 );
-LAND.addTerrain( 0.3,   [93, 96, 106],  "mountains",    "rock", 2 );
-LAND.addTerrain( 0.47,  [133, 133, 133],"high mountains", "rock", 2 );
-LAND.addTerrain( 1,     [250, 250, 250],"snow peaks",   "rock", 2.5 );
+LAND.addTerrain( 1,     [250,250,250],  "snow peaks",       "rock",     3 );
+LAND.addTerrain( -0.5,  [13,34,97],     "deep lake",        "water",    2 );
+LAND.addTerrain( -0.4,  [27,50,118],    "lake",             "water",    1.5 );
+LAND.addTerrain( -0.3,  [24, 131, 195], "shallow lake",     "water",    1.2 );
+LAND.addTerrain( -0.27, [186, 166, 126],"sandy beaches",    "soil",     1.1 );
+LAND.addTerrain( 0,     [22, 132 ,17],  "grass lands",      "soil",     1 );
+LAND.addTerrain( 0.2,   [23, 67, 21],   "forest",           "soil",     1.2 );
+LAND.addTerrain( 0.3,   [93, 96, 106],  "mountains",        "rock",     2 );
+LAND.addTerrain( 0.47,  [133, 133, 133],"high mountains",   "rock",     2 );
+LAND.addTerrain( 1,     [250, 250, 250],"snow peaks",       "rock",     2.5 );
 
 // Set Material
 
@@ -194,7 +221,7 @@ let gameTime = 1;
 
 let avatar;
 
-const SELECTED_ITEM_ID = () => INV_SEL.options[INV_SEL.selectedIndex].value;
+const SELCT_ITM_ID = () => INV_SEL.options[INV_SEL.selectedIndex].value;
 
 document.addEventListener("keyup", keyInput, false);
 
@@ -366,9 +393,8 @@ function keyInput(e) {
                 break;
             }
             break;
-    }
-
-
+        case 6:
+        }
 }
 
 function setGameMode( mode ) {
@@ -434,7 +460,7 @@ function selectItem( name ) {
 
     if ( !item ) {                                                              // No item equipped
         setLandscapeFeatureActions();                                           // This could be used for character actions such as camp, pray, hunt     
-        setItemDescription();                                                   // Clear item description
+        setDescription();                                                   // Clear item description
         return;
     }
     
@@ -461,7 +487,7 @@ function selectItem( name ) {
     } );
 
     // Add Description
-    setItemDescription( item );
+    setDescription( item );
 
     updateIntructions( INV_SEL.options[INV_SEL.selectedIndex].text );
 }
@@ -488,7 +514,7 @@ function useItem( id ) {
     
     // Figure out logic for use action based on selected item and content at
     // location survey is always an option so could be a fall back given if 
-    // there's no "EVENT" happening or "FEATURE"
+    // there's no "SCENARIO" happening or "FEATURE"
     let action = ITEM_ACTIONS.options[ITEM_ACTIONS.options.selectedIndex].value;
 
     switch (action) {
@@ -543,7 +569,13 @@ function useItem( id ) {
             break;   
         case "Chop":
             ChopTree();  
-            break;          
+            break;
+        case "Enter":
+            const F = getLandscapeFeature( avatar.loc.x, avatar.loc.y );
+            F.start();
+            setGameMode("dungeon");
+            clearUI();
+            break;                        
         default:
             break;
     }
@@ -563,7 +595,7 @@ function enterCrafting() {
     CRAFT_UI.classList.remove("hide");                                          // Show Crafting UI
     CRAFT_ACTION_LIST.selectedIndex = 1;                                        // Default select Craft as the Action
     setGameMode("crafting");                                                    // Set controls
-    const SCHEMATIC = avatar.getItem(SELECTED_ITEM_ID());                       // Get Schematic Data
+    const SCHEMATIC = avatar.getItem(SELCT_ITM_ID());                       // Get Schematic Data
     updateIntructions(SCHEMATIC.name);                                          // Update Instructions  
     CRAFT_NAME.textContent = SCHEMATIC.name;                                    // Set crafting page title           
     CRAFT_ITEM_TITLE.value = SCHEMATIC.craftData.name;                          // Set default name to item name
@@ -682,7 +714,7 @@ function updateCraftingNumbers( form, header, title, count ) {
 }
 
 function getCraftingItemStats() {
-    const SCHEMATIC = avatar.getItem(SELECTED_ITEM_ID());
+    const SCHEMATIC = avatar.getItem(SELCT_ITM_ID());
     const STATS = {};                                                           // Track all relevent stats
     const FORMS = CRAFT_LISTS.querySelectorAll("form");                         
     const TOOLS = {};                                                           // Track the tool stats
@@ -730,7 +762,7 @@ function leaveCrafting() {
 }
 
 function selectCraftingMenuActionItem( action ) {
-    const SCHEMATIC = avatar.getItem(SELECTED_ITEM_ID());
+    const SCHEMATIC = avatar.getItem(SELCT_ITM_ID());
 
     // Leave Crafting if LEAVE selected
     if ( action == "-1" ) { leaveCrafting(); return; }
@@ -868,13 +900,13 @@ function fish() {
     // check direction has water
     let terrain = getTerrainFromDirection(lastDirection);
     if ( terrain.type !== "water" ) {
-        updateLog(`You excitedly pull out your ${avatar.getItem(SELECTED_ITEM_ID()).name} and prepare to cast, before realizing that you're lacking that key ingredient, a body of water to fish from.`);
+        updateLog(`You excitedly pull out your ${avatar.getItem(SELCT_ITM_ID()).name} and prepare to cast, before realizing that you're lacking that key ingredient, a body of water to fish from.`);
         return;
     } else {
         let depth = terrain.value;      // Lower the bigger catch (more food) -1 > 0
 
         
-        let efficency = avatar.getItem(SELECTED_ITEM_ID()).efficency;       // 13 > 100
+        let efficency = avatar.getItem(SELCT_ITM_ID()).efficency;       // 13 > 100
         let luck = avatar.luck;                                             // 0 > 100
         let rng = Math.random() * 100;                                      // 0 > 100      
         let fishBase = 0.3;                                                 // 
@@ -885,7 +917,7 @@ function fish() {
         let fishedTotalCount = Math.max(Math.round( ( rng - calcTarget ) * fishCount), 1);
 
         if ( calcTarget < rng ) {
-            updateLog(`You cast your ${avatar.getItem(SELECTED_ITEM_ID()).name} and wait watching the line drift in the water. After a few hours you manage to catch ${fishedTotalCount} fish.`);
+            updateLog(`You cast your ${avatar.getItem(SELCT_ITM_ID()).name} and wait watching the line drift in the water. After a few hours you manage to catch ${fishedTotalCount} fish.`);
             avatar.addFood(fishedTotalCount);
         } else {
             updateLog(`The gods don't seem to smile favoribly upon you today. Despite your best efforts you fail to get a bite.`)
@@ -906,7 +938,7 @@ function ChopTree() {
         return;
     }
 
-    const ITEM_EFF = avatar.getItem(SELECTED_ITEM_ID()).efficency;              // 13 > 100     How efficient is the item at its job
+    const ITEM_EFF = avatar.getItem(SELCT_ITM_ID()).efficency;              // 13 > 100     How efficient is the item at its job
     const RNG = Math.random() * 100;                                            // 0 > 100      
     const MIN_TARGET = 50;                                                      // 50           min roll target
     const MODIFIER = MIN_TARGET - ITEM_EFF - ((ITEM_EFF / 100) * avatar.luck);  // -100 > 50    reduced by efficency and luck (can go negative)
@@ -918,7 +950,7 @@ function ChopTree() {
         const COUNT = 1;
         updateLog( 
             `After many swings of your 
-            ${avatar.getItem(SELECTED_ITEM_ID()).name} 
+            ${avatar.getItem(SELCT_ITM_ID()).name} 
             you successfully chop ${COUNT} wood.` );
 
         // Add wood to player inventory
@@ -929,7 +961,7 @@ function ChopTree() {
     } else {
         updateLog( 
             `You strike a tree with your
-            ${avatar.getItem(SELECTED_ITEM_ID()).name} 
+            ${avatar.getItem(SELCT_ITM_ID()).name} 
             but fail to fell it.` );
     }
 
@@ -1097,7 +1129,7 @@ function mineTile( name, x, y ) {
         return;
     } 
    
-    const ITEM_EFF = avatar.getItem(SELECTED_ITEM_ID()).efficency;              // 13 > 100     How efficient is the item at its job
+    const ITEM_EFF = avatar.getItem(SELCT_ITM_ID()).efficency;              // 13 > 100     How efficient is the item at its job
     const RNG = Math.random() * 100;                                            // 0 > 100      
     const MIN_TARGET = 50;                                                      // 50           min roll target
     const MODIFIER = MIN_TARGET - ITEM_EFF - ((ITEM_EFF / 100) * avatar.luck);  // -100 > 50    reduced by efficency and luck (can go negative)
@@ -1112,7 +1144,7 @@ function mineTile( name, x, y ) {
 
         updateLog( 
             `After many swings of your 
-            ${avatar.getItem(SELECTED_ITEM_ID()).name} 
+            ${avatar.getItem(SELCT_ITM_ID()).name} 
             you successfully mine ${COUNT} ${type} ore.` );
 
         // Add ore to player inventory
@@ -1123,7 +1155,7 @@ function mineTile( name, x, y ) {
     } else {
         updateLog( 
             `You feel the ${type} beneath you, but the swings of your
-            ${avatar.getItem(SELECTED_ITEM_ID()).name} 
+            ${avatar.getItem(SELCT_ITM_ID()).name} 
             fails to extract any.` );
     }
 
@@ -1189,68 +1221,74 @@ function playInstrument( instrument ) {
 function moveCharacter( direction ) {
     if ( avatar.isDead ) return;
     
-    let lookDirection = [...avatar.location];
+    const LOOK_DIR = [...avatar.location];
     if ( direction % 2 === 0 ) {
-        lookDirection[1] += (direction === 0) ? -1 : 1;
+        LOOK_DIR[1] += (direction === 0) ? -1 : 1;
     } else {
-        lookDirection[0] += (direction === 1) ? 1 : -1;
+        LOOK_DIR[0] += (direction === 1) ? 1 : -1;
     }
 
-    let terrain = LAND.getTerrainByPosition( lookDirection[0], lookDirection[1] );
-    // Check move is valid   
-    if ( avatar.hasTerrain( terrain.type ) ) {
+    const moveDir = (chk = true) => {
+        // Check move is valid   
+        if (chk && !avatar.hasTerrain( TERRAIN.type ) ) {
+            updateLog( `You cannot traverse ${TERRAIN.name} terrain` );
+            return;
+        }
 
         if ( direction % 2 === 0 ) {
             avatar.location[1] += (direction === 0) ? -1 : 1;
         } else {
             avatar.location[0] += (direction === 1) ? 1 : -1;
         }
-        // Check to see if there's a landscape feature
-        const FEATURE = getLandscapeFeature( direction[0], direction[1] );
-
-        if ( FEATURE !== undefined ) {
-            const TYPE = (Array.isArray(FEATURE.type)) ? FEATURE.type[0] : FEATURE.type; // Get Feature type
-            switch ( TYPE ) {
-                case "town":
-                    updateLog( 
-                        `You stroll into the town of ${FEATURE.name}. 
-                        Its streets and people show that this is a 
-                        ${FEATURE.economicStatus} place.` );  
-                    break;
-                default:
-                    if ( INV_SEL.value === "none" ) 
-                        setLandscapeFeatureActions();
-                    updateLog( 
-                        `You travel ${DIRECTION[direction]} 
-                        into ${terrain.name}` );
-                    updateIntructions();
-                    break;
-            }
-        } else {
-            if ( INV_SEL.value === "none" ) 
-            setLandscapeFeatureActions();
-            updateLog( 
-                `You travel ${DIRECTION[direction]} 
-                into ${terrain.name}` );
-            updateIntructions();
-        }
-
-
         // Calculate travel time
-        increaseGameTime( terrain.difficulty );
-
+        increaseGameTime( TERRAIN.difficulty );
         checkedTile = false;
+        updateIntructions();
+        setLandscapeFeatureActions();
         gameUpdate();
-    } else {
-        updateLog( `You cannot traverse ${terrain.name} terrain` );
     }
 
+    const TERRAIN = LAND.getTerrainByPosition(LOOK_DIR[0],LOOK_DIR[1]);
+    // Check to see if there's a landscape feature
+    const FEAT = getLandscapeFeature(LOOK_DIR[0],LOOK_DIR[1]);
+    if ( FEAT !== undefined ) {
+        const TYPE = (Array.isArray(FEAT.type)) ? FEAT.type[0] : FEAT.type;     // Get Feature type
+        switch ( TYPE ) {
+            case "town":
+                updateLog( 
+                    `You stroll into the town of ${FEAT.name}. 
+                    Its streets and people show that this is a 
+                    ${FEAT.economicStatus} place.` );
+                moveDir(false);
+                break;
+            case "cave":
+                updateLog(`You step upto the dark ${FEAT.type} entrance.`);  
+                moveDir(false);
+                setDescription(FEAT);
+                break;
+            default:
+                if ( INV_SEL.value === "none" ) 
+                    setLandscapeFeatureActions();
+                updateLog( 
+                    `You travel ${DIRECTION[direction]} 
+                    into ${TERRAIN.name}` );
+                moveDir(false);
+                break;
+        }
+    } else {
+        if ( INV_SEL.value === "none" ) 
+        setLandscapeFeatureActions();
+        updateLog( 
+            `You travel ${DIRECTION[direction]} 
+            into ${TERRAIN.name}` );
+        moveDir(true);
+    }
 }
 
-function setLandscapeFeatureActions(feature) {
-    if ( feature === undefined ) feature = getLandscapeFeature( avatar.location[0], avatar.location[1] );
+function setLandscapeFeatureActions(feat) {
+    if (feat===undefined)feat = getLandscapeFeature(avatar.loc.x,avatar.loc.y);
     // Escape from no features (there should't be none, but for now there is)
-    if ( feature === undefined ) {
+    if (feat===undefined) {
         // clear current actions
         let items = ITEM_ACTIONS.options.length;
         for (let i = 0; i < items; i++) {
@@ -1259,25 +1297,40 @@ function setLandscapeFeatureActions(feature) {
         }
         return
     }
-    if ( feature.type === "town" ) {
 
-        // Select first inventory option (unequip items and reveal town actions)
-        INV_SEL.options.selectedIndex = 0;
+    let items = ITEM_ACTIONS.options.length;                            // clear current actions
+    for (let i = 0; i < items; i++) {
+        ITEM_ACTIONS.options[0].removeEventListener("click", () =>
+                                 useItem( INV_SEL.value ), false );
+        ITEM_ACTIONS.options[0].remove();
+    }
 
-        // clear current actions
-        let items = ITEM_ACTIONS.options.length;
-        for (let i = 0; i < items; i++) {
-            ITEM_ACTIONS.options[0].removeEventListener("click", () => useItem( INV_SEL.value ), false );
-            ITEM_ACTIONS.options[0].remove();
-        }
-
-        // Add Town actions
-        feature.actions.forEach( e => {
-            ITEM_ACTIONS.options[ITEM_ACTIONS.length] = new Option( e, e );    
-            ITEM_ACTIONS.options[ITEM_ACTIONS.length - 1].addEventListener("click", () => useItem( INV_SEL.value ), false );
-        });
-        ITEM_ACTIONS.options.selectedIndex = 0;
-        updateIntructions(ITEM_ACTIONS.value);
+    switch (feat.type) {
+        case "town":            
+            INV_SEL.options.selectedIndex = 0;                                  // Select first inventory option (unequip items and reveal town actions)           
+            // Add Town actions
+            feat.actions.forEach( e => {
+                ITEM_ACTIONS.options[ITEM_ACTIONS.length] = new Option( e, e );    
+                ITEM_ACTIONS.options[ITEM_ACTIONS.length - 1]
+                            .addEventListener("click", () => 
+                                useItem( INV_SEL.value ), false );
+            });
+            ITEM_ACTIONS.options.selectedIndex = 0;
+            updateIntructions(ITEM_ACTIONS.value);
+            break;
+        case "cave":
+            INV_SEL.options.selectedIndex = 0;
+            // Add Town actions
+            feat.actions.forEach( e => {
+                ITEM_ACTIONS.options[ITEM_ACTIONS.length] = new Option( e, e );    
+                ITEM_ACTIONS.options[ITEM_ACTIONS.length - 1]
+                            .addEventListener("click", () => 
+                                useItem( INV_SEL.value ), false );
+            });
+            ITEM_ACTIONS.options.selectedIndex = 0;
+            updateIntructions(ITEM_ACTIONS.value);
+        default:
+            break;
     }
 }
 
@@ -1311,6 +1364,11 @@ function checkDirection( direction ) {
                     `You can see the ${FEAT.type} of 
                     ${FEAT.name} to the 
                     ${DIRECTION[direction]}` );    
+                break;
+            case "cave":
+                updateLog( 
+                    `You can see a ${FEAT.type} to the 
+                    ${DIRECTION[direction]}` );  
                 break;
             default:
                 const TERRAIN = LAND.getTerrainByPosition( 
@@ -1347,23 +1405,18 @@ function getTerrainFromDirection( direction ) {
 }
 
 function getLandscapeFeature( x, y ) {
-
-    // Step through all the landscape feature arrays (or combine them into one)
-    let feature = LAND._TOWNS.find( e => (
-        x === ( e.location.x ) && 
-        y === ( e.location.y )  
-    ) );
-
+    let f = LAND._SCENARIOS.find( e => x===e.loc.x && y===e.loc.y);             // Check for Game Scenarios
+    if (f===undefined) f = LAND._TOWNS.find(e=>x===e.loc.x&&y===e.loc.y);       // Check for a town
     // NEXT
-    if ( feature === undefined ) {
+    if ( f === undefined ) {
         MAT._resources.forEach( e => {
             if ( MAT.getResourceValueAtLocation( e.name, x, y ) > 0 ) {
-                feature = e;
-                return feature;
+                f = e;
+                return f;
             }
         })
     }
-    return feature;
+    return f;
 }
 
 function drawAvatar() {
@@ -1403,9 +1456,9 @@ function refreshEquipmentListUI() {
     });
 }
 
-function setItemDescription( item ) {
-    if ( item === undefined ) { ITEM_DESC.textContent = ""; return }            // Clear description if no item given
-    ITEM_DESC.textContent = item.description;    
+function setDescription( el ) {
+    if ( el === undefined ) { ITEM_DESC.textContent = ""; return }            // Clear description if no item given
+    ITEM_DESC.textContent = el.description;    
 }
 
 function gameUpdate() {
@@ -1459,7 +1512,8 @@ function init() {
     MAT._resources.forEach( e => e.generateMap( true ) );
 
     // drawLandscape();
-    LAND.generateTowns();
+    LAND.genTowns();
+    LAND.genScenarios();
     
     let startTown = LAND._TOWNS[Math.floor(Math.random()*LAND._TOWNS.length)];
     

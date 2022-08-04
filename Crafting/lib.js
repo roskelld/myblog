@@ -59,10 +59,9 @@ function strengthAsText( str, max ) {
 }
 
 function randomColor() {
-    // let color = `#${Math.floor(Math.random()*16777215).toString(16)}`;
     const r = Math.round(Math.random() * 255);
     const g = Math.round(Math.random() * 255);
-    const b = Math.round(Math.random() * 255);
+    const b = Math.round(Math.random() * 255);        
     return [r,g,b];
 }
 

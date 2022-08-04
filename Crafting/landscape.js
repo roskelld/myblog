@@ -16,8 +16,12 @@ class Land {
 
         // Landscape Features
         this._TOWNS = [];
-    }
 
+        // Event spaces in the world
+        this._SCENARIOS = [];
+
+        this._SEEN = {};
+    }
     addTerrain( value, color, name, type, difficulty ) {
         let terrain = new Terrain( value, color, name, type, difficulty );
         this._terrain.push(terrain);
@@ -53,59 +57,72 @@ class Land {
         let terrain = this._terrain.find( e => { return value <= e._value } );
         return terrain;
     }
-    clear() {
-        this._CTX.clearRect(0,0,this._CANVAS.width, this._CANVAS.height);
-        this._map.init();
+    // clear() {
+    //     this._CTX.clearRect(0,0,this._CANVAS.width, this._CANVAS.height);
+    //     this._map.init();
 
-        // Generate land
-        for (let y = 0; y < this._GRID_SIZE; y += this._NUM_PIXELS / this._GRID_SIZE){
-            for (let x = 0; x < this._GRID_SIZE; x += this._NUM_PIXELS / this._GRID_SIZE){
-                this._map.get(x, y);            
-            }
-        }
-    }
+    //     // Generate land
+    //     for (let y = 0; y < this._GRID_SIZE; y += this._NUM_PIXELS / this._GRID_SIZE){
+    //         for (let x = 0; x < this._GRID_SIZE; x += this._NUM_PIXELS / this._GRID_SIZE){
+    //             this._map.get(x, y);            
+    //         }
+    //     }
+    // }
     // Converts to the Perlin map coordinates
     convertCoordinates( x, y ) {
         let loc_x = x * this._PIXEL_SIZE / this._CANVAS.width;
         let loc_y = y * this._PIXEL_SIZE / this._CANVAS.width;
         return { x: loc_x, y: loc_y };
     }
-    generateTowns() {
-        // Reset Towns
-        this._TOWNS.length = 0;
+    genScenarios() {   
+        this._SCENARIOS.length = 0;     
+        const MIN_HEIGHT    = 0.2;
+        const MAX_HEIGHT    = 0.22;
+        const MIN_D         = 8;
+        const MAX_D         = 16;
+        const SITES = Object.entries(this._map.memory)
+                        .filter(e=>e[1]>MIN_HEIGHT&&e[1]<MAX_HEIGHT); 
+        const NUM = Math.max(MIN_D,Math.ceil(Math.rndseed(SEED)*MAX_D));
+        for (let i = 0; i < NUM; i++) {            
+            const LOC = SITES[Math.floor(Math.rndseed(SEED+i)*SITES.length)];
+            const X = LOC[0].split(',')[0]/this._GRID_SIZE*this._CANVAS.width;
+            const Y = LOC[0].split(',')[1]/this._GRID_SIZE*this._CANVAS.width;
+            const DGN = new Cave(this);
+            DGN.loc = { x: X, y: Y };
+            DGN.type = "cave";
+            this._SCENARIOS.push(DGN);         
+        }
+        this._SCENARIOS.forEach( e => e.draw() );
 
-        // Valid terrain height (essentially terrain type)
-        let minHeight = -0.27;
-        let maxHeight = 0.2;
-        let minTowns = 8;
-        let maxTowns = 10;
+    }
+    genTowns() {
+        this._TOWNS.length  = 0;                                                // Reset Towns     
+        const MIN_HEIGHT    = -0.27;                                            // Valid terrain height (essentially terrain type)
+        const MAX_HEIGHT    = 0.2;
+        const MIN_T         = 8;
+        const MAX_T         = 10;
         // Find valid town sites
         // Hunt through the LANDSCAPE to find valid land heights (current assessment)
-        let sites = Object.entries(this._map.memory).filter( e => e[1] > minHeight && e[1] < maxHeight ); 
-    
-        let numberOfTowns = Math.max( minTowns, Math.ceil(Math.rndseed( SEED ) * maxTowns ));
-        for (let index = 0; index < numberOfTowns; index++) {
-            
-            let location = sites[Math.floor(Math.random()*sites.length)];
-            let x = location[0].split(',')[0] / this._GRID_SIZE * this._CANVAS.width;
-            let y = location[0].split(',')[1] / this._GRID_SIZE * this._CANVAS.width;
-    
-            let town = new Town();
-    
-            town.location = { x: x, y: y };
-    
-            this._TOWNS.push(town);           
+        const SITES = Object.entries(this._map.memory)
+                        .filter(e=>e[1]>MIN_HEIGHT&&e[1]<MAX_HEIGHT); 
+        const NUM = Math.max(MIN_T, Math.ceil(Math.rndseed(SEED)*MAX_T));
+        for (let i = 0; i < NUM; i++) {            
+            const LOC = SITES[Math.floor(Math.rndseed(SEED+i)*SITES.length)];
+            const X = LOC[0].split(',')[0]/this._GRID_SIZE*this._CANVAS.width;
+            const Y = LOC[0].split(',')[1]/this._GRID_SIZE*this._CANVAS.width;
+            const TOWN = new Town(this);
+            TOWN.location = { x: X, y: Y };
+            this._TOWNS.push(TOWN);           
         }
     }
     draw(x, y, radius) {
-        for ( let offset_x = 0 - radius; offset_x <= 0 + radius; offset_x++ ) {
-            for( let offset_y = 0 - radius; offset_y <= 0 + radius; offset_y++) {
-                if ( Math.abs(offset_x) + Math.abs(offset_y) <= radius + (radius/2) ) {
-                    
-                    let results = this.convertCoordinates( x + offset_x, y + offset_y );
+        for ( let ox = 0 - radius; ox <= 0 + radius; ox++ ) {
+            for( let oy = 0 - radius; oy <= 0 + radius; oy++) {
+                if ( Math.abs(ox) + Math.abs(oy) <= radius + (radius/2) ) {                  
+                    let results = this.convertCoordinates( x + ox, y + oy );
                     let result = this._map.get(results.x, results.y);
-                    let terrain = this.getTerrainColor(result);
-                
+                    this._SEEN[[`${results.x},${results.y}`]] = result;
+                    let terrain = this.getTerrainColor(result);            
                     this._CTX.fillStyle = `rgb(${terrain[0]}, ${terrain[1]}, ${terrain[2]})`;
                     this._CTX.fillRect(
                         results.x / this._GRID_SIZE * this._CANVAS.width,
@@ -118,15 +135,41 @@ class Land {
                         if ( town._revealed === true ) return;                
                         let loc = town.location;
 
-                        if ( x + offset_x === loc.x && y + offset_y === loc.y ) {
+                        if ( x + ox === loc.x && y + oy === loc.y ) {
                             town._revealed = true;
                         };
                     } );
+
+                    // Discover Scenarios
+                    this._SCENARIOS.forEach( e => {
+                        if ( e.revealed ) return;
+                        if (x+ox===e.loc.x&&y+oy===e.loc.y) e.revealed = true;
+                    });
                 }
             }
         }
         // Check for and draw any feature
         this._TOWNS.forEach(e => { if ( e._revealed === true ) e.draw(this) } );
+
+        this._SCENARIOS.forEach(e=>{if(e.revealed)e.draw();});
+    }
+    drawSeen() {
+        const GS = this._GRID_SIZE;
+        const NP = this._NUM_PIXELS;
+        const CW = this._CANVAS.width;
+        const PS = this._PIXEL_SIZE;
+        for (let y = 0; y < GS; y += NP / GS){
+            for (let x = 0; x < GS; x += NP / GS){
+                    const RES = this._SEEN[[`${x},${y}`]];
+                if (RES !== undefined) {
+                    const T = this.getTerrainColor(RES);       
+                    this._CTX.fillStyle=`rgb(${T[0]},${T[1]},${T[2]})`;
+                    this._CTX.fillRect(x/GS*CW,y/GS*CW,PS,PS);
+                }
+            }
+        }
+        this._TOWNS.forEach(e => { if (e.revealed) e.draw() });
+        this._SCENARIOS.forEach( e=> { if (e.revealed) e.draw() });
     }
     drawAll() {
         for (let y = 0; y < this._GRID_SIZE; y += this._NUM_PIXELS / this._GRID_SIZE){
@@ -145,7 +188,11 @@ class Land {
                 );
             }
         }
-        this._TOWNS.forEach(e => e.draw(this) );
+        this._TOWNS.forEach(e => e.draw() );
+        this._SCENARIOS.forEach( e=>e.draw() );
+    }
+    clear() {
+        this._CTX.clearRect(0,0,this._CANVAS.width, this._CANVAS.height);
     }
     getContentTypes() {
         // Return a valid list of actions the player can perform

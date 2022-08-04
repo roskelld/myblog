@@ -1,7 +1,8 @@
-class Town {
-    constructor() {
+class Town extends Scenario {
+    constructor(land) {
+        super();
         this.name = "";
-        this.type = "town";
+        this._type = "town";
         this.color = randomColor();
         this.stroke = [];
         this._location = { x: 0, y: 0 };
@@ -12,14 +13,13 @@ class Town {
         this._economic_status;
         this.generateStatus();
         this.generateMarket();
+        this._land = land;
     }
-
     generateName() {
         if (this.name == "") {
             this.name = DATA.towns[Math.floor(Math.random()*DATA.towns.length)];
         }
     }
-
     generateMarket() {
         this._market = [];        
         let number = Math.round( Math.random() * 5 + this._economic_status  );  // Number of items to sell 
@@ -55,7 +55,6 @@ class Town {
 
         // console.log(`${this.name} has a ${this.economicStatus} market with ${this.genItemQuality()} quality grade items`);
     }
-
     genItemQuality() {
         let maxQuality = 20;
         let increment = maxQuality / DATA.status.length;        // Based on number of economic types
@@ -115,41 +114,25 @@ class Town {
         const PRICE = BASE_PRC - ( BASE_PRC * 0.1 );
         return PRICE;
     }
-    set location( loc ) {
-        this._location = loc;
-    }
-    get location() {
-        return {                                                                // Convert the location to normal values
-            x: this._location.x / (LAND._PIXEL_SIZE / LAND._GRID_SIZE),
-            y: this._location.y / (LAND._PIXEL_SIZE / LAND._GRID_SIZE)
-        }
-    }
-    get loc() {                                                                 // Shorthand function
-        return this.location;                                   
-    }
-    get actions() {
-        return this._actions;
-    }
-    draw(land) { 
+    draw() {
+        const LAND = this._land;
         const x = this._location.x;
         const y = this._location.y;
-
-        // LANDSCAPE_CTX.strokeStyle = `rgb(${this.stroke[0]},${this.stroke[1]},${this.stroke[2]})`;
-        land._CTX.strokeStyle = `rgb(${Math.max(0,this.color[0]-30)},${Math.max(0,this.color[1]-30)},${Math.max(0,this.color[2]-30)})`;
-        land._CTX.fillStyle = `rgb(${this.color[0]},${this.color[1]},${this.color[2]})`;
-        land._CTX.fillRect( x, y, land._PIXEL_SIZE / land._GRID_SIZE , land._PIXEL_SIZE / land._GRID_SIZE  );
-        land._CTX.strokeRect( x, y, land._PIXEL_SIZE / land._GRID_SIZE , land._PIXEL_SIZE / land._GRID_SIZE  );
+        LAND._CTX.strokeStyle = `rgb(${Math.max(0,this.color[0]-30)},${Math.max(0,this.color[1]-30)},${Math.max(0,this.color[2]-30)})`;
+        LAND._CTX.fillStyle = `rgb(${this.color[0]},${this.color[1]},${this.color[2]})`;
+        LAND._CTX.fillRect( x, y, LAND._PIXEL_SIZE / LAND._GRID_SIZE , LAND._PIXEL_SIZE / LAND._GRID_SIZE  );
+        LAND._CTX.strokeRect( x, y, LAND._PIXEL_SIZE / LAND._GRID_SIZE , LAND._PIXEL_SIZE / LAND._GRID_SIZE  );
         
         let roof = new Path2D();
     
         // roof.beginPath();
-        roof.moveTo( x - ( land._PIXEL_SIZE / land._GRID_SIZE / 3 ), y );
-        roof.lineTo( x + ( land._PIXEL_SIZE / land._GRID_SIZE / 2 ), y - ( land._PIXEL_SIZE / land._GRID_SIZE / 1.2 ) );
-        roof.lineTo( x + ( land._PIXEL_SIZE / land._GRID_SIZE / 3 ) + ( land._PIXEL_SIZE / land._GRID_SIZE ), y );
+        roof.moveTo( x - ( LAND._PIXEL_SIZE / LAND._GRID_SIZE / 3 ), y );
+        roof.lineTo( x + ( LAND._PIXEL_SIZE / LAND._GRID_SIZE / 2 ), y - ( LAND._PIXEL_SIZE / LAND._GRID_SIZE / 1.2 ) );
+        roof.lineTo( x + ( LAND._PIXEL_SIZE / LAND._GRID_SIZE / 3 ) + ( LAND._PIXEL_SIZE / LAND._GRID_SIZE ), y );
         
         roof.closePath();
     
-        land._CTX.fill(roof);
-        land._CTX.stroke(roof);
+        LAND._CTX.fill(roof);
+        LAND._CTX.stroke(roof);
     }
 }
