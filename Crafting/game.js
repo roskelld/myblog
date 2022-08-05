@@ -391,46 +391,45 @@ function keyInput(e) {
             }
             break;
         case 6:
-            switch (KEY_NAME) {
-                case USE:
-                case ACCEPT:
-                    if ( ITEM_ACTIONS.options.length === 0 ) return;
-                    useItem( INV_SEL.value );
-                break;
-                case INV_UP:
-                    if ( INV_SEL.selectedIndex === 0 || INV_SEL.selectedIndex === -1 ) {
-                        INV_SEL.selectedIndex = INV_SEL.length - 1;
-                    } else {
-                        INV_SEL.selectedIndex--;
-                    }
-                    selectItem( INV_SEL.value );
-                break;
-                case INV_DOWN:
-                    if ( INV_SEL.selectedIndex === INV_SEL.length - 1 ) {
-                        INV_SEL.selectedIndex = 0;
-                    } else {
-                        INV_SEL.selectedIndex++;
-                    }
-                    selectItem( INV_SEL.value );
-                break;
-                case ACT_UP:
-                    if ( ITEM_ACTIONS.selectedIndex === 0 || ITEM_ACTIONS.selectedIndex === -1 ) {
-                        ITEM_ACTIONS.selectedIndex = ITEM_ACTIONS.length - 1;
-                    } else {
-                        ITEM_ACTIONS.selectedIndex--;
-                    }
-                    selectAction();
-                break;
-                case ACT_DOWN:
-                    if ( ITEM_ACTIONS.selectedIndex === ITEM_ACTIONS.length - 1 ) {
-                        ITEM_ACTIONS.selectedIndex = 0;
-                    } else {
-                        ITEM_ACTIONS.selectedIndex++;
-                    }
-                    selectAction();
-                break;
-
-            }
+            // switch (KEY_NAME) {
+            //     case USE:
+            //     case ACCEPT:
+            //         if ( ITEM_ACTIONS.options.length === 0 ) return;
+            //         useItem( INV_SEL.value );
+            //     break;
+            //     case INV_UP:
+            //         if ( INV_SEL.selectedIndex === 0 || INV_SEL.selectedIndex === -1 ) {
+            //             INV_SEL.selectedIndex = INV_SEL.length - 1;
+            //         } else {
+            //             INV_SEL.selectedIndex--;
+            //         }
+            //         selectItem( INV_SEL.value );
+            //     break;
+            //     case INV_DOWN:
+            //         if ( INV_SEL.selectedIndex === INV_SEL.length - 1 ) {
+            //             INV_SEL.selectedIndex = 0;
+            //         } else {
+            //             INV_SEL.selectedIndex++;
+            //         }
+            //         selectItem( INV_SEL.value );
+            //     break;
+            //     case ACT_UP:
+            //         if ( ITEM_ACTIONS.selectedIndex === 0 || ITEM_ACTIONS.selectedIndex === -1 ) {
+            //             ITEM_ACTIONS.selectedIndex = ITEM_ACTIONS.length - 1;
+            //         } else {
+            //             ITEM_ACTIONS.selectedIndex--;
+            //         }
+            //         selectAction();
+            //     break;
+            //     case ACT_DOWN:
+            //         if ( ITEM_ACTIONS.selectedIndex === ITEM_ACTIONS.length - 1 ) {
+            //             ITEM_ACTIONS.selectedIndex = 0;
+            //         } else {
+            //             ITEM_ACTIONS.selectedIndex++;
+            //         }
+            //         selectAction();
+            //     break;
+            // }
         }
 }
 

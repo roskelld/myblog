@@ -100,14 +100,13 @@ class Dungeon {
         }
         switch (dir) {
             case "w": case "8": updatePOS( 0, -1 ); break;
-            case "s": case "2": updatePOS( 0, 1 ); break;
+            case "s": case "x": case "2": updatePOS( 0, 1 ); break;
             case "d": case "6": updatePOS( 1, 0 ); break;
             case "a": case "4": updatePOS( -1, 0 ); break;
-            case "6": updatePOS( 1, 0 ); break;
-            case "7": updatePOS( -1, -1 ); break;
-            case "9": updatePOS( 1, -1 ); break;
-            case "3": updatePOS( 1, 1 ); break;
-            case "1": updatePOS( -1, 1 ); break;
+            case "7": case "q": updatePOS( -1, -1 ); break;
+            case "9": case "e": updatePOS( 1, -1 ); break;
+            case "3": case "c": updatePOS( 1, 1 ); break;
+            case "1": case "z": updatePOS( -1, 1 ); break;
             default: break;
         }
         this.genMapRadius( this._pos.x, this._pos.y, this.range);
