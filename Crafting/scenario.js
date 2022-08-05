@@ -1,6 +1,6 @@
 class Scenario {
     constructor( land ) {
-        this._location = { x: 0, y: 0 };
+        this._location = { x: 0, y: 0 };                                        // Location of Scenario
         this._actions = [];
         this._land = land;
         this._revealed = false;
@@ -57,21 +57,24 @@ class Cave extends Scenario {
     constructor(land) {
         super(land);
         this._actions = ["Enter"]
-        this.DGN = new Dungeon(document.getElementById("landscape"));
-        this.description = "A craggy mouth chipped deep into the mountain."
+        this.DGN = new Dungeon(document.querySelector("#landscape"), this);
+        this.description = "A craggy mouth chipped deep into the mountain.";
+        this._position = this.DGN.pos;
     }
-    draw() {
-        const x = this._location.x;
-        const y = this._location.y;
-        // console.log( `${x},${y} - ${this.loc.x},${this.loc.y}`);
+    get pos() {
+        return this._position;
+    }
+    draw() {                                                                    // Draw Landscape Icon
+        const X = this._location.x;
+        const Y = this._location.y;
         this._land._CTX.strokeStyle = `rgb(0,0,0)`;
         this._land._CTX.fillStyle = `rgb(40,40,40)`;
         const PXL = this._land._PIXEL_SIZE / this._land._GRID_SIZE;
         const SHAPE = new Path2D();
-        SHAPE.moveTo( x, y + PXL );
-        SHAPE.lineTo( x + (PXL/2), y );
-        SHAPE.lineTo( x + PXL, y + PXL );
-        SHAPE.lineTo( x, y + PXL );
+        SHAPE.moveTo( X, Y + PXL );
+        SHAPE.lineTo( X + (PXL/2), Y );
+        SHAPE.lineTo( X + PXL, Y + PXL );
+        SHAPE.lineTo( X, Y + PXL );
         SHAPE.closePath();
         this._land._CTX.fill(SHAPE);
     }

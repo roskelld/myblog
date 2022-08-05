@@ -66,35 +66,31 @@ class Avatar {
 
         return generatedTerrainList.includes(terrain);
     }
-
     get name() {
         return this._name;
     }
-
     set location(loc) {
         this._location[0] = loc[0];
         this._location[1] = loc[1];
     }
-
     get location() {
         return this._location;
     }
-
     get loc() {                                                                 // Cleaner loc function
         return { x: this._location[0], y: this._location[1] }
     }
-
+    get pos() {
+        return { x: this._location[0], y: this._location[1] }
+    }
     get mapLocation() {
         return LAND.convertCoordinates( this.location[0], this.location[1] );
     }
-
     get gold() {
         return Number(this._gold.toFixed(2));
     }
     addGold(amount) {
         this._gold += amount;
     }
-
     removeGold(amount) {
         if ( this._gold - amount < 0 ) {
             return false;
@@ -103,11 +99,9 @@ class Avatar {
             return true;
         }
     }
-
     get food() {
         return this._food;
     }
-
     eatFood() {
         if (this._food <= 0 ) {
             updateLog(`${this._name} is out of food and has died of starvation. Press ${RESTART} to adventure again`);
@@ -118,7 +112,6 @@ class Avatar {
             return true;
         }
     }
-
     addFood(amount) {
         if ( this._food + amount > this._MAX_FOOD ) {
             this._food = this._MAX_FOOD;
@@ -126,11 +119,9 @@ class Avatar {
             this._food += amount;
         }
     }
-
     get isDead() {
         return this._dead;
     }
-
     addToInventory( item ) {
         this._inventory.push(item);
         INV_SEL.options[INV_SEL.length] = new Option( item.name, item.id );
@@ -140,7 +131,7 @@ class Avatar {
 
         this._inventory.splice( this._inventory.findIndex( e => e.id === id ), 1);
     }
-    getItem( id ) {
+    getItem(id) {
         return this._inventory.find( e => e.id === id );
     }
 }

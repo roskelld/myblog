@@ -233,7 +233,6 @@ function keyInput(e) {
 
     const KEY_NAME = e.key;
     let direction;
-
     // general:    0,
     // shop_buy:   1,
     // shop_sell:  2,
@@ -241,7 +240,6 @@ function keyInput(e) {
     // crafting:   4,
     // combat:     5,
     // dungeon:    6
-
     switch(_currentGameMode) {
         case 0:
             switch (KEY_NAME) {
@@ -259,7 +257,6 @@ function keyInput(e) {
                     break;
                 case USE:
                 case ACCEPT:
-                    // if ( INV_SEL.selectedIndex === 0 || INV_SEL.selectedIndex === -1 ) return;
                     if ( ITEM_ACTIONS.options.length === 0 ) return;
                     useItem( INV_SEL.value );
                     return;
@@ -394,6 +391,46 @@ function keyInput(e) {
             }
             break;
         case 6:
+            switch (KEY_NAME) {
+                case USE:
+                case ACCEPT:
+                    if ( ITEM_ACTIONS.options.length === 0 ) return;
+                    useItem( INV_SEL.value );
+                break;
+                case INV_UP:
+                    if ( INV_SEL.selectedIndex === 0 || INV_SEL.selectedIndex === -1 ) {
+                        INV_SEL.selectedIndex = INV_SEL.length - 1;
+                    } else {
+                        INV_SEL.selectedIndex--;
+                    }
+                    selectItem( INV_SEL.value );
+                break;
+                case INV_DOWN:
+                    if ( INV_SEL.selectedIndex === INV_SEL.length - 1 ) {
+                        INV_SEL.selectedIndex = 0;
+                    } else {
+                        INV_SEL.selectedIndex++;
+                    }
+                    selectItem( INV_SEL.value );
+                break;
+                case ACT_UP:
+                    if ( ITEM_ACTIONS.selectedIndex === 0 || ITEM_ACTIONS.selectedIndex === -1 ) {
+                        ITEM_ACTIONS.selectedIndex = ITEM_ACTIONS.length - 1;
+                    } else {
+                        ITEM_ACTIONS.selectedIndex--;
+                    }
+                    selectAction();
+                break;
+                case ACT_DOWN:
+                    if ( ITEM_ACTIONS.selectedIndex === ITEM_ACTIONS.length - 1 ) {
+                        ITEM_ACTIONS.selectedIndex = 0;
+                    } else {
+                        ITEM_ACTIONS.selectedIndex++;
+                    }
+                    selectAction();
+                break;
+
+            }
         }
 }
 
@@ -448,7 +485,7 @@ function selectItem( name ) {
     let items = ITEM_ACTIONS.options.length;
     for (let i = 0; i < items; i++) {
         ITEM_ACTIONS.options[0]
-        .removeEventListener("click", () => useItem( INV_SEL.value ), false );
+            .removeEventListener("click",()=>useItem(INV_SEL.value),false);
         ITEM_ACTIONS.options[0].remove();
     }
     
@@ -460,7 +497,7 @@ function selectItem( name ) {
 
     if ( !item ) {                                                              // No item equipped
         setLandscapeFeatureActions();                                           // This could be used for character actions such as camp, pray, hunt     
-        setDescription();                                                   // Clear item description
+        // setDescription();                                                       // Clear item description
         return;
     }
     
@@ -487,7 +524,7 @@ function selectItem( name ) {
     } );
 
     // Add Description
-    setDescription( item );
+    setDescription(item);
 
     updateIntructions( INV_SEL.options[INV_SEL.selectedIndex].text );
 }
@@ -518,11 +555,7 @@ function useItem( id ) {
     let action = ITEM_ACTIONS.options[ITEM_ACTIONS.options.selectedIndex].value;
 
     switch (action) {
-        case "Mine":
-            mineTile(avatar.getItem(
-                    INV_SEL[INV_SEL.selectedIndex].value).properties[0], 
-                    avatar.loc.x, avatar.loc.y );
-            break;
+        case "Mine": mineTile(); break;
         case "Survey":
             scanLandForMaterial( 
                 avatar.loc.x, 
@@ -531,54 +564,31 @@ function useItem( id ) {
             break;
         case "Look":
             updateLog(
-                `You inspect the ${item.name}, 
-                it feels nice in the hand.`);
+                `You inspect the ${item.name}, it feels nice in the hand.`); 
             break;
-        case "Gamble":
-            gamble();
-            break;
-        case "Pray":
-            pray();
-            break;
-        case "Attack":
-            attack();            
-            break;  
-        case "Defend":
-            defend();            
-            break;  
-        case "Throw":
-            throwItem();            
-            break;    
-        case "Buy":
-            enterShop("buy");
-            break;          
-        case "Sell":
-            enterShop("sell");
-            break;
-        case "Roll Dice":
-            rollDice(6);
-            break;
-        case "Play Song":
-            playInstrument( item.name );
-            break;
-        case "Craft":
-            enterCrafting();
-            break;               
-        case "Fish":
-            fish();
-            break;   
-        case "Chop":
-            ChopTree();  
-            break;
-        case "Enter":
-            const F = getLandscapeFeature( avatar.loc.x, avatar.loc.y );
-            F.start();
-            setGameMode("dungeon");
-            clearUI();
-            break;                        
+        case "Gamble": gamble(); break;
+        case "Pray": pray(); break;
+        case "Attack": attack(); break;  
+        case "Defend": defend(); break;  
+        case "Throw": throwItem(); break;    
+        case "Buy": enterShop("buy"); break;               
+        case "Sell": enterShop("sell"); break;
+        case "Roll Dice": rollDice(6); break;
+        case "Play Song": playInstrument(item.name); break;
+        case "Craft": enterCrafting(); break;               
+        case "Fish": fish(); break;   
+        case "Chop": chopTree(); break;
+        case "Enter": enterScenario(); break;                        
         default:
             break;
     }
+}
+
+function enterScenario() {
+    const F = getLandscapeFeature(avatar.loc.x, avatar.loc.y);
+    F.start();
+    setGameMode("dungeon");
+    clearUI();
 }
 
 // ----------------------------------------------------------------------------
@@ -928,7 +938,7 @@ function fish() {
     }
 }
 
-function ChopTree() {
+function chopTree() {
     
     const TERRAIN = LAND.getTerrainType( avatar.loc.x, avatar.loc.y );
     if ( TERRAIN !== "forest" ) {
@@ -1100,16 +1110,23 @@ function scanLandForMaterial( x, y, tool ) {
 
 function mineTile( name, x, y ) {
     if ( avatar.isDead ) return;
-
+    let pos;
+    const F = getLandscapeFeature(avatar.loc.x, avatar.loc.y);
+    switch (getGameMode()) {
+        case 0: pos = avatar.loc; break;
+        case 6: pos = F.pos; break;
+    }
+    const TYP = avatar.getItem(INV_SEL[INV_SEL.selectedIndex].value)
+                                                        .properties[0];         // Get item resource material type
+    console.log( TYP );
     // What type of material is being mined 
     // Current setup supports metal
-    const MATS = Object.keys(DATA.material.solid[`${name}`]);
+    const MATS = Object.keys(DATA.material.solid[`${TYP}`]);
 
     let supply = 0;
     let type = "";
-    // Step through each valid material and see if the land has any
-    MATS.forEach( mat => {
-        let value = MAT.getResourceValueAtLocation( mat, x, y ); 
+    MATS.forEach( mat => {                                                      // Step through each valid material and see if the location has any
+        let value = MAT.getResourceValueAtLocation( mat, pos.x, pos.y ); 
         if ( value > 0 ) {
             supply = value;
             type = mat;
@@ -1122,14 +1139,14 @@ function mineTile( name, x, y ) {
         // Name is the type of material (from the tool) being mined
         updateLog( 
             `Your efforts to mine reveal that this 
-            area is barren of any ${name}.` );
+            area is barren of any ${TYP}.` );
         increaseGameTime(1);
         lastDirection = null;
         gameUpdate();
         return;
     } 
    
-    const ITEM_EFF = avatar.getItem(SELCT_ITM_ID()).efficency;              // 13 > 100     How efficient is the item at its job
+    const ITEM_EFF = avatar.getItem(SELCT_ITM_ID()).efficency;                  // 13 > 100     How efficient is the item at its job
     const RNG = Math.random() * 100;                                            // 0 > 100      
     const MIN_TARGET = 50;                                                      // 50           min roll target
     const MODIFIER = MIN_TARGET - ITEM_EFF - ((ITEM_EFF / 100) * avatar.luck);  // -100 > 50    reduced by efficency and luck (can go negative)
@@ -1138,7 +1155,7 @@ function mineTile( name, x, y ) {
     const RES = Math.floor(MOD_ROLL / RESULT_INCREMENT);
 
     if ( RES > 0 ) {
-        const COUNT = MAT.removeResourceSupply( 
+        const COUNT = TYP.removeResourceSupply( 
             type, avatar.location[0], 
             avatar.location[1], RES );
 
@@ -1463,36 +1480,28 @@ function setDescription( el ) {
 
 function gameUpdate() {
     if ( avatar.isDead ) return;
-
-    let feature = getLandscapeFeature( avatar.location[0], avatar.location[1] );
-
-    // run automated updates based on location type
-    if (feature) {
-        if ( feature.type === "town" ) {
-            avatar.addFood(avatar._MAX_FOOD);
-        }
+    switch (getGameMode()) {
+        case 6:
+            
+            break;
+        default:
+            const FEAT = getLandscapeFeature(avatar.loc.x,avatar.loc.y); 
+            if (FEAT) {
+                if ( FEAT.type === "town" ) {
+                    avatar.addFood(avatar._MAX_FOOD);
+                }
+            }           
+            if ( Math.round(gameTime % 10) === 0 ) {
+                LAND._TOWNS.forEach ( e => e.generateMarket() );                // Refresh Town Markets every ~10 days
+            }
+            LAND.draw(avatar.location[0], avatar.location[1], avatar.sight);
+            drawAvatar();
+            break;
     }
-
-    // update game time
-    UI_GAME_TIME.textContent = Math.round(gameTime);
-    
-    // update gold
-    UI_GOLD.forEach( el => el.textContent = avatar.gold );
-    
-    // update food
-    UI_FOOD.textContent = avatar.food;
-
-    // update weight
-    UI_WEIGHT.textContent = avatar.weight;
-    
-    // Refresh Town Markets every ~10 days
-    if ( Math.round(gameTime % 10) === 0 ) {
-        LAND._TOWNS.forEach ( e => e.generateMarket() ) 
-    }
-
-
-    LAND.draw(avatar.location[0], avatar.location[1], avatar.sight);
-    drawAvatar();
+    UI_GAME_TIME.textContent = Math.round(gameTime);                            // update game time        
+    UI_GOLD.forEach( el => el.textContent = avatar.gold );                      // update gold          
+    UI_FOOD.textContent = avatar.food;                                          // update food 
+    UI_WEIGHT.textContent = avatar.weight;                                      // update weight
 }
 
 function getItemDataFromName( name ) {
@@ -1530,9 +1539,8 @@ function init() {
     CRAFT_UI.classList.add("hide");
 
     // console.log( startTown );
-
-    avatar.location = [startTown.location.x,
-                        startTown.location.y];
+    // avatar.location = [LAND._SCENARIOS[0].loc.x, LAND._SCENARIOS[0].loc.y];
+    avatar.location = [startTown.location.x, startTown.location.y];
     
     // Default terrain
     avatar.addValidTerrain("soil");

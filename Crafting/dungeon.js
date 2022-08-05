@@ -1,10 +1,10 @@
 'use strict'
 // const DGN_CVS = document.querySelector("#content");
 const COL = [80,100,40];
-const RANGE = 5;
 class Dungeon {
-    constructor( canvas ) {
+    constructor( canvas, parent ) {
         this._CANVAS = canvas;
+        this._prnt = parent;
         this._CTX = this._CANVAS.getContext('2d');
         this._CANVAS.width = this._CANVAS.height = 512;
         this._GRID_SIZE = 3;
@@ -15,6 +15,14 @@ class Dungeon {
         this._map = new Perlin( SEED );
         this._pos = { x: 0, y: 0 };
         this._camera = { x: 0, y: 0 };
+        this._range = 5;
+        this._mats = new Perlin(SEED+this._prnt.loc.x+this._prnt.loc.y);
+    }
+    get range() {
+        return this._range;
+    }
+    get pos() {
+        return this._pos;
     }
     convertCoordinates( x, y ) {
         let loc_x = x * this._PIXEL_SIZE / this._CANVAS.width;
@@ -34,7 +42,6 @@ class Dungeon {
     genMapRadius( x, y, r ) {                                                   // Generate map data based on vision radius & sight-lines
         const INC = this._NUM_PIXELS / this._GRID_SIZE;
         const MATRIX = spiral(r);                                               // Generate viewing cells as spiral
-
         const CHK = new Array(DATA.directions.length).fill(true);               // Create array of view directions to check vision
         const LAST = { dir: 0, ring: 0, chk: false };                           // Track previous view for comparison
         MATRIX.forEach( (loc, i) => {
@@ -56,7 +63,8 @@ class Dungeon {
                 const MAP_X = (TDR.x % 1 !== 0) ? (TDR.x).toFixed(3) : TDR.x;   // Cull unneeded decimals
                 const MAP_Y = (TDR.y % 1 !== 0) ? (TDR.y).toFixed(3) : TDR.y;
                 
-                const RES = this._map.get( MAP_X, MAP_Y );                      // Get or generate map data
+                const RES = this._map.get(MAP_X,MAP_Y);                         // Get or generate map data
+                this._mats.get(MAP_X,MAP_Y);                                    // Generate materials data
                 if (i===0) return;                                              // Don't perform occlusion on standing cell
                 if ( RES > 0 ) {                                                // Record vision block for next cycle
                     LAST.dir = DIR; 
@@ -75,24 +83,28 @@ class Dungeon {
         dir = dir.key;
         const updatePOS = ( x, y ) => {
             const INC = this._NUM_PIXELS / this._GRID_SIZE; 
-            let tmp = {       
+            const TMP = {       
                 x: Number(((this._pos.x + x) * INC).toFixed(3)), 
                 y: Number(((this._pos.y + y) * INC).toFixed(3))
             };       
-            const MAP_X = (tmp.x % 1 !== 0) ? tmp.x.toFixed(3) : tmp.x;          
-            const MAP_Y = (tmp.y % 1 !== 0) ? tmp.y.toFixed(3) : tmp.y;
+            const MAP_X = (TMP.x % 1 !== 0) ? TMP.x.toFixed(3) : TMP.x;          
+            const MAP_Y = (TMP.y % 1 !== 0) ? TMP.y.toFixed(3) : TMP.y;
             const MAP = this._map.read( MAP_X, MAP_Y );                         // Get cell data from next cell
+            const MAT = this._mats.read( MAP_X, MAP_Y );
+            if ( MAT >= 0.30 ) {
+                console.log( "WE MINE!");
+                this._mats.memory[[`${MAP_X},${MAP_Y}`]] = -1;
+                this._map.memory[[`${MAP_X},${MAP_Y}`]] = -1;
+            }
             if ( MAP >= 0 ) return;                                             // Cannot walk through walls
-
             this._pos.x = this._pos.x + x;
             this._pos.y = this._pos.y + y;
         }
-
         switch (dir) {
-            case "w": case "8": case "ArrowUp": updatePOS( 0, -1 ); break;
-            case "s": case "2": case "ArrowDown": updatePOS( 0, 1 ); break;
-            case "d": case "6": case "ArrowRight": updatePOS( 1, 0 ); break;
-            case "a": case "4": case "ArrowLeft": updatePOS( -1, 0 ); break;
+            case "w": case "8": updatePOS( 0, -1 ); break;
+            case "s": case "2": updatePOS( 0, 1 ); break;
+            case "d": case "6": updatePOS( 1, 0 ); break;
+            case "a": case "4": updatePOS( -1, 0 ); break;
             case "6": updatePOS( 1, 0 ); break;
             case "7": updatePOS( -1, -1 ); break;
             case "9": updatePOS( 1, -1 ); break;
@@ -100,8 +112,7 @@ class Dungeon {
             case "1": updatePOS( -1, 1 ); break;
             default: break;
         }
-
-        this.genMapRadius( this._pos.x, this._pos.y, RANGE);
+        this.genMapRadius( this._pos.x, this._pos.y, this.range);
         this.drawMap();
         this.drawAvatar();
         if ( this._pos.x === 0 && this._pos.y === 0 ) this.exit();
@@ -119,14 +130,15 @@ class Dungeon {
                 };                                                              
                 const MAP_X = (TDR.x % 1 !== 0) ? TDR.x.toFixed(3) : TDR.x;          
                 const MAP_Y = (TDR.y % 1 !== 0) ? TDR.y.toFixed(3) : TDR.y;
-                const MAP = this._map.read( MAP_X, MAP_Y );                     // Read the map data: -100 if none                
+                const MAP = this._map.read( MAP_X, MAP_Y );                     // Read the map data: -100 if none
+                const MAT = this._mats.read( MAP_X, MAP_Y );                    // Read materials data
                 const LOC = {  
                     x: x / this._GRID_SIZE * this._CANVAS.width,
                     y: y / this._GRID_SIZE * this._CANVAS.width
                 }
                 const INPUT = Math.max(Math.abs(y-OFF),Math.abs(x-OFF));        // Ugh. Generate sim light fall off
                 const DRP_OFF = (((Math.abs(y-OFF)+
-                                   Math.abs(x-OFF))/INC)/(INC*RANGE))/2;
+                                   Math.abs(x-OFF))/INC)/(INC*this.range))/2;
                 const SHD = Math.lerp(0,-(Math.clamp(DRP_OFF,0, 2)), 
                                             INPUT/this._GRID_SIZE);             // Shaded version of color
                 switch (MAP) {
@@ -142,9 +154,16 @@ class Dungeon {
                         if ( MAP < 0 ) {                                            
                             this._CTX.fillStyle = 
                                         shadeRGBColor("rgb(30,40,30)",SHD);     // Floor
-                        } else {                                                        
-                            this._CTX.fillStyle = 
-                                        shadeRGBColor("rgb(115,115,115)",SHD);  // Wall
+                        } else {               
+                            
+                            // Draw material if any
+                            if (MAT >= 0.30) { 
+                                this._CTX.fillStyle = 
+                                    shadeRGBColor("rgb(212,175,55)",SHD);       // Material
+                            } else {
+                                this._CTX.fillStyle = 
+                                    shadeRGBColor("rgb(115,115,115)",SHD);      // Wall
+                            }
                         }
                         this._CTX.fillRect(LOC.x,LOC.y,this.PIXEL,this.PIXEL);  // Draw
                         break;
@@ -172,7 +191,7 @@ class Dungeon {
                     PIXEL * ((SIZE-1)/2), PIXEL, PIXEL );                       // SIZE-1 / 2 is half the grid
     }
     init() {
-        this.genMapRadius( this._pos.x, this._pos.y, RANGE);
+        this.genMapRadius( this._pos.x, this._pos.y, this.range);
         this._map.memory[["0,0"]] = -10;
         this.drawMap();
         this.drawAvatar();
