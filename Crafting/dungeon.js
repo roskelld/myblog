@@ -11,12 +11,10 @@ class Dungeon {
         this._RESOLUTION = 7;
         this._PIXEL_SIZE = this._CANVAS.width / this._RESOLUTION;
         this._NUM_PIXELS = this._GRID_SIZE / this._RESOLUTION;
-        this.PIXEL = this._CANVAS.width / this._RESOLUTION / this._GRID_SIZE;   
-        this._map = new Perlin( SEED );
+        this.PIXEL = this._CANVAS.width / this._RESOLUTION / this._GRID_SIZE;           
         this._pos = { x: 0, y: 0 };
         this._camera = { x: 0, y: 0 };
         this._range = 5;
-        this._mats = new Perlin(SEED+this._prnt.loc.x+this._prnt.loc.y);
     }
     get range() {
         return this._range;
@@ -191,6 +189,8 @@ class Dungeon {
                     PIXEL * ((SIZE-1)/2), PIXEL, PIXEL );                       // SIZE-1 / 2 is half the grid
     }
     init() {
+        this._map = new Perlin( (this._prnt.loc.x*this._prnt.loc.y)+SEED );
+        this._mats = new Perlin(SEED+(this._prnt.loc.x*this._prnt.loc.y));
         this.genMapRadius( this._pos.x, this._pos.y, this.range);
         this._map.memory[["0,0"]] = -10;
         this.drawMap();
