@@ -13,7 +13,6 @@ class Avatar {
         this._sight = 3;
         this._luck = 0;
     }
-
     update(duration) {
         
         for (let index = 0; index < Math.round(duration); index++) {
@@ -28,30 +27,24 @@ class Avatar {
         this._inventory.forEach( e => { weight += e.weight } );
         return weight.toFixed(2);
     }
-
     get luck() {
         return this._luck;
     }
-
     set luck(value) {
         this._luck += value;
         return this._luck;
     }
-
     generateName() {
         if (this._name == "") {
             this._name = DATA.names[Math.floor(Math.random()*DATA.names.length)];
         }
     }
-
     addValidTerrain(terrain) {
         this._validTerrain.push(terrain);
     }
-
     removeValidTerrain(terrain) {
         this._validTerrain.pop(terrain);
     }
-
     hasTerrain(terrain) {
 
         // Reduce inventory to valid terrain affecting objects
@@ -133,6 +126,22 @@ class Avatar {
     }
     getItem(id) {
         return this._inventory.find( e => e.id === id );
+    }
+    get currentAction() {
+        const ITM = this.getItem( INV_SEL.value );
+        if ( ITM === undefined ) return "None";
+        return ITM.use[ ITEM_ACTIONS.selectedIndex ];
+    }
+    get currentItem() {
+        const ITM = this.getItem( INV_SEL.value )
+        if ( ITM === undefined ) return "None";
+        return ITM;
+
+    }
+    currentItemHas( action ) {
+        const ITM = this.getItem(INV_SEL.value)
+        if ( ITM === undefined ) return false;
+        return ITM.use.includes( action );
     }
 }
 

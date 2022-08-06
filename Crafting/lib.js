@@ -116,8 +116,8 @@ function spiral( r ) {
   
 // Version 4.0
 // https://github.com/PimpTrizkit/PJs/wiki/12.-Shade,-Blend-and-Convert-a-Web-Color-(pSBC.js)
-function shadeRGBColor(color, percent) {
-    var f=color.split(","),
+function shadeRGB(color, percent) {
+    let f=color.split(","),
         t=percent<0?0:255,
         p=percent<0?percent*-1:percent,
         R=parseInt(f[0].slice(4)),

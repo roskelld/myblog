@@ -11,7 +11,7 @@ class Land {
 
         this._GRID_SIZE = 4;
         this._RESOLUTION = 16;
-        this._PIXEL_SIZE = this._CANVAS.width / this._RESOLUTION;
+        this._PIXEL_SIZE = this._CANVAS.width/this._RESOLUTION;
         this._NUM_PIXELS = this._GRID_SIZE / this._RESOLUTION;
 
         // Landscape Features
@@ -57,21 +57,10 @@ class Land {
         let terrain = this._terrain.find( e => { return value <= e._value } );
         return terrain;
     }
-    // clear() {
-    //     this._CTX.clearRect(0,0,this._CANVAS.width, this._CANVAS.height);
-    //     this._map.init();
-
-    //     // Generate land
-    //     for (let y = 0; y < this._GRID_SIZE; y += this._NUM_PIXELS / this._GRID_SIZE){
-    //         for (let x = 0; x < this._GRID_SIZE; x += this._NUM_PIXELS / this._GRID_SIZE){
-    //             this._map.get(x, y);            
-    //         }
-    //     }
-    // }
     // Converts to the Perlin map coordinates
     convertCoordinates( x, y ) {
-        let loc_x = x * this._PIXEL_SIZE / this._CANVAS.width;
-        let loc_y = y * this._PIXEL_SIZE / this._CANVAS.width;
+        let loc_x = x * this._NUM_PIXELS / this._GRID_SIZE;;
+        let loc_y = y * this._NUM_PIXELS / this._GRID_SIZE;;
         return { x: loc_x, y: loc_y };
     }
     genScenarios() {   
@@ -150,24 +139,22 @@ class Land {
         }
         // Check for and draw any feature
         this._TOWNS.forEach(e => { if ( e._revealed === true ) e.draw(this) } );
-
         this._SCENARIOS.forEach(e=>{if(e.revealed)e.draw();});
     }
     drawSeen() {
+        this.clear();
         const GS = this._GRID_SIZE;
-        const NP = this._NUM_PIXELS;
         const CW = this._CANVAS.width;
-        const PS = this._PIXEL_SIZE;
-        for (let y = 0; y < GS; y += NP / GS){
-            for (let x = 0; x < GS; x += NP / GS){
-                    const RES = this._SEEN[[`${x},${y}`]];
-                if (RES !== undefined) {
-                    const T = this.getTerrainColor(RES);       
-                    this._CTX.fillStyle=`rgb(${T[0]},${T[1]},${T[2]})`;
-                    this._CTX.fillRect(x/GS*CW,y/GS*CW,PS,PS);
-                }
-            }
-        }
+        const PS = this._PIXEL_SIZE/this._GRID_SIZE;
+        Object.keys(this._SEEN).forEach( (e,i) => {
+            const POS = e.split(",");
+            const X = Number(POS[0]);
+            const Y = Number(POS[1]);
+            const RES = LAND._map.memory[[e]];
+            const T = this.getTerrainColor(RES);       
+            this._CTX.fillStyle=`rgb(${T[0]},${T[1]},${T[2]})`;
+            this._CTX.fillRect(X/GS*CW,Y/GS*CW,PS,PS);
+        } );
         this._TOWNS.forEach(e => { if (e.revealed) e.draw() });
         this._SCENARIOS.forEach( e=> { if (e.revealed) e.draw() });
     }

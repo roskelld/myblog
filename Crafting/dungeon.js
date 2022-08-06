@@ -1,5 +1,4 @@
 'use strict'
-// const DGN_CVS = document.querySelector("#content");
 const COL = [80,100,40];
 class Dungeon {
     constructor( canvas, parent ) {
@@ -78,7 +77,6 @@ class Dungeon {
         this._CTX.clearRect(0,0,this._CANVAS.width, this._CANVAS.height);
     }
     move( dir ) {
-        dir = dir.key;
         const updatePOS = ( x, y ) => {
             const INC = this._NUM_PIXELS / this._GRID_SIZE; 
             const TMP = {       
@@ -89,30 +87,33 @@ class Dungeon {
             const MAP_Y = (TMP.y % 1 !== 0) ? TMP.y.toFixed(3) : TMP.y;
             const MAP = this._map.read( MAP_X, MAP_Y );                         // Get cell data from next cell
             const MAT = this._mats.read( MAP_X, MAP_Y );
+
+            // Mining Ranges
             if ( MAT >= 0.30 ) {
-                console.log( "WE MINE!");
-                this._mats.memory[[`${MAP_X},${MAP_Y}`]] = -1;
-                this._map.memory[[`${MAP_X},${MAP_Y}`]] = -1;
+                this.mine(MAP_X,MAP_Y,MAT);
             }
             if ( MAP >= 0 ) return;                                             // Cannot walk through walls
             this._pos.x = this._pos.x + x;
             this._pos.y = this._pos.y + y;
+            if ( this._pos.x === 0 && this._pos.y === 0 ) {
+                this._prnt.exit();
+            } else {
+                this.genMapRadius(this._pos.x, this._pos.y, this.range);
+                this.drawMap();
+                this.drawAvatar();   
+            }
         }
         switch (dir) {
-            case "w": case "8": updatePOS( 0, -1 ); break;
-            case "s": case "x": case "2": updatePOS( 0, 1 ); break;
-            case "d": case "6": updatePOS( 1, 0 ); break;
-            case "a": case "4": updatePOS( -1, 0 ); break;
-            case "7": case "q": updatePOS( -1, -1 ); break;
-            case "9": case "e": updatePOS( 1, -1 ); break;
-            case "3": case "c": updatePOS( 1, 1 ); break;
-            case "1": case "z": updatePOS( -1, 1 ); break;
+            case NAV.North:     updatePOS( 0, -1 );     break;
+            case NAV.South:     updatePOS( 0, 1 );      break;
+            case NAV.East:      updatePOS( 1, 0 );      break;
+            case NAV.West:      updatePOS( -1, 0 );     break;
+            case NAV.NorthWest: updatePOS( -1, -1 );    break;
+            case NAV.NorthEast: updatePOS( 1, -1 );     break;
+            case NAV.SouthEast: updatePOS( 1, 1 );      break;
+            case NAV.SouthWest: updatePOS( -1, 1 );     break;
             default: break;
         }
-        this.genMapRadius( this._pos.x, this._pos.y, this.range);
-        this.drawMap();
-        this.drawAvatar();
-        if ( this._pos.x === 0 && this._pos.y === 0 ) this.exit();
     }
     drawMap() {
         this.clear();                                                           // Clear the screen
@@ -144,22 +145,19 @@ class Dungeon {
                         this._CTX.fillRect(LOC.x,LOC.y,this.PIXEL,this.PIXEL);
                         break;
                     case -10:
-                        this._CTX.fillStyle=shadeRGBColor(`rgb(255,255,0)`,SHD);
+                        this._CTX.fillStyle=shadeRGB(`rgb(255,255,0)`,SHD);
                         this._CTX.fillRect(LOC.x,LOC.y,this.PIXEL,this.PIXEL);
                         break;
                     default:
                         if ( MAP < 0 ) {                                            
-                            this._CTX.fillStyle = 
-                                        shadeRGBColor("rgb(30,40,30)",SHD);     // Floor
+                            this._CTX.fillStyle = shadeRGB("rgb(30,40,30)",SHD);// Floor
                         } else {               
-                            
-                            // Draw material if any
                             if (MAT >= 0.30) { 
                                 this._CTX.fillStyle = 
-                                    shadeRGBColor("rgb(212,175,55)",SHD);       // Material
+                                            shadeRGB("rgb(212,175,55)",SHD);    // Material
                             } else {
                                 this._CTX.fillStyle = 
-                                    shadeRGBColor("rgb(115,115,115)",SHD);      // Wall
+                                    shadeRGB("rgb(115,115,115)",SHD);           // Wall
                             }
                         }
                         this._CTX.fillRect(LOC.x,LOC.y,this.PIXEL,this.PIXEL);  // Draw
@@ -188,22 +186,25 @@ class Dungeon {
                     PIXEL * ((SIZE-1)/2), PIXEL, PIXEL );                       // SIZE-1 / 2 is half the grid
     }
     init() {
-        this._map = new Perlin( (this._prnt.loc.x*this._prnt.loc.y)+SEED );
-        this._mats = new Perlin(SEED+(this._prnt.loc.x*this._prnt.loc.y));
+        if ( this._map === undefined ) {
+            this._map = new Perlin((this._prnt.loc.x*this._prnt.loc.y)+SEED);
+            this._mats = new Perlin(SEED+(this._prnt.loc.x*this._prnt.loc.y));
+        }        
         this.genMapRadius( this._pos.x, this._pos.y, this.range);
         this._map.memory[["0,0"]] = -10;
         this.drawMap();
         this.drawAvatar();
-        this._abort = new AbortController();                                    // Used to clean up listener on exit
-        window.addEventListener("keydown", e => 
-                    this.move(e), { signal: this._abort.signal } );
     }
-    exit() {
-        this._abort.abort();                                                    // Remove keyboard listener
-        // Fix all these references to not be hard coded
-        LAND.clear();
-        LAND.drawSeen();
-        drawAvatar();
-        setGameMode("general") ;
+    mine( x, y, mat ) {
+
+        // Set material type 
+        // 212,175,55
+
+        if ( !avatar.currentItemHas("Mine")) {
+            updateLog(`You see a vein of minable gold in the rock`);
+            return;
+        }
+        this._mats.memory[[`${x},${y}`]] = -1;
+        this._map.memory[[`${x},${y}`]] = -1;
     }
 }

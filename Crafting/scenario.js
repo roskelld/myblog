@@ -51,6 +51,9 @@ class Scenario {
     start() {
         console.log("ADD CUSTOM START CODE TO BEGIN SCENARIO");
     }
+    move( dir ) {
+        console.log("ADD CUSTOM MOVE CODE TO NAVIGATE SCENARIO");
+    }
 }
 
 class Cave extends Scenario {
@@ -82,6 +85,13 @@ class Cave extends Scenario {
         this.DGN.init();
     }
     exit() {
-
+        this._land.drawSeen();
+        drawAvatar();
+        setGameMode("general");
+        const F = getLandscapeFeature(avatar.loc.x, avatar.loc.y);
+        setLandscapeFeatureActions(F);
+    }
+    move(dir) {
+        this.DGN.move( dir );
     }
 }

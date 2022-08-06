@@ -20,6 +20,29 @@ const ACT_DOWN = "f";
 const ACT_UP = "r";
 const BACK = "q";
 
+const PAD = {
+    0: ACCEPT,
+    1: ACCEPT,
+    2: ACCEPT,
+    3: ACCEPT,
+    4: INV_UP,
+    5: INV_DOWN,
+    6: ACT_UP,
+    7: ACT_DOWN,
+    8: RESTART,
+    9: ACCEPT,
+    10: ACCEPT,
+    11: ACCEPT,
+    12: MOVE_NORTH,
+    13: MOVE_SOUTH,
+    14: MOVE_WEST,
+    15: MOVE_EAST,
+    40: MOVE_NORTH_EAST,
+    42: MOVE_NORTH_WEST,
+    46: MOVE_SOUTH_EAST,
+    48: MOVE_SOUTH_WEST
+};
+
 const controls = {
     move: {
         n:  ["w","ArrowUp","8"],
@@ -45,8 +68,10 @@ const controls = {
     }
 };
 
-const NAV = { North: 0, East: 1, South: 2, West: 3 };
-const DIRECTION = { 0: "north", 1: "east", 2: "south", 3: "west" };
+const NAV = { North: 0, East: 1, South: 2, West: 3, 
+              NorthWest: 4, NorthEast: 5, SouthEast: 6, SouthWest: 7 };
+const DIRECTION = { 0: "north", 1: "east", 2: "south", 3: "west", 
+            4: "north west", 5: "north east", 6: "south east", 7: "south west"};
 
 const GAME_MODES = {
     general:    0,
@@ -75,13 +100,121 @@ const ACTION_STRINGS = {
     "Fish":     "Cast"
 }
 
+// -----------------------------------------------------------------------------
+// Game Pad 
+let start;
+let controller = {};
+let buttonStack = [];
+let last_move = 0;                                                              // Track last move time
+window.addEventListener("gamepadconnected", function(e) {
+    console.log("Gamepad connected at index %d: %s. %d buttons, %d axes.",
+    e.gamepad.index, e.gamepad.id,
+    e.gamepad.buttons.length, e.gamepad.axes.length);
+    const GPADS = navigator.getGamepads();
+    if (!GPADS) return;
+    const GPAD = GPADS[0];
+    registerControllerButtons(GPAD.buttons)
+    gameLoop();
+});
+window.addEventListener("gamepaddisconnected", function(e) {
+    console.log("Gamepad disconnected from index %d: %s",
+    e.gamepad.index, e.gamepad.id);
+    cancelRequestAnimationFrame(start);
+});
+function registerControllerButtons(pad) {                                       // Configure pad buttons
+    controller = {};
+    pad.forEach( (e,i) => {
+        controller[[i]] = { last: 0, pressed: false };
+    });
+    controller[["40"]] = { last: 0, pressed: false };                           // North East
+    controller[["42"]] = { last: 0, pressed: false };                           // North West
+    controller[["46"]] = { last: 0, pressed: false };                           // South East
+    controller[["48"]] = { last: 0, pressed: false };                           // South West
+}
+function padButtonPrsd(b) {
+    if ( controller[[b]].last > start-10 || controller[[b]].pressed ) return;   // Pad button pressed if not already
+    controller[[b]].last = start;
+    controller[[b]].pressed = true;
+    buttonStack.push(b);                                                        // Add action to queue
+}
+function padButtonRel(b) {
+    controller[[b]].pressed = false;
+}
+function padMoveButtonPrsd(b) {                                                 // Doesn't require button release 
+    if ( last_move > start-12 ) return;                                         // Don't act if within last update phase
+    last_move = start;                                                          // Track last move
+    buttonStack.push(b);                                                        // Add action to queue
+}
+function gameLoop() {
+    const GPADS = navigator.getGamepads();                                      // Handle pad capture
+    if (!GPADS) return;
+    const GPAD = GPADS[0];
+    if (GPAD.buttons[12].pressed && GPAD.buttons[15].pressed) {                 // Character movement
+        padMoveButtonPrsd(40);
+    } else if (GPAD.buttons[12].pressed && GPAD.buttons[14].pressed) {
+        padMoveButtonPrsd(42);
+    } else if (GPAD.buttons[13].pressed && GPAD.buttons[14].pressed) {
+        padMoveButtonPrsd(48);
+    } else if (GPAD.buttons[13].pressed && GPAD.buttons[15].pressed) {
+        padMoveButtonPrsd(46);
+    } else if (GPAD.buttons[12].pressed) {
+        padMoveButtonPrsd(12);
+    } else if (GPAD.buttons[13].pressed) {
+        padMoveButtonPrsd(13);
+    } else if (GPAD.buttons[14].pressed) {
+        padMoveButtonPrsd(14);
+    } else if (GPAD.buttons[15].pressed) {
+        padMoveButtonPrsd(15);
+    }
+    if (GPAD.buttons[0].pressed)padButtonPrsd(0);                               // Action Buttons
+    if (GPAD.buttons[1].pressed)padButtonPrsd(1);
+    if (GPAD.buttons[2].pressed)padButtonPrsd(2);
+    if (GPAD.buttons[3].pressed)padButtonPrsd(3);
+    if (GPAD.buttons[4].pressed)padButtonPrsd(4);
+    if (GPAD.buttons[5].pressed)padButtonPrsd(5);
+    if (GPAD.buttons[6].pressed)padButtonPrsd(6);
+    if (GPAD.buttons[7].pressed)padButtonPrsd(7);
+    if (GPAD.buttons[8].pressed)padButtonPrsd(8);
+    if (GPAD.buttons[9].pressed)padButtonPrsd(9);
+    if (GPAD.buttons[10].pressed)padButtonPrsd(10);
+    if (GPAD.buttons[11].pressed)padButtonPrsd(11);
+    
+    if (!GPAD.buttons[0].pressed)padButtonRel(0);                               // Handle release
+    if (!GPAD.buttons[1].pressed)padButtonRel(1);
+    if (!GPAD.buttons[2].pressed)padButtonRel(2);
+    if (!GPAD.buttons[3].pressed)padButtonRel(3);
+    if (!GPAD.buttons[4].pressed)padButtonRel(4);
+    if (!GPAD.buttons[5].pressed)padButtonRel(5);
+    if (!GPAD.buttons[6].pressed)padButtonRel(6);
+    if (!GPAD.buttons[7].pressed)padButtonRel(7);
+    if (!GPAD.buttons[8].pressed)padButtonRel(8);
+    if (!GPAD.buttons[9].pressed)padButtonRel(9);
+    if (!GPAD.buttons[10].pressed)padButtonRel(10);
+    if (!GPAD.buttons[11].pressed)padButtonRel(11);
+
+    if (!GPAD.buttons[12].pressed)padButtonRel(12);
+    if (!GPAD.buttons[13].pressed)padButtonRel(13);
+    if (!GPAD.buttons[14].pressed)padButtonRel(14);
+    if (!GPAD.buttons[15].pressed)padButtonRel(15);
+
+    if (!GPAD.buttons[12].pressed||!GPAD.buttons[15].pressed)padButtonRel(40);
+    if (!GPAD.buttons[12].pressed||!GPAD.buttons[14].pressed)padButtonRel(42);
+    if (!GPAD.buttons[13].pressed||!GPAD.buttons[14].pressed)padButtonRel(48);
+    if (!GPAD.buttons[13].pressed||!GPAD.buttons[15].pressed)padButtonRel(46);
+
+
+    if( buttonStack.length > 0 ) keyInput( { key: PAD[[buttonStack.pop()]]} );  // Perform action from stack
+    start = requestAnimationFrame(gameLoop);                                    // Loop the game
+}
+// -----------------------------------------------------------------------------
+
 // Prevent arrow keys from scrolling windows 
 window.addEventListener("keydown", e => { 
     if (controls.move.n.includes(e.key) || controls.move.s.includes(e.key) ) 
         e.preventDefault(); 
 }, false );
 
-const INSTRUCTION_BASE = `(${MOVE_NORTH}${MOVE_WEST}${MOVE_SOUTH}${MOVE_EAST}) Move `;
+const INSTRUCTION_BASE=`(${MOVE_NORTH}${MOVE_WEST}${MOVE_SOUTH}${MOVE_EAST}) Move`;
 
 let lastDirection;
 let checkedTile = false;
@@ -324,6 +457,7 @@ function keyInput(e) {
                         sell( SHOP_LIST.value );
                     }
                 break;
+                case MOVE_NORTH:  
                 case ACT_UP:
                 case INV_UP:
                     if ( SHOP_LIST.selectedIndex === 0 || SHOP_LIST.selectedIndex === -1 ) {
@@ -333,6 +467,7 @@ function keyInput(e) {
                     }
                     selectShopItem();
                 break;
+                case MOVE_SOUTH:  
                 case ACT_DOWN:
                 case INV_DOWN:
                     if ( SHOP_LIST.selectedIndex === SHOP_LIST.length - 1 ) {
@@ -391,45 +526,54 @@ function keyInput(e) {
             }
             break;
         case 6:
-            // switch (KEY_NAME) {
-            //     case USE:
-            //     case ACCEPT:
-            //         if ( ITEM_ACTIONS.options.length === 0 ) return;
-            //         useItem( INV_SEL.value );
-            //     break;
-            //     case INV_UP:
-            //         if ( INV_SEL.selectedIndex === 0 || INV_SEL.selectedIndex === -1 ) {
-            //             INV_SEL.selectedIndex = INV_SEL.length - 1;
-            //         } else {
-            //             INV_SEL.selectedIndex--;
-            //         }
-            //         selectItem( INV_SEL.value );
-            //     break;
-            //     case INV_DOWN:
-            //         if ( INV_SEL.selectedIndex === INV_SEL.length - 1 ) {
-            //             INV_SEL.selectedIndex = 0;
-            //         } else {
-            //             INV_SEL.selectedIndex++;
-            //         }
-            //         selectItem( INV_SEL.value );
-            //     break;
-            //     case ACT_UP:
-            //         if ( ITEM_ACTIONS.selectedIndex === 0 || ITEM_ACTIONS.selectedIndex === -1 ) {
-            //             ITEM_ACTIONS.selectedIndex = ITEM_ACTIONS.length - 1;
-            //         } else {
-            //             ITEM_ACTIONS.selectedIndex--;
-            //         }
-            //         selectAction();
-            //     break;
-            //     case ACT_DOWN:
-            //         if ( ITEM_ACTIONS.selectedIndex === ITEM_ACTIONS.length - 1 ) {
-            //             ITEM_ACTIONS.selectedIndex = 0;
-            //         } else {
-            //             ITEM_ACTIONS.selectedIndex++;
-            //         }
-            //         selectAction();
-            //     break;
-            // }
+            const F = getLandscapeFeature(avatar.loc.x, avatar.loc.y);
+            switch (KEY_NAME) {
+                case USE:
+                case ACCEPT:
+                    if ( ITEM_ACTIONS.options.length === 0 ) return;
+                    useItem( INV_SEL.value );
+                break;
+                case INV_UP:
+                    if ( INV_SEL.selectedIndex === 0 || INV_SEL.selectedIndex === -1 ) {
+                        INV_SEL.selectedIndex = INV_SEL.length - 1;
+                    } else {
+                        INV_SEL.selectedIndex--;
+                    }
+                    selectItem( INV_SEL.value );
+                break;
+                case INV_DOWN:
+                    if ( INV_SEL.selectedIndex === INV_SEL.length - 1 ) {
+                        INV_SEL.selectedIndex = 0;
+                    } else {
+                        INV_SEL.selectedIndex++;
+                    }
+                    selectItem( INV_SEL.value );
+                break;
+                case ACT_UP:
+                    if ( ITEM_ACTIONS.selectedIndex === 0 || ITEM_ACTIONS.selectedIndex === -1 ) {
+                        ITEM_ACTIONS.selectedIndex = ITEM_ACTIONS.length - 1;
+                    } else {
+                        ITEM_ACTIONS.selectedIndex--;
+                    }
+                    selectAction();
+                break;
+                case ACT_DOWN:
+                    if ( ITEM_ACTIONS.selectedIndex === ITEM_ACTIONS.length - 1 ) {
+                        ITEM_ACTIONS.selectedIndex = 0;
+                    } else {
+                        ITEM_ACTIONS.selectedIndex++;
+                    }
+                    selectAction();
+                break;
+                case MOVE_NORTH: F.move( NAV.North ); break;
+                case MOVE_SOUTH: F.move( NAV.South ); break;
+                case MOVE_WEST: F.move( NAV.West ); break;
+                case MOVE_EAST: F.move( NAV.East ); break;
+                case MOVE_NORTH_WEST: F.move( NAV.NorthWest ); break;
+                case MOVE_NORTH_EAST: F.move( NAV.NorthEast ); break;
+                case MOVE_SOUTH_WEST: F.move( NAV.SouthWest ); break;
+                case MOVE_SOUTH_EAST: F.move( NAV.SouthEast ); break;
+            }
         }
 }
 
@@ -565,19 +709,19 @@ function useItem( id ) {
             updateLog(
                 `You inspect the ${item.name}, it feels nice in the hand.`); 
             break;
-        case "Gamble": gamble(); break;
-        case "Pray": pray(); break;
-        case "Attack": attack(); break;  
-        case "Defend": defend(); break;  
-        case "Throw": throwItem(); break;    
-        case "Buy": enterShop("buy"); break;               
-        case "Sell": enterShop("sell"); break;
-        case "Roll Dice": rollDice(6); break;
-        case "Play Song": playInstrument(item.name); break;
-        case "Craft": enterCrafting(); break;               
-        case "Fish": fish(); break;   
-        case "Chop": chopTree(); break;
-        case "Enter": enterScenario(); break;                        
+        case "Gamble":      gamble();                   break;
+        case "Pray":        pray();                     break;
+        case "Attack":      attack();                   break;  
+        case "Defend":      defend();                   break;  
+        case "Throw":       throwItem();                break;    
+        case "Buy":         enterShop("buy");           break;               
+        case "Sell":        enterShop("sell");          break;
+        case "Roll Dice":   rollDice(6);                break;
+        case "Play Song":   playInstrument(item.name);  break;
+        case "Craft":       enterCrafting();            break;               
+        case "Fish":        fish();                     break;   
+        case "Chop":        chopTree();                 break;
+        case "Enter":       enterScenario();            break;                        
         default:
             break;
     }
@@ -587,6 +731,7 @@ function enterScenario() {
     const F = getLandscapeFeature(avatar.loc.x, avatar.loc.y);
     F.start();
     setGameMode("dungeon");
+    setLandscapeFeatureActions(F);
     clearUI();
 }
 
@@ -1109,15 +1254,9 @@ function scanLandForMaterial( x, y, tool ) {
 
 function mineTile( name, x, y ) {
     if ( avatar.isDead ) return;
-    let pos;
-    const F = getLandscapeFeature(avatar.loc.x, avatar.loc.y);
-    switch (getGameMode()) {
-        case 0: pos = avatar.loc; break;
-        case 6: pos = F.pos; break;
-    }
+    const POS = avatar.loc;;
     const TYP = avatar.getItem(INV_SEL[INV_SEL.selectedIndex].value)
                                                         .properties[0];         // Get item resource material type
-    console.log( TYP );
     // What type of material is being mined 
     // Current setup supports metal
     const MATS = Object.keys(DATA.material.solid[`${TYP}`]);
@@ -1125,7 +1264,7 @@ function mineTile( name, x, y ) {
     let supply = 0;
     let type = "";
     MATS.forEach( mat => {                                                      // Step through each valid material and see if the location has any
-        let value = MAT.getResourceValueAtLocation( mat, pos.x, pos.y ); 
+        let value = MAT.getResourceValueAtLocation( mat, POS.x, POS.y ); 
         if ( value > 0 ) {
             supply = value;
             type = mat;
@@ -1154,7 +1293,7 @@ function mineTile( name, x, y ) {
     const RES = Math.floor(MOD_ROLL / RESULT_INCREMENT);
 
     if ( RES > 0 ) {
-        const COUNT = TYP.removeResourceSupply( 
+        const COUNT = MAT.removeResourceSupply( 
             type, avatar.location[0], 
             avatar.location[1], RES );
 
@@ -1311,10 +1450,10 @@ function setLandscapeFeatureActions(feat) {
             ITEM_ACTIONS.options[0].removeEventListener("click", () => useItem( INV_SEL.value ), false );
             ITEM_ACTIONS.options[0].remove();
         }
-        return
+        return;
     }
 
-    let items = ITEM_ACTIONS.options.length;                            // clear current actions
+    let items = ITEM_ACTIONS.options.length;                                    // clear current actions
     for (let i = 0; i < items; i++) {
         ITEM_ACTIONS.options[0].removeEventListener("click", () =>
                                  useItem( INV_SEL.value ), false );
@@ -1335,16 +1474,22 @@ function setLandscapeFeatureActions(feat) {
             updateIntructions(ITEM_ACTIONS.value);
             break;
         case "cave":
-            INV_SEL.options.selectedIndex = 0;
-            // Add Town actions
-            feat.actions.forEach( e => {
-                ITEM_ACTIONS.options[ITEM_ACTIONS.length] = new Option( e, e );    
-                ITEM_ACTIONS.options[ITEM_ACTIONS.length - 1]
-                            .addEventListener("click", () => 
-                                useItem( INV_SEL.value ), false );
-            });
-            ITEM_ACTIONS.options.selectedIndex = 0;
-            updateIntructions(ITEM_ACTIONS.value);
+            switch (getGameMode()) {
+                case 0:
+                    INV_SEL.options.selectedIndex = 0;
+                    // Add Town actions
+                    feat.actions.forEach( e => {
+                        ITEM_ACTIONS.options[ITEM_ACTIONS.length] = new Option( e, e );    
+                        ITEM_ACTIONS.options[ITEM_ACTIONS.length - 1]
+                                    .addEventListener("click", () => 
+                                        useItem( INV_SEL.value ), false );
+                    });
+                    ITEM_ACTIONS.options.selectedIndex = 0;
+                    updateIntructions(ITEM_ACTIONS.value);                    
+                    break;                
+                default:
+                    break;
+            }
         default:
             break;
     }
@@ -1495,6 +1640,7 @@ function gameUpdate() {
             }
             LAND.draw(avatar.location[0], avatar.location[1], avatar.sight);
             drawAvatar();
+            selectItem(SELCT_ITM_ID());
             break;
     }
     UI_GAME_TIME.textContent = Math.round(gameTime);                            // update game time        
@@ -1538,8 +1684,8 @@ function init() {
     CRAFT_UI.classList.add("hide");
 
     // console.log( startTown );
-    // avatar.location = [LAND._SCENARIOS[0].loc.x, LAND._SCENARIOS[0].loc.y];
-    avatar.location = [startTown.location.x, startTown.location.y];
+    avatar.location = [LAND._SCENARIOS[0].loc.x, LAND._SCENARIOS[0].loc.y];
+    // avatar.location = [startTown.location.x, startTown.location.y];
     
     // Default terrain
     avatar.addValidTerrain("soil");
