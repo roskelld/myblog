@@ -14,6 +14,9 @@ class Dungeon {
         this._pos = { x: 0, y: 0 };
         this._camera = { x: 0, y: 0 };
         this._range = 5;
+
+        // For mining
+        this._min = 0.30;
     }
     get range() {
         return this._range;
@@ -87,10 +90,11 @@ class Dungeon {
             const MAP_Y = (TMP.y % 1 !== 0) ? TMP.y.toFixed(3) : TMP.y;
             const MAP = this._map.read( MAP_X, MAP_Y );                         // Get cell data from next cell
             const MAT = this._mats.read( MAP_X, MAP_Y );
-
-            // Mining Ranges
-            if ( MAT >= 0.30 ) {
+            if ( MAT >= this._min ) {                                           // Try Mining
                 this.mine(MAP_X,MAP_Y,MAT);
+                this.genMapRadius(this._pos.x, this._pos.y, this.range);
+                this.drawMap();
+                this.drawAvatar();
             }
             if ( MAP >= 0 ) return;                                             // Cannot walk through walls
             this._pos.x = this._pos.x + x;
@@ -100,7 +104,7 @@ class Dungeon {
             } else {
                 this.genMapRadius(this._pos.x, this._pos.y, this.range);
                 this.drawMap();
-                this.drawAvatar();   
+                this.drawAvatar();
             }
         }
         switch (dir) {
@@ -118,8 +122,15 @@ class Dungeon {
     drawMap() {
         this.clear();                                                           // Clear the screen
         const POS = this._pos;                                                  // Player position
-        const INC = this._NUM_PIXELS / this._GRID_SIZE;                           // Pixel increment
+        const INC = this._NUM_PIXELS / this._GRID_SIZE;                         // Pixel increment
         const OFF = Math.floor((this._GRID_SIZE * this._RESOLUTION) / 2 ) * INC;// Offset to center of grid
+        const P = this.PIXEL;
+        const C = this._CTX;
+        const DOOR =    `rgb(255,255,  0)`;
+        const WALL =    `rgb(115,115,115)`;
+        const WHITE =   `rgb(100,100, 10)`;
+        const FLOOR =   `rgb( 30, 40, 30)`;
+        const DARK =    `rgb(  0,  0,  0)`;
         for ( let y = 0; y < this._GRID_SIZE; y += INC ){                       
             for ( let x = 0; x < this._GRID_SIZE; x += INC ){
                 const TDR = {                                                   // Center the target based on player loc to get map data
@@ -141,33 +152,38 @@ class Dungeon {
                                             INPUT/this._GRID_SIZE);             // Shaded version of color
                 switch (MAP) {
                     case -100:
-                        this._CTX.fillStyle = `rgb(0,0,0)`;
-                        this._CTX.fillRect(LOC.x,LOC.y,this.PIXEL,this.PIXEL);
+                        C.fillStyle = DARK;
+                        C.fillRect(LOC.x,LOC.y,P,P);
                         break;
-                    case -10:
-                        this._CTX.fillStyle=shadeRGB(`rgb(255,255,0)`,SHD);
-                        this._CTX.fillRect(LOC.x,LOC.y,this.PIXEL,this.PIXEL);
+                    case -10:                                                   // Exit Door
+                        C.fillStyle=shadeRGB(DOOR,SHD);
+                        C.fillRect(LOC.x,LOC.y,P,P);
                         break;
                     default:
                         if ( MAP < 0 ) {                                            
-                            this._CTX.fillStyle = shadeRGB("rgb(30,40,30)",SHD);// Floor
+                            C.fillStyle = shadeRGB(FLOOR,SHD);                  // Floor
+                            C.fillRect(LOC.x,LOC.y,P,P);  
                         } else {               
-                            if (MAT >= 0.30) { 
-                                this._CTX.fillStyle = 
-                                            shadeRGB("rgb(212,175,55)",SHD);    // Material
+                            if (MAT >= this._min) { 
+                                const SI = P/2;
+                                const K = this.resource(MAT);
+                                C.fillStyle = shadeRGB(WALL,SHD);               // Wall
+                                C.fillRect(LOC.x,LOC.y,P,P);                    
+                                C.fillStyle = 
+                                    shadeRGB(`rgb(${K.col[0]},
+                                             ${K.col[1]},${K.col[2]})`,SHD);    // Material Color
+                                C.beginPath();
+                                C.arc(LOC.x+SI,LOC.y+SI,SI/2,0,2*Math.PI);
+                                C.fill();
+                                C.strokeStyle = shadeRGB(WHITE,SHD);            // Mat Stroke
+                                C.stroke();
                             } else {
-                                this._CTX.fillStyle = 
-                                    shadeRGB("rgb(115,115,115)",SHD);           // Wall
+                                this._CTX.fillStyle=shadeRGB(WALL,SHD);         // Wall
+                                this._CTX.fillRect(LOC.x,LOC.y,P,P);  
                             }
                         }
-                        this._CTX.fillRect(LOC.x,LOC.y,this.PIXEL,this.PIXEL);  // Draw
                         break;
                 }
-
-                // this._CTX.font = `${40*INC}px monospace`;
-                // this._CTX.fillStyle = "white";
-                // this._CTX.textAlign = "center";
-                // this._CTX.fillText(`${MAP_X},${MAP_Y}`, LOC.x + (this.PIXEL/2), LOC.y + (this.PIXEL/1.05)); 
             }
         }
     }
@@ -195,16 +211,33 @@ class Dungeon {
         this.drawMap();
         this.drawAvatar();
     }
-    mine( x, y, mat ) {
-
-        // Set material type 
-        // 212,175,55
-
+    resource( value ) {                                                         // Generate resource type
+        value = convertRange(value,this._min,1-this._min,0,1);
+        if ( value <= 0.3 ) { return { col: [194,115,51],  name: "copper"  }}   // copper
+        if ( value <= 0.4 ) { return { col: [197,201,199], name: "tin"     }}   // tin
+        if ( value <= 0.5 ) { return { col: [48,49,47],    name: "lead"    }}   // lead
+        if ( value <= 0.8 ) { return { col: [125,125,125], name: "iron"    }}   // iron
+        if ( value <= 0.9 ) { return { col: [77,79,78],    name: "silver"  }}   // silver
+        if ( value <= 1.0 ) { return { col: [255,223,0],   name: "gold"    }}   // gold    
+        console.log("ERROR"); return [255,255,255];                             // Error
+    }
+    mine( x, y ) {
+        const value = this._mats.read( x, y );
+        if (value === undefined) return;
+        const RES = this.resource( value );
         if ( !avatar.currentItemHas("Mine")) {
-            updateLog(`You see a vein of minable gold in the rock`);
+            updateLog(`You see a vein of minable ${RES.name} in the rock`);
             return;
         }
+        updateLog(`You have mined ${RES.name} ore.`);
         this._mats.memory[[`${x},${y}`]] = -1;
         this._map.memory[[`${x},${y}`]] = -1;
+        avatar.addToInventory(new Item(createMaterialItem(RES.name)));
+        gameUpdate();
     }
 }
+
+//    this._CTX.font = `${60*INC}px monospace`;
+//    this._CTX.fillStyle = "white";
+//    this._CTX.textAlign = "center";
+//    this._CTX.fillText(`${(MAT-this._min).toFixed(4)}`, LOC.x + (this.PIXEL/2), LOC.y + (this.PIXEL/1.05)); 

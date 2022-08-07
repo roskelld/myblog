@@ -639,8 +639,8 @@ function selectItem( name ) {
     }
 
     if ( !item ) {                                                              // No item equipped
-        setLandscapeFeatureActions();                                           // This could be used for character actions such as camp, pray, hunt     
-        // setDescription();                                                       // Clear item description
+        setLandscapeFeatureActions();                                           // This could be used for character actions such as camp, pray, hunt
+        setLandscapeFeatureDescription(avatar.loc.x,avatar.loc.y);
         return;
     }
     
@@ -1375,37 +1375,34 @@ function playInstrument( instrument ) {
 
 function moveCharacter( direction ) {
     if ( avatar.isDead ) return;
-    
-    const LOOK_DIR = [...avatar.location];
+    const LOOK_DIR = [...avatar.location];    
+    // Check to see if there's a landscape feature
     if ( direction % 2 === 0 ) {
         LOOK_DIR[1] += (direction === 0) ? -1 : 1;
     } else {
         LOOK_DIR[0] += (direction === 1) ? 1 : -1;
     }
-
+    const FEAT = getLandscapeFeature(LOOK_DIR[0],LOOK_DIR[1]); 
+    const TERRAIN = LAND.getTerrainByPosition(LOOK_DIR[0],LOOK_DIR[1]);
     const moveDir = (chk = true) => {
-        // Check move is valid   
-        if (chk && !avatar.hasTerrain( TERRAIN.type ) ) {
-            updateLog( `You cannot traverse ${TERRAIN.name} terrain` );
+        if (chk && !avatar.hasTerrain(TERRAIN.type)) {
+            updateLog(`You cannot traverse ${TERRAIN.name} terrain`);
             return;
         }
-
         if ( direction % 2 === 0 ) {
             avatar.location[1] += (direction === 0) ? -1 : 1;
         } else {
             avatar.location[0] += (direction === 1) ? 1 : -1;
         }
         // Calculate travel time
-        increaseGameTime( TERRAIN.difficulty );
+        increaseGameTime(TERRAIN.difficulty);
         checkedTile = false;
         updateIntructions();
         setLandscapeFeatureActions();
+        setLandscapeFeatureDescription(avatar.loc.x,avatar.loc.y);
         gameUpdate();
     }
 
-    const TERRAIN = LAND.getTerrainByPosition(LOOK_DIR[0],LOOK_DIR[1]);
-    // Check to see if there's a landscape feature
-    const FEAT = getLandscapeFeature(LOOK_DIR[0],LOOK_DIR[1]);
     if ( FEAT !== undefined ) {
         const TYPE = (Array.isArray(FEAT.type)) ? FEAT.type[0] : FEAT.type;     // Get Feature type
         switch ( TYPE ) {
@@ -1419,15 +1416,14 @@ function moveCharacter( direction ) {
             case "cave":
                 updateLog(`You step upto the dark ${FEAT.type} entrance.`);  
                 moveDir(false);
-                setDescription(FEAT);
                 break;
             default:
                 if ( INV_SEL.value === "none" ) 
                     setLandscapeFeatureActions();
                 updateLog( 
-                    `You travel ${DIRECTION[direction]} 
+                    `DRIBBLE You travel ${DIRECTION[direction]} 
                     into ${TERRAIN.name}` );
-                moveDir(false);
+                moveDir(true);
                 break;
         }
     } else {
@@ -1437,6 +1433,17 @@ function moveCharacter( direction ) {
             `You travel ${DIRECTION[direction]} 
             into ${TERRAIN.name}` );
         moveDir(true);
+    }
+}
+
+function setLandscapeFeatureDescription(x,y) {
+    const FEAT = getLandscapeFeature(x,y); 
+    const TERRAIN = LAND.getTerrainByPosition(x,y);
+    if ( FEAT !== undefined ) {
+        setDescription(FEAT);
+    } else {
+        setDescription({description:
+                        `${TERRAIN.name} spread out all around you.`});
     }
 }
 
@@ -1566,10 +1573,10 @@ function getTerrainFromDirection( direction ) {
 }
 
 function getLandscapeFeature( x, y ) {
-    let f = LAND._SCENARIOS.find( e => x===e.loc.x && y===e.loc.y);             // Check for Game Scenarios
+    let f = LAND._SCENARIOS.find(e=>x===e.loc.x && y===e.loc.y);                // Check for Game Scenarios
     if (f===undefined) f = LAND._TOWNS.find(e=>x===e.loc.x&&y===e.loc.y);       // Check for a town
     // NEXT
-    if ( f === undefined ) {
+    if (f === undefined) {
         MAT._resources.forEach( e => {
             if ( MAT.getResourceValueAtLocation( e.name, x, y ) > 0 ) {
                 f = e;
@@ -1577,7 +1584,7 @@ function getLandscapeFeature( x, y ) {
             }
         })
     }
-    return f;
+    return f;                                                                   // Return found feature
 }
 
 function drawAvatar() {
@@ -1618,7 +1625,7 @@ function refreshEquipmentListUI() {
 }
 
 function setDescription( el ) {
-    if ( el === undefined ) { ITEM_DESC.textContent = ""; return }            // Clear description if no item given
+    if ( el === undefined ) { ITEM_DESC.textContent = ""; return }              // Clear description if no item given
     ITEM_DESC.textContent = el.description;    
 }
 
@@ -1650,8 +1657,7 @@ function gameUpdate() {
 }
 
 function getItemDataFromName( name ) {
-    // return Object.values(ITEM_DATA).find( e => e.name === name );
-    return Object.values(DATA.item).find( e => e.name === name );
+    return Object.values(DATA.items).find( e => e.name === name );
 }
 
 // Init
@@ -1691,33 +1697,9 @@ function init() {
     avatar.addValidTerrain("soil");
     
     // Default items
-    // avatar.addToInventory( new Item( DATA.items.tool_hammer ) );
-    // avatar.addToInventory( new Item( DATA.items.tool_hammer, undefined, undefined, undefined, undefined, undefined, 140 ) );
     avatar.addToInventory( new Item( DATA.items.dowsing_twig ) );
-    // avatar.addToInventory( new Item( DATA.items.tool_needle ) );
-    // avatar.addToInventory( new Item( DATA.items.tool_needle, undefined, undefined, undefined, undefined, undefined, 150 ) );
     avatar.addToInventory( new Item( DATA.items.wood_axe, undefined, undefined, undefined, undefined, undefined, 150 ) );
-    // item = DATA.item.divining_rod;
-    // avatar.addToInventory( new Item( DATA.item.divining_rod, item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
-    // item = DATA.items.pickaxe;
     avatar.addToInventory( new Item( DATA.items.pickaxe, undefined, undefined, undefined, undefined, undefined, 10 ) );
-    // avatar.addToInventory( genRandomSchmaticItem( 70 ) );
-    // avatar.addToInventory( genRandomSchmaticItem( 10 ) );
-    // for (let index = 0; index < 10; index++) {      
-    //     avatar.addToInventory( createMaterialItem("copper") );
-    // }
-
-    // avatar.addToInventory( createMaterialItem("iron") );
-    // avatar.addToInventory( createMaterialItem("iron") );
-
-    // avatar.addToInventory( createMaterialItem("oak wood") );
-    // avatar.addToInventory( createMaterialItem("Leather (Pig)") );
-    // avatar.addToInventory( createMaterialItem("Leather (Pig)") );
-    
-    
-    // item = DATA.item.fishing_rod;
-    // avatar.addToInventory( new Item( DATA.item.fishing_rod, item.name, item.weight, item.properties, item.materials, item.use, item.efficency, item.stats ) );
-
 
     INV_SEL.selectedIndex = 0; 
     selectItem( INV_SEL.value );

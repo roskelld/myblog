@@ -14,6 +14,7 @@ class Town extends Scenario {
         this.generateStatus();
         this.generateMarket();
         this._land = land;
+        this._description = `The town of ${this.name} is a place of ${this.economicStatus} standing.`
     }
     generateName() {
         if (this.name == "") {

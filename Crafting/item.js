@@ -692,7 +692,7 @@ function genRandomItem( quality ) {
 
 function genRandomSchmaticItem( quality ) {
     const IDX = Math.floor(Object.keys(DATA.items).length * Math.random());
-    return createSchmaticItem( Object.values(DATA.item)[IDX], quality );
+    return createSchmaticItem( Object.values(DATA.items)[IDX], quality );
 }
 
 function createSchmaticItem( item_data, quality ) {

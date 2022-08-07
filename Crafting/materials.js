@@ -34,7 +34,9 @@ class Material {
         this._CANVAS.width = this._CANVAS.height = 512;
         this._resources = [];
     }
-
+    get resources() {
+        return this._resources;
+    }
     addResource( resource ) {
         this._resources.push( resource );
     }
@@ -108,10 +110,8 @@ class Resource {
         this._min_supply = min_supply;          
         this._try_error = 0;                    
         this._try_error_max = 3;
-
+                    
         this._memory = {};                                                      // Resource Supply Memory
-        // Create the mats
-        // this.generateMap();
     }
     get stroke() { return this._stroke; }
     get color() { return this._color; }

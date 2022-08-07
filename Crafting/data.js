@@ -539,7 +539,7 @@ const DATA = {
             use:            ["Attack", "Defend", "Throw", "Look"],
             efficency:      -1,
             max_efficency:  10,
-            properties:     [],
+            properties:     ["terrain", "rock"],
             materials: {
                 iron:       3
             },
@@ -639,7 +639,7 @@ const DATA = {
     materials: {
         copper_ore: {
             name:       "copper",
-            weight:     3,
+            weight:     0.3,
             price:      -1,
             use:        ["Attack", "Defend", "Throw", "Look"],
             efficency:  -1,
@@ -663,7 +663,7 @@ const DATA = {
         },
         tin_ore: {
             name:       "tin",
-            weight:     3,
+            weight:     0.3,
             price:      -1,
             use:        ["Attack", "Defend", "Throw", "Look"],
             efficency:  -1,
@@ -687,7 +687,7 @@ const DATA = {
         },
         gold_ore: {
             name:       "gold",
-            weight:     3,
+            weight:     0.3,
             price:      -1,
             use:        ["Attack", "Defend", "Throw", "Look"],
             efficency:  -1,
@@ -711,7 +711,7 @@ const DATA = {
         },
         silver_ore: {
             name:       "silver",
-            weight:     3,
+            weight:     0.3,
             price:      10,
             use:        ["Attack", "Defend", "Throw", "Look"],
             efficency:  -1,
@@ -735,7 +735,7 @@ const DATA = {
         },
         lead_ore: {
             name:       "lead",
-            weight:     3,
+            weight:     0.3,
             price:      10,
             use:        ["Attack", "Defend", "Throw", "Look"],
             efficency:  -1,
@@ -759,7 +759,7 @@ const DATA = {
         },
         iron_ore: {
             name:       "iron",
-            weight:     3,
+            weight:     0.3,
             price:      10,
             use:        ["Attack", "Defend", "Throw", "Look"],
             efficency:  -1,
@@ -783,7 +783,7 @@ const DATA = {
         },
         oak_wood: {
             name:       "oak wood",
-            weight:     3,
+            weight:     0.3,
             price:      10,
             use:        ["Attack", "Defend", "Throw", "Look"],
             efficency:  -1,
@@ -805,7 +805,7 @@ const DATA = {
         },
         leather: {
             name:       "Leather (Pig)",
-            weight:     3,
+            weight:     0.3,
             price:      10,
             use:        ["Attack", "Defend", "Throw", "Look"],
             efficency:  -1,
@@ -821,375 +821,374 @@ const DATA = {
             description:    "Add description for item here"
         },
     },
-    item: {
-        pickaxe: {
-            name:           "Pickaxe",
-            weight:         3,
-            price:          3,
-            use:            ["Mine",  "Attack", "Defend", "Throw", "Look"],
-            efficency:      10,
-            max_efficency:  10,
-            properties:     ["metal"],
-            materials: {
-                metal:      3,
-                wood:       1,            
-            },
-            stats: {
-                sharpness:  5,
-                hardness:   10,
-            },
-            description:    "A tool for mining metals."
-        },
-        dwsngTwg: {
-            name:       "Dowsing Twig",
-            weight:     0.5,
-            price:      3,
-            use:        ["Survey", "Look", "Attack", "Throw", "Defend"],
-            efficency:  4,
-            max_efficency:  10,
-            properties: ["copper"],
-            materials: {
-                wood:   20,
-            },
-            stats: {
-                sharpness:  5,
-                conduction: 20,
-                hardness:   10,
-                luster:     5,
-                sonorous:   4,
-                meltingpoint: 250
-            },
-            description:    `Held in the hands and used to detect the location of |properties| ore.`
-        },
-        dwsngTwgIron: {
-            name:       "Dowsing Twig",
-            weight:     0.5,
-            price:      3,
-            use:        ["Survey", "Look", "Attack", "Throw", "Defend"],
-            efficency:  4,
-            max_efficency:  10,
-            properties: ["iron"],
-            materials: {
-                wood:   20,
-            },
-            stats: {
-                sharpness:  5,
-                conduction: 20,
-                hardness:   10,
-                luster:     5,
-                sonorous:   4,
-                meltingpoint: 250
-            },
-            description:    "Add description for item here"
-        },
-        divining_rod: {
-            name:       "Divining Rod",
-            weight:     1,
-            price:      10,
-            use:        ["Survey", "Look", "Attack", "Throw", "Defend"],
-            efficency:  10,
-            max_efficency:  10,
-            properties: ["copper", "iron", "gold"],
-            materials: {
-                metal:  5,
-            },
-            stats: {
-                sharpness:  5,
-                conduction: 20,
-                hardness:   10,
-                luster:     5,
-                sonorous:   4,
-                meltingpoint: 250
-            },
-            description:    `Held in the hands and used to detect the location of |properties| ore.`
-        }, 
-        
-        dagger: {
-            name:       "Dagger",
-            weight:     1,
-            price:      5,
-            use:        ["Attack", "Defend", "Throw", "Look"],
-            efficency:  10,
-            max_efficency:  10,
-            properties: [],
-            materials: {
-                metal:  10,
-                cloth:  1
-            },
-            stats: {
-                sharpness:      5,
-                hardness:       10,
-            },
-            description:    "Add description for item here"
-        },
-        sml_statue: {
-            name:       "Small Statue",
-            weight:     1,
-            price:      8,
-            use:        ["Look", "Attack", "Throw", "Defend"],
-            efficency:  -1,
-            max_efficency:  -1,
-            properties: [],
-            materials: {
-                stone:  5
-            },
-            stats: {
-                sharpness:  5,
-                conduction: 20,
-                hardness:   10,
-                luster:     5,
-                sonorous:   4,
-                meltingpoint: 250
-            },
-            description:    "Add description for item here"
-        },
-        long_sword: {
-            name:       "Long Sword",
-            weight:     4,
-            price:      15,
-            use:        ["Attack", "Defend", "Throw", "Look"],
-            efficency:  10,
-            max_efficency:  10,
-            properties: [],
-            materials: {
-                copper:  3.8,
-                leather:  0.2
-            },
-            stats: {
-                sharpness:  5,
-                hardness:   10,
-            },
-            description:    "Add description for item here"            
-        },
-        spear: {
-            name:       "Spear",
-            weight:     3,
-            price:      4,
-            use:        ["Attack", "Defend", "Throw", "Look"],
-            efficency:  10,
-            max_efficency:  10,
-            properties: [],
-            materials: {
-                metal:  10,
-                wood:   20
-            },
-            stats: {
-                sharpness:  5,
-                conduction: 20,
-                hardness:   10,
-                luster:     5,
-                sonorous:   4,
-                meltingpoint: 250
-            },
-            description:    "Add description for item here"
-        },
-        smlhut: {
-            name:       "Small Hut",
-            weight:     0.05,
-            price:      100,
-            use:        ["Build", "Look"],
-            efficency:  -1,
-            max_efficency:  10,
-            properties: [],
-            materials: {
-                clay:   100,
-                wood:   50,                
-            },
-            stats: {
-                sharpness:  5,
-                conduction: 20,
-                hardness:   10,
-                luster:     5,
-                sonorous:   4,
-                meltingpoint: 250
-            },
-            description:    "Add description for item here"
-        },
-        dice_six: {
-            name:       "Dice six sided",
-            weight:     0.05,
-            price:      0.1,
-            use:        ["Roll Dice", "Look"],
-            efficency:  -1,
-            max_efficency:  10,
-            properties: [],
-            materials: {
-                bone:  1
-            },
-            stats: {
-                sharpness:  5,
-                conduction: 20,
-                hardness:   10,
-                luster:     5,
-                sonorous:   4,
-                meltingpoint: 250
-            },
-            description:    "Add description for item here"
-        },
-        lute: {
-            name:       "Lute",
-            weight:     0.05,
-            price:      0.1,
-            use:        ["Play Song", "Look"],
-            efficency:  5,
-            max_efficency:  5,
-            properties: [],
-            materials: {
-                wood:  1
-            },
-            stats: {
-                sharpness:  5,
-                conduction: 20,
-                hardness:   10,
-                luster:     5,
-                sonorous:   4,
-                meltingpoint: 250
-            },
-            description:    "Add description for item here"
-        },
-        shortbow: {
-            name:       "Short Bow",
-            weight:     0.05,
-            price:      0.1,
-            use:        ["Shoot", "Throw", "Look"],
-            efficency:  13,
-            max_efficency:  13,
-            properties: [],
-            materials: {
-                paper:  1
-            },
-            stats: {
-                sharpness:  5,
-                conduction: 20,
-                hardness:   10,
-                luster:     5,
-                sonorous:   4,
-                meltingpoint: 250
-            },
-            description:    "Add description for item here"
-        },
-        parrow: {
-            name:       "Parrow Bird",
-            weight:     0.05,
-            price:      25,
-            use:        ["Pet", "Feed", "Look"],
-            efficency:  -1,
-            max_efficency:  10,
-            properties: [],
-            materials: {
-                meat:  1
-            },
-            stats: {
-                sharpness:  5,
-                conduction: 20,
-                hardness:   10,
-                luster:     5,
-                sonorous:   4,
-                meltingpoint: 250
-            },
-            description:    "Add description for item here"
-        },
-        hltpotion: {
-            name:       "Potion of Healing",
-            weight:     0.05,
-            price:      0.1,
-            use:        ["Drink", "Throw", "Look"],
-            efficency:  -1,
-            max_efficency:  -1,
-            properties: ["charge","charge","charge","charge","charge"],
-            materials: {
-                liquid:  1,
-                glass:   1
-            },
-            stats: {
-                sharpness:  5,
-                conduction: 20,
-                hardness:   10,
-                luster:     5,
-                sonorous:   4,
-                meltingpoint: 250
-            },
-            description:    "Add description for item here"
-        },
-        tool_hammer: {
-            name:       "Hammer",
-            weight:     0.05,
-            price:      0.1,
-            use:        ["Attack", "Defend", "Throw", "Look"],
-            efficency:  10,
-            max_efficency:  10,
-            properties: ["crafting", "tool"],
-            materials: {
-                iron:  1,
-                oak:   1,
-            },
-            stats: {
-                sharpness:  10,
-                conduction: 20,
-                hardness:   10,
-                luster:     5
-            },
-            description:    "Add description for item here"
-        },
-        climbing_pitons: {
-            name:       "Climbing Pitons",
-            weight:     0.5,
-            price:      40,
-            use:        ["Attack", "Defend", "Throw", "Look"],
-            efficency:  -1,
-            max_efficency:  10,
-            properties: [],
-            materials: {
-                iron:  0.5
-            },
-            stats: {
-                sharpness:  5,
-                conduction: 20,
-                hardness:   10,
-                luster:     5,
-                sonorous:   4,
-                meltingpoint: 250
-            },
-            description:    "Add description for item here"
-        },
-        water_wings: {
-            name:       "Water Wings",
-            weight:     0.5,
-            price:      50,
-            use:        ["Attack", "Defend", "Throw", "Look"],
-            efficency:  -1,
-            max_efficency:  10,
-            properties: ["terrain", "water"],
-            materials: {
-                iron:  0.5
-            },
-            stats: {
-                sharpness:  5,
-                conduction: 20,
-                hardness:   10,
-                luster:     5,
-                sonorous:   4,
-                meltingpoint: 250
-            },
-            description:    "Add description for item here"
-        },
-        fishing_rod: {
-            name:       "Fishing Rod",
-            weight:     0.5,
-            price:      20,
-            use:        ["Fish", "Attack", "Defend", "Throw", "Look"],
-            efficency:  5,
-            max_efficency:  10,
-            properties: [],
-            materials: {
-                oak:  0.5
-            },
-            stats: {
-                sharpness:  5,
-            },
-            description:    "Add description for item here"
-        }
-    },
+    // aitem: {
+    //     pickaxe: {
+    //         name:           "Pickaxe",
+    //         weight:         3,
+    //         price:          3,
+    //         use:            ["Mine",  "Attack", "Defend", "Throw", "Look"],
+    //         efficency:      10,
+    //         max_efficency:  10,
+    //         properties:     ["metal"],
+    //         materials: {
+    //             metal:      3,
+    //             wood:       1,            
+    //         },
+    //         stats: {
+    //             sharpness:  5,
+    //             hardness:   10,
+    //         },
+    //         description:    "A tool for mining metals."
+    //     },
+    //     dwsngTwg: {
+    //         name:       "Dowsing Twig",
+    //         weight:     0.5,
+    //         price:      3,
+    //         use:        ["Survey", "Look", "Attack", "Throw", "Defend"],
+    //         efficency:  4,
+    //         max_efficency:  10,
+    //         properties: ["copper"],
+    //         materials: {
+    //             wood:   20,
+    //         },
+    //         stats: {
+    //             sharpness:  5,
+    //             conduction: 20,
+    //             hardness:   10,
+    //             luster:     5,
+    //             sonorous:   4,
+    //             meltingpoint: 250
+    //         },
+    //         description:    `Held in the hands and used to detect the location of |properties| ore.`
+    //     },
+    //     dwsngTwgIron: {
+    //         name:       "Dowsing Twig",
+    //         weight:     0.5,
+    //         price:      3,
+    //         use:        ["Survey", "Look", "Attack", "Throw", "Defend"],
+    //         efficency:  4,
+    //         max_efficency:  10,
+    //         properties: ["iron"],
+    //         materials: {
+    //             wood:   20,
+    //         },
+    //         stats: {
+    //             sharpness:  5,
+    //             conduction: 20,
+    //             hardness:   10,
+    //             luster:     5,
+    //             sonorous:   4,
+    //             meltingpoint: 250
+    //         },
+    //         description:    "Add description for item here"
+    //     },
+    //     divining_rod: {
+    //         name:       "Divining Rod",
+    //         weight:     1,
+    //         price:      10,
+    //         use:        ["Survey", "Look", "Attack", "Throw", "Defend"],
+    //         efficency:  10,
+    //         max_efficency:  10,
+    //         properties: ["copper", "iron", "gold"],
+    //         materials: {
+    //             metal:  5,
+    //         },
+    //         stats: {
+    //             sharpness:  5,
+    //             conduction: 20,
+    //             hardness:   10,
+    //             luster:     5,
+    //             sonorous:   4,
+    //             meltingpoint: 250
+    //         },
+    //         description:    `Held in the hands and used to detect the location of |properties| ore.`
+    //     },      
+    //     dagger: {
+    //         name:       "Dagger",
+    //         weight:     1,
+    //         price:      5,
+    //         use:        ["Attack", "Defend", "Throw", "Look"],
+    //         efficency:  10,
+    //         max_efficency:  10,
+    //         properties: [],
+    //         materials: {
+    //             metal:  10,
+    //             cloth:  1
+    //         },
+    //         stats: {
+    //             sharpness:      5,
+    //             hardness:       10,
+    //         },
+    //         description:    "Add description for item here"
+    //     },
+    //     sml_statue: {
+    //         name:       "Small Statue",
+    //         weight:     1,
+    //         price:      8,
+    //         use:        ["Look", "Attack", "Throw", "Defend"],
+    //         efficency:  -1,
+    //         max_efficency:  -1,
+    //         properties: [],
+    //         materials: {
+    //             stone:  5
+    //         },
+    //         stats: {
+    //             sharpness:  5,
+    //             conduction: 20,
+    //             hardness:   10,
+    //             luster:     5,
+    //             sonorous:   4,
+    //             meltingpoint: 250
+    //         },
+    //         description:    "Add description for item here"
+    //     },
+    //     long_sword: {
+    //         name:       "Long Sword",
+    //         weight:     4,
+    //         price:      15,
+    //         use:        ["Attack", "Defend", "Throw", "Look"],
+    //         efficency:  10,
+    //         max_efficency:  10,
+    //         properties: [],
+    //         materials: {
+    //             copper:  3.8,
+    //             leather:  0.2
+    //         },
+    //         stats: {
+    //             sharpness:  5,
+    //             hardness:   10,
+    //         },
+    //         description:    "Add description for item here"            
+    //     },
+    //     spear: {
+    //         name:       "Spear",
+    //         weight:     3,
+    //         price:      4,
+    //         use:        ["Attack", "Defend", "Throw", "Look"],
+    //         efficency:  10,
+    //         max_efficency:  10,
+    //         properties: [],
+    //         materials: {
+    //             metal:  10,
+    //             wood:   20
+    //         },
+    //         stats: {
+    //             sharpness:  5,
+    //             conduction: 20,
+    //             hardness:   10,
+    //             luster:     5,
+    //             sonorous:   4,
+    //             meltingpoint: 250
+    //         },
+    //         description:    "Add description for item here"
+    //     },
+    //     smlhut: {
+    //         name:       "Small Hut",
+    //         weight:     0.05,
+    //         price:      100,
+    //         use:        ["Build", "Look"],
+    //         efficency:  -1,
+    //         max_efficency:  10,
+    //         properties: [],
+    //         materials: {
+    //             clay:   100,
+    //             wood:   50,                
+    //         },
+    //         stats: {
+    //             sharpness:  5,
+    //             conduction: 20,
+    //             hardness:   10,
+    //             luster:     5,
+    //             sonorous:   4,
+    //             meltingpoint: 250
+    //         },
+    //         description:    "Add description for item here"
+    //     },
+    //     dice_six: {
+    //         name:       "Dice six sided",
+    //         weight:     0.05,
+    //         price:      0.1,
+    //         use:        ["Roll Dice", "Look"],
+    //         efficency:  -1,
+    //         max_efficency:  10,
+    //         properties: [],
+    //         materials: {
+    //             bone:  1
+    //         },
+    //         stats: {
+    //             sharpness:  5,
+    //             conduction: 20,
+    //             hardness:   10,
+    //             luster:     5,
+    //             sonorous:   4,
+    //             meltingpoint: 250
+    //         },
+    //         description:    "Add description for item here"
+    //     },
+    //     lute: {
+    //         name:       "Lute",
+    //         weight:     0.05,
+    //         price:      0.1,
+    //         use:        ["Play Song", "Look"],
+    //         efficency:  5,
+    //         max_efficency:  5,
+    //         properties: [],
+    //         materials: {
+    //             wood:  1
+    //         },
+    //         stats: {
+    //             sharpness:  5,
+    //             conduction: 20,
+    //             hardness:   10,
+    //             luster:     5,
+    //             sonorous:   4,
+    //             meltingpoint: 250
+    //         },
+    //         description:    "Add description for item here"
+    //     },
+    //     shortbow: {
+    //         name:       "Short Bow",
+    //         weight:     0.05,
+    //         price:      0.1,
+    //         use:        ["Shoot", "Throw", "Look"],
+    //         efficency:  13,
+    //         max_efficency:  13,
+    //         properties: [],
+    //         materials: {
+    //             paper:  1
+    //         },
+    //         stats: {
+    //             sharpness:  5,
+    //             conduction: 20,
+    //             hardness:   10,
+    //             luster:     5,
+    //             sonorous:   4,
+    //             meltingpoint: 250
+    //         },
+    //         description:    "Add description for item here"
+    //     },
+    //     parrow: {
+    //         name:       "Parrow Bird",
+    //         weight:     0.05,
+    //         price:      25,
+    //         use:        ["Pet", "Feed", "Look"],
+    //         efficency:  -1,
+    //         max_efficency:  10,
+    //         properties: [],
+    //         materials: {
+    //             meat:  1
+    //         },
+    //         stats: {
+    //             sharpness:  5,
+    //             conduction: 20,
+    //             hardness:   10,
+    //             luster:     5,
+    //             sonorous:   4,
+    //             meltingpoint: 250
+    //         },
+    //         description:    "Add description for item here"
+    //     },
+    //     hltpotion: {
+    //         name:       "Potion of Healing",
+    //         weight:     0.05,
+    //         price:      0.1,
+    //         use:        ["Drink", "Throw", "Look"],
+    //         efficency:  -1,
+    //         max_efficency:  -1,
+    //         properties: ["charge","charge","charge","charge","charge"],
+    //         materials: {
+    //             liquid:  1,
+    //             glass:   1
+    //         },
+    //         stats: {
+    //             sharpness:  5,
+    //             conduction: 20,
+    //             hardness:   10,
+    //             luster:     5,
+    //             sonorous:   4,
+    //             meltingpoint: 250
+    //         },
+    //         description:    "Add description for item here"
+    //     },
+    //     tool_hammer: {
+    //         name:       "Hammer",
+    //         weight:     0.05,
+    //         price:      0.1,
+    //         use:        ["Attack", "Defend", "Throw", "Look"],
+    //         efficency:  10,
+    //         max_efficency:  10,
+    //         properties: ["crafting", "tool"],
+    //         materials: {
+    //             iron:  1,
+    //             oak:   1,
+    //         },
+    //         stats: {
+    //             sharpness:  10,
+    //             conduction: 20,
+    //             hardness:   10,
+    //             luster:     5
+    //         },
+    //         description:    "Add description for item here"
+    //     },
+    //     climbing_pitons: {
+    //         name:       "Climbing Pitons",
+    //         weight:     0.5,
+    //         price:      40,
+    //         use:        ["Attack", "Defend", "Throw", "Look"],
+    //         efficency:  -1,
+    //         max_efficency:  10,
+    //         properties: ["terrain", "rock"],
+    //         materials: {
+    //             iron:  0.5
+    //         },
+    //         stats: {
+    //             sharpness:  5,
+    //             conduction: 20,
+    //             hardness:   10,
+    //             luster:     5,
+    //             sonorous:   4,
+    //             meltingpoint: 250
+    //         },
+    //         description:    "Add description for item here"
+    //     },
+    //     water_wings: {
+    //         name:       "Water Wings",
+    //         weight:     0.5,
+    //         price:      50,
+    //         use:        ["Attack", "Defend", "Throw", "Look"],
+    //         efficency:  -1,
+    //         max_efficency:  10,
+    //         properties: ["terrain", "water"],
+    //         materials: {
+    //             iron:  0.5
+    //         },
+    //         stats: {
+    //             sharpness:  5,
+    //             conduction: 20,
+    //             hardness:   10,
+    //             luster:     5,
+    //             sonorous:   4,
+    //             meltingpoint: 250
+    //         },
+    //         description:    "Add description for item here"
+    //     },
+    //     fishing_rod: {
+    //         name:       "Fishing Rod",
+    //         weight:     0.5,
+    //         price:      20,
+    //         use:        ["Fish", "Attack", "Defend", "Throw", "Look"],
+    //         efficency:  5,
+    //         max_efficency:  10,
+    //         properties: [],
+    //         materials: {
+    //             oak:  0.5
+    //         },
+    //         stats: {
+    //             sharpness:  5,
+    //         },
+    //         description:    "Add description for item here"
+    //     }
+    // },
 
 };
 

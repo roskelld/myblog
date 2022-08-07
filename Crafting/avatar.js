@@ -46,10 +46,8 @@ class Avatar {
         this._validTerrain.pop(terrain);
     }
     hasTerrain(terrain) {
-
         // Reduce inventory to valid terrain affecting objects
         let filtered = avatar._inventory.filter( e => e.properties.find( e => e === "terrain" ) ); 
-
         // Create a new array that includes character default terrains
         let generatedTerrainList = [...this._validTerrain];
 

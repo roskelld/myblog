@@ -125,3 +125,9 @@ function shadeRGB(color, percent) {
         B=parseInt(f[2]);
     return `rgb(${(Math.round((t-R)*p)+R)},${(Math.round((t-G)*p)+G)},${(Math.round((t-B)*p)+B)})`;
 }
+
+function convertRange( val, omin, omax, nmin, nmax ) {
+    const orange = omax-omin;
+    const nrange = nmax-nmin;
+    return (((val - omin)*nrange)/orange)+nmin;
+}
