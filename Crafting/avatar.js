@@ -141,5 +141,8 @@ class Avatar {
         if ( ITM === undefined ) return false;
         return ITM.use.includes( action );
     }
+    getItemsByType( type ) {
+        return this._inventory.filter( e => e.type.includes(type) );
+    }
 }
 

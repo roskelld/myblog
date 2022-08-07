@@ -554,7 +554,8 @@ class Item {
         return this._efficency;
     }
     get stats() {
-        if ( this._stats === undefined ) return this._data.stats;
+        if ( this._stats === undefined ) 
+            this._stats = Object.assign({}, this._data.stats);                  // This clones the stats from data
         return this._stats;
     }
     get efficencyName() {
@@ -605,6 +606,13 @@ class Item {
     }
     get data() {
         return this._data;
+    }
+    get type() {
+        return this._data.type;
+    }
+    incrementStat( stat, value ) {
+        if (this.stats[[stat]] === undefined ) return;
+        this._stats[[stat]] += value;
     }
 }
 

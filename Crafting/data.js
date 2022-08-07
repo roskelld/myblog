@@ -559,7 +559,7 @@ const DATA = {
             weight:         0.5,
             price:          50,
             use:            ["Attack", "Defend", "Throw", "Look"],
-            efficency:      -1,
+            efficency:      10,
             max_efficency:  10,
             properties:     ["terrain", "water"],
             materials: {
@@ -610,13 +610,13 @@ const DATA = {
             description:    "Add description for item here"
         },
         tool_needle: {
-            name:       "Sewing Needle",
-            weight:     0.01,
-            price:      0.1,
-            use:        ["Attack", "Defend", "Throw", "Look"],
-            efficency:  10,
+            name:           "Sewing Needle",
+            weight:         0.01,
+            price:          0.1,
+            use:            ["Attack", "Defend", "Throw", "Look"],
+            efficency:      10,
             max_efficency:  10,
-            properties: ["crafting", "tool", "fabric"],
+            properties:     ["crafting", "tool", "fabric"],
             materials: {
                 metal:  1,
             },
@@ -629,6 +629,44 @@ const DATA = {
             type:           ["crafting"],
             description:    "Add description for item here"
         },
+        torch_wood: {
+            name:       "Torch",
+            weight:     0.5,
+            price:      0.5,
+            use:        ["Attack", "Defend", "Throw", "Look"],
+            efficency:      1,
+            max_efficency:  10,
+            properties: [],
+            materials: {
+                wood:       1,
+                fabric:     1,
+            },
+            stats: {
+                fuel:       4000,
+                range:      5,
+            },
+            type:           ["light"],
+            description:    "A wooden torch to light the way."
+        },
+        lantern: {
+            name:       "Lantern",
+            weight:     0.9,
+            price:      30,
+            use:        ["Attack", "Defend", "Throw", "Look"],
+            efficency:      1,
+            max_efficency:  10,
+            properties: [],
+            materials: {
+                metal:  5,
+                fabric: 1,
+            },
+            stats: {
+                fuel:       8000,
+                range:      7,
+            },
+            type:           ["light"],
+            description:    "A lantern to light the way."
+        }
     },
     schematic: {
         description:    `Schematic for crafting a |quality| |name|.`,

@@ -1178,6 +1178,7 @@ function sell( id ) {
     // Remove the item from the player's inventory (and inventory UI)
     avatar.removeFromInventory( SHOP_LIST.value );
     // Remove the item from the market list
+    const index = SHOP_LIST.selectedIndex
     SHOP_LIST.options[SHOP_LIST.selectedIndex].remove();
     
     // Add Item to shop market
@@ -1187,7 +1188,7 @@ function sell( id ) {
     // Give the player the gold
     avatar.addGold( price );
     
-    SHOP_LIST.selectedIndex = 0
+    SHOP_LIST.selectedIndex = index - 1;
     gameUpdate();
 }
 
@@ -1633,7 +1634,13 @@ function gameUpdate() {
     if ( avatar.isDead ) return;
     switch (getGameMode()) {
         case 6:
-            
+            // Update consumable items in use
+            const ITMS = avatar.getItemsByType( "light" );
+            if (ITMS.length===0) break;
+            const FLTR = ITMS.filter( e => e.stats.fuel > 0 );
+            if (FLTR.length===0) break;
+            FLTR.sort( (a,b) => a.stats.range <= b.stats.range );
+            avatar.getItem(FLTR[0].id).incrementStat( "fuel", -1 );
             break;
         default:
             const FEAT = getLandscapeFeature(avatar.loc.x,avatar.loc.y); 
@@ -1650,10 +1657,27 @@ function gameUpdate() {
             selectItem(SELCT_ITM_ID());
             break;
     }
+
     UI_GAME_TIME.textContent = Math.round(gameTime);                            // update game time        
     UI_GOLD.forEach( el => el.textContent = avatar.gold );                      // update gold          
     UI_FOOD.textContent = avatar.food;                                          // update food 
     UI_WEIGHT.textContent = avatar.weight;                                      // update weight
+    updateItemDetailsUI();
+}
+
+function updateItemDetailsUI() {
+    const ITEM = avatar.getItem(SELCT_ITM_ID());
+    // Clear List
+    let count = UI_DETAILS.childElementCount;
+    for (let index = 0; index < count; index++) {
+        UI_DETAILS.removeChild(UI_DETAILS.lastElementChild);       
+    }
+    if ( ITEM === undefined ) return;
+    UI_DETAILS.appendChild(
+        GenerateItemDetailRow( 'Efficency', ITEM.efficency ));
+    Object.keys(ITEM.stats).forEach( e => { 
+        UI_DETAILS.appendChild(GenerateItemDetailRow(e, ITEM.stats[[e]]));
+    } );
 }
 
 function getItemDataFromName( name ) {
@@ -1690,13 +1714,16 @@ function init() {
     CRAFT_UI.classList.add("hide");
 
     // console.log( startTown );
-    avatar.location = [LAND._SCENARIOS[0].loc.x, LAND._SCENARIOS[0].loc.y];
-    // avatar.location = [startTown.location.x, startTown.location.y];
+    // avatar.location = [LAND._SCENARIOS[0].loc.x, LAND._SCENARIOS[0].loc.y];
+    avatar.location = [startTown.location.x, startTown.location.y];
     
     // Default terrain
     avatar.addValidTerrain("soil");
     
     // Default items
+    // avatar.addToInventory( new Item( DATA.items.torch_wood ) );
+    // avatar.addToInventory( new Item( DATA.items.lantern ) );
+    // avatar.addToInventory( new Item( DATA.items.torch_wood ) );
     avatar.addToInventory( new Item( DATA.items.dowsing_twig ) );
     avatar.addToInventory( new Item( DATA.items.wood_axe, undefined, undefined, undefined, undefined, undefined, 150 ) );
     avatar.addToInventory( new Item( DATA.items.pickaxe, undefined, undefined, undefined, undefined, undefined, 10 ) );

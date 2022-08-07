@@ -19,7 +19,12 @@ class Dungeon {
         this._min = 0.30;
     }
     get range() {
-        return this._range;
+        const ITMS = avatar.getItemsByType( "light" );
+        if (ITMS.length === 0) return 0;
+        const FLTR = ITMS.filter( e => e.stats.fuel > 0 );
+        FLTR.sort( (a,b) => a.stats.range <= b.stats.range );
+        if (FLTR.length > 0) return FLTR[0].stats.range;
+        return 0;
     }
     get pos() {
         return this._pos;
@@ -30,6 +35,7 @@ class Dungeon {
         return { x: loc_x, y: loc_y };
     }
     draw( x, y, color ) {
+        const MAP = this._map.read( x, y );  
         const COORD = this.convertCoordinates( this._pos.x, this._pos.y );
         this._CTX.fillStyle = `rgba(${color[0]},${color[1]},${color[2]},${color[3]})`;
         this._CTX.fillRect(
@@ -88,15 +94,17 @@ class Dungeon {
             };       
             const MAP_X = (TMP.x % 1 !== 0) ? TMP.x.toFixed(3) : TMP.x;          
             const MAP_Y = (TMP.y % 1 !== 0) ? TMP.y.toFixed(3) : TMP.y;
-            const MAP = this._map.read( MAP_X, MAP_Y );                         // Get cell data from next cell
+            let MAP = this._map.read( MAP_X, MAP_Y );                           // Get cell data from next cell
+            if ( MAP === -100 ) MAP = this._map.get( MAP_X, MAP_Y );            // Get cell data so it can be drawn
             const MAT = this._mats.read( MAP_X, MAP_Y );
             if ( MAT >= this._min ) {                                           // Try Mining
                 this.mine(MAP_X,MAP_Y,MAT);
                 this.genMapRadius(this._pos.x, this._pos.y, this.range);
                 this.drawMap();
                 this.drawAvatar();
+                gameUpdate();
             }
-            if ( MAP >= 0 ) return;                                             // Cannot walk through walls
+            if ( MAP >= 0 ) { this.drawMap(); this.drawAvatar(); return;}                                           // Cannot walk through walls
             this._pos.x = this._pos.x + x;
             this._pos.y = this._pos.y + y;
             if ( this._pos.x === 0 && this._pos.y === 0 ) {
@@ -105,6 +113,7 @@ class Dungeon {
                 this.genMapRadius(this._pos.x, this._pos.y, this.range);
                 this.drawMap();
                 this.drawAvatar();
+                gameUpdate();
             }
         }
         switch (dir) {
@@ -121,70 +130,74 @@ class Dungeon {
     }
     drawMap() {
         this.clear();                                                           // Clear the screen
-        const POS = this._pos;                                                  // Player position
+        const INC = this._NUM_PIXELS / this._GRID_SIZE;                         // Pixel increment
+        for ( let y = 0; y < this._GRID_SIZE; y += INC ){                       
+            for ( let x = 0; x < this._GRID_SIZE; x += INC ){
+                this.drawCell( x, y );
+            }
+        }
+    }
+    drawCell(x, y) {                                                        
+        const POS = this._pos;                                                  // Player position        
+        const LOC = {  
+            x: x / this._GRID_SIZE * this._CANVAS.width,
+            y: y / this._GRID_SIZE * this._CANVAS.width
+        }
         const INC = this._NUM_PIXELS / this._GRID_SIZE;                         // Pixel increment
         const OFF = Math.floor((this._GRID_SIZE * this._RESOLUTION) / 2 ) * INC;// Offset to center of grid
         const P = this.PIXEL;
         const C = this._CTX;
+        const TDR = {                                                           // Center the target based on player loc to get map data
+            x: Number((( x - OFF ) + ( POS.x * INC )).toFixed(3)),
+            y: Number((( y - OFF ) + ( POS.y * INC )).toFixed(3))
+        };   
+        const MAP_X = (TDR.x % 1 !== 0) ? TDR.x.toFixed(3) : TDR.x;          
+        const MAP_Y = (TDR.y % 1 !== 0) ? TDR.y.toFixed(3) : TDR.y;
+        const MAP = this._map.read( MAP_X, MAP_Y );                             // Read the map data: -100 if none
         const DOOR =    `rgb(255,255,  0)`;
         const WALL =    `rgb(115,115,115)`;
         const WHITE =   `rgb(100,100, 10)`;
         const FLOOR =   `rgb( 30, 40, 30)`;
         const DARK =    `rgb(  0,  0,  0)`;
-        for ( let y = 0; y < this._GRID_SIZE; y += INC ){                       
-            for ( let x = 0; x < this._GRID_SIZE; x += INC ){
-                const TDR = {                                                   // Center the target based on player loc to get map data
-                    x: Number((( x - OFF ) + ( POS.x * INC )).toFixed(3)),
-                    y: Number((( y - OFF ) + ( POS.y * INC )).toFixed(3))
-                };                                                              
-                const MAP_X = (TDR.x % 1 !== 0) ? TDR.x.toFixed(3) : TDR.x;          
-                const MAP_Y = (TDR.y % 1 !== 0) ? TDR.y.toFixed(3) : TDR.y;
-                const MAP = this._map.read( MAP_X, MAP_Y );                     // Read the map data: -100 if none
-                const MAT = this._mats.read( MAP_X, MAP_Y );                    // Read materials data
-                const LOC = {  
-                    x: x / this._GRID_SIZE * this._CANVAS.width,
-                    y: y / this._GRID_SIZE * this._CANVAS.width
+        const INPUT = Math.max(Math.abs(y-OFF),Math.abs(x-OFF));                // Ugh. Generate sim light fall off
+        const DRP_OFF = (((Math.abs(y-OFF)+
+                           Math.abs(x-OFF))/INC)/(INC*this.range))/2;
+        const SHD = Math.lerp(0,-(Math.clamp(DRP_OFF,0, 2)), 
+                                    INPUT/this._GRID_SIZE);                         // Shaded version of color
+        switch (MAP) {
+            case -100:
+                C.fillStyle = DARK;
+                C.fillRect(LOC.x,LOC.y,P,P);
+                break;
+            case -10:                                                           // Exit Door
+                C.fillStyle=shadeRGB(DOOR,SHD);
+                C.fillRect(LOC.x,LOC.y,P,P);
+                break;
+            default:
+                const MAT = this._mats.read(MAP_X, MAP_Y);                      // Read materials data
+                if ( MAP < 0 ) {                                            
+                    C.fillStyle = shadeRGB(FLOOR,SHD);                          // Floor
+                    C.fillRect(LOC.x,LOC.y,P,P);  
+                } else {               
+                    if (MAT >= this._min) { 
+                        const SI = P/2;
+                        const K = this.resource(MAT);
+                        C.fillStyle = shadeRGB(WALL,SHD);                       // Wall
+                        C.fillRect(LOC.x,LOC.y,P,P);                    
+                        C.fillStyle = 
+                            shadeRGB(`rgb(${K.col[0]},
+                                     ${K.col[1]},${K.col[2]})`,SHD);            // Material Color
+                        C.beginPath();
+                        C.arc(LOC.x+SI,LOC.y+SI,SI/2,0,2*Math.PI);
+                        C.fill();
+                        C.strokeStyle = shadeRGB(WHITE,SHD);                    // Mat Stroke
+                        C.stroke();
+                    } else {
+                        this._CTX.fillStyle=shadeRGB(WALL,SHD);                 // Wall
+                        this._CTX.fillRect(LOC.x,LOC.y,P,P);  
+                    }
                 }
-                const INPUT = Math.max(Math.abs(y-OFF),Math.abs(x-OFF));        // Ugh. Generate sim light fall off
-                const DRP_OFF = (((Math.abs(y-OFF)+
-                                   Math.abs(x-OFF))/INC)/(INC*this.range))/2;
-                const SHD = Math.lerp(0,-(Math.clamp(DRP_OFF,0, 2)), 
-                                            INPUT/this._GRID_SIZE);             // Shaded version of color
-                switch (MAP) {
-                    case -100:
-                        C.fillStyle = DARK;
-                        C.fillRect(LOC.x,LOC.y,P,P);
-                        break;
-                    case -10:                                                   // Exit Door
-                        C.fillStyle=shadeRGB(DOOR,SHD);
-                        C.fillRect(LOC.x,LOC.y,P,P);
-                        break;
-                    default:
-                        if ( MAP < 0 ) {                                            
-                            C.fillStyle = shadeRGB(FLOOR,SHD);                  // Floor
-                            C.fillRect(LOC.x,LOC.y,P,P);  
-                        } else {               
-                            if (MAT >= this._min) { 
-                                const SI = P/2;
-                                const K = this.resource(MAT);
-                                C.fillStyle = shadeRGB(WALL,SHD);               // Wall
-                                C.fillRect(LOC.x,LOC.y,P,P);                    
-                                C.fillStyle = 
-                                    shadeRGB(`rgb(${K.col[0]},
-                                             ${K.col[1]},${K.col[2]})`,SHD);    // Material Color
-                                C.beginPath();
-                                C.arc(LOC.x+SI,LOC.y+SI,SI/2,0,2*Math.PI);
-                                C.fill();
-                                C.strokeStyle = shadeRGB(WHITE,SHD);            // Mat Stroke
-                                C.stroke();
-                            } else {
-                                this._CTX.fillStyle=shadeRGB(WALL,SHD);         // Wall
-                                this._CTX.fillRect(LOC.x,LOC.y,P,P);  
-                            }
-                        }
-                        break;
-                }
-            }
+                break;
         }
     }
     drawAvatar() {
@@ -233,7 +246,6 @@ class Dungeon {
         this._mats.memory[[`${x},${y}`]] = -1;
         this._map.memory[[`${x},${y}`]] = -1;
         avatar.addToInventory(new Item(createMaterialItem(RES.name)));
-        gameUpdate();
     }
 }
 
