@@ -22,7 +22,7 @@ const BACK = "q";
 
 const PAD = {
     0: ACCEPT,
-    1: ACCEPT,
+    1: BACK,
     2: ACCEPT,
     3: ACCEPT,
     4: INV_UP,
@@ -1714,28 +1714,28 @@ function init() {
     CRAFT_UI.classList.add("hide");
 
     // console.log( startTown );
-    // avatar.location = [LAND._SCENARIOS[0].loc.x, LAND._SCENARIOS[0].loc.y];
-    avatar.location = [startTown.location.x, startTown.location.y];
+    avatar.location = [LAND._SCENARIOS[0].loc.x, LAND._SCENARIOS[0].loc.y];
+    // avatar.location = [startTown.location.x, startTown.location.y];
     
     // Default terrain
     avatar.addValidTerrain("soil");
     
     // Default items
     // avatar.addToInventory( new Item( DATA.items.torch_wood ) );
-    // avatar.addToInventory( new Item( DATA.items.lantern ) );
+    avatar.addToInventory( new Item( DATA.items.lantern ) );
     // avatar.addToInventory( new Item( DATA.items.torch_wood ) );
-    avatar.addToInventory( new Item( DATA.items.dowsing_twig ) );
-    avatar.addToInventory( new Item( DATA.items.wood_axe, undefined, undefined, undefined, undefined, undefined, 150 ) );
-    avatar.addToInventory( new Item( DATA.items.pickaxe, undefined, undefined, undefined, undefined, undefined, 10 ) );
+    avatar.addToInventory(new Item(DATA.items.dowsing_twig));
+    avatar.addToInventory(new Item(DATA.items.wood_axe, undefined, undefined, undefined, undefined, undefined, 150));
+    avatar.addToInventory(new Item(DATA.items.pickaxe, undefined, undefined, undefined, undefined, undefined, 10));
 
     INV_SEL.selectedIndex = 0; 
-    selectItem( INV_SEL.value );
+    selectItem(INV_SEL.value);
     
     avatar.addGold(10);
 
     updateLog( 
         `The adventures of ${avatar.name} begin in the 
-        ${startTown.economicStatus} town of ${startTown.name}` );
+        ${startTown.economicStatus} town of ${startTown.name}`);
     gameUpdate();
     
     LAND.draw(avatar.location[0], avatar.location[1], avatar.sight);
