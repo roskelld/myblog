@@ -14,9 +14,10 @@ class Dungeon {
         this._pos = { x: 0, y: 0 };
         this._camera = { x: 0, y: 0 };
         this._range = 5;      
-        this._min = 0.30;                                                       // Mining base value (Lower more resources)
-        this.lght_mn = -0.95;
-        this.lght_mx = 0.2; 
+        this._min = 0.25;                                                       // Mining base value (Lower more resources)
+        this.lght_mn = -0.9995;
+        this.lght_mx = 0; 
+        this.wtr_lv = -0.1;
     }
     get pl_lght_rnge() {                                                        // Return player light range
         const ITMS = avatar.getItemsByType( "light" );
@@ -147,7 +148,7 @@ class Dungeon {
             let MAP = this._map.read( MAP_X, MAP_Y );                           // Get cell data from next cell
             if ( MAP === -100 ) MAP = this._map.get( MAP_X, MAP_Y );            // Get cell data so it can be drawn
             const MAT = this._mats.read( MAP_X, MAP_Y );
-            if ( MAT >= this._min ) {                                           // Try Mining
+            if ( MAT >= this._min && MAP > 0 ) {                                           // Try Mining
                 this.mine(MAP_X,MAP_Y,MAT);
                 this.genMapRadius(this._pos.x, this._pos.y, 5);
                 this.render();
@@ -271,12 +272,14 @@ class Dungeon {
         const P = this.PIXEL + 0.4;                                             // Size of screen pixel
         const C = this._CTX;
         const SI = P/2;                                                         // Half of screen pixel
-        const DOOR =    `rgb(255,255,  0)`;
-        const WALL =    `rgb(115,115,115)`;
-        const WHITE =   `rgb(100,100, 10)`;
-        const PLIGHT =   `rgb(255,255, 0)`;
-        const FLOOR =   `rgb( 30, 40, 30)`;
-        const DARK =    `rgb(  0,  0,  0)`;
+        const DOOR =    DATA.colors[2];
+        const WALL =    DATA.colors[11];
+        const WATER1 =  DATA.colors[29];
+        const WATER2 =  DATA.colors[30];
+        const WHITE =   DATA.colors[1];
+        const PLIGHT =  DATA.colors[5];
+        const FLOOR =   DATA.colors[18];
+        const DARK =    DATA.colors[0];
         const MAP = this.getSeen(map_x, map_y);                                 // Read the map data: -100 if none
         const MAT = this._mats.read(map_x, map_y);                              // Read materials data
         let LIGHT = (this.getLghtLvl(map_x,map_y) === -100) ? 
@@ -287,43 +290,53 @@ class Dungeon {
         const PL = ( DIST <= MAX ) 
                 ? convertRange(DIST,0,MAX,this.lght_mx,this.lght_mn) 
                 : -100;                                                         // Convert to light range
-        LIGHT = ( PL > LIGHT ) ? PL : LIGHT;                                    // Take the stronger of the two
-        const TORCH = ( PL > LIGHT ) ? PLIGHT : this.getLghtCol(map_x,map_y);
-        const AMT = convertRange(LIGHT,this.lght_mn,this.lght_mx,0,0.06);       // Calculate light color influence
         switch (MAP) {
             case -100:
                 C.fillStyle = DARK;
                 C.fillRect(X,Y,P,P);
-                break;
+            break;
             case -10:                                                           // Exit Door
-                C.fillStyle=shadeRGB(DOOR,-0.2);
+                C.fillStyle=pSBC(-0.2,DOOR);
                 C.fillRect(X,Y,P,P);
-                break;
+            break;
             default:
-                if ( MAP <= 0 ) {         
-                    const COL = pSBC(AMT,FLOOR,TORCH);
-                    C.fillStyle = shadeRGB(COL,LIGHT);                          // Floor
-                    C.fillRect(X,Y,P,P);  
-                } else {               
-                    if (MAT >= this._min) { 
-                        const K = this.resource(MAT);
-                        const COL = pSBC(AMT,WALL,TORCH);
-                        C.fillStyle = shadeRGB(COL,LIGHT);                      // Wall
-                        C.fillRect(X,Y,P,P);                    
-                        C.fillStyle = 
-                            shadeRGB(`rgb(${K.col[0]},
-                                     ${K.col[1]},${K.col[2]})`,LIGHT);          // Material Color
-                        C.beginPath();
-                        C.arc(X+SI,Y+SI,SI/2,0,2*Math.PI);
-                        C.fill();
-                        C.strokeStyle = shadeRGB(WHITE,LIGHT);                  // Mat Stroke
-                        C.stroke();
-                    } else {
-                        this._CTX.fillStyle=shadeRGB(WALL,LIGHT);               // Wall
-                        this._CTX.fillRect(X,Y,P,P);  
-                    }
+            LIGHT = ( PL > LIGHT ) ? PL : LIGHT;                                // Take the stronger of the two
+            const TORCH = ( PL > LIGHT ) 
+                        ? PLIGHT 
+                        : this.getLghtCol(map_x,map_y);
+            const AMT = convertRange(LIGHT,this.lght_mn,this.lght_mx,0,0.06);   // Calculate light color influence
+            if ( MAT <= this.wtr_lv && MAP < this.wtr_lv ) {         
+                const WATER = (Math.random() > 0.5 ) ? WATER1 : WATER2;
+                const COL = pSBC(AMT,WATER,TORCH);                              // Water
+                LIGHT = Math.max(LIGHT,-1)
+                C.fillStyle = pSBC(LIGHT,COL);                              
+                C.fillRect(X,Y,P,P);  
+            } else if ( MAP <= 0 ) {                                            // Floor
+                const COL = pSBC(AMT,FLOOR,TORCH);
+                LIGHT = Math.max(LIGHT,-1)
+                C.fillStyle = pSBC(LIGHT,COL);                              
+                C.fillRect(X,Y,P,P);  
+            } else {               
+                this._CTX.fillStyle=pSBC(LIGHT,WALL);                           // Wall
+                this._CTX.fillRect(X,Y,P,P);  
+                if (MAT >= this._min) {                                         // Add Material resource to cell
+                    const K = this.resource(MAT);
+                    const COL = pSBC(AMT,WALL,TORCH);
+                    // this._CTX.fillStyle=pSBC(LIGHT,WALL);                       // Wall
+                    // this._CTX.fillRect(X,Y,P,P);  
+                    // C.fillStyle = pSBC(LIGHT,COL);                              // Wall
+                    // C.fillRect(X,Y,P,P);                    
+                    C.fillStyle = 
+                        shadeRGB(`rgb(${K.col[0]},
+                                    ${K.col[1]},${K.col[2]})`,LIGHT);           // Material Color
+                    C.beginPath();
+                    C.arc(X+SI,Y+SI,SI/2,0,2*Math.PI);
+                    C.fill();
+                    C.strokeStyle = pSBC(LIGHT,WHITE);                          // Mat Stroke
+                    C.stroke();
                 }
-                break;
+            }
+            break;
         }
     }
     getLghtLvl(x,y) {
@@ -331,9 +344,9 @@ class Dungeon {
         return this._lghtmap[[`${x},${y}`]].l;
     }
     getLghtCol(x,y) {
-        if ( this._lghtmap[[`${x},${y}`]] === undefined ) return `rgb(0,0,0)`;
+        if ( this._lghtmap[[`${x},${y}`]] === undefined ) return DATA.colors[0];
         const c = this._lghtmap[[`${x},${y}`]].c;
-        return `rgb(${c})`;
+        return c;
     }
     getSeen(x,y) {
         if ( this._seen[[`${x},${y}`]] === undefined ) return -100;
@@ -372,11 +385,11 @@ class Dungeon {
             return;
         }
         updateLog(`You have mined ${RES.name} ore.`);
-        this._mats.memory[[`${x},${y}`]] = -1;
-        this._map.memory[[`${x},${y}`]] = -1;
+        this._mats.memory[[`${x},${y}`]] = 0;
+        this._map.memory[[`${x},${y}`]] = 0;
         avatar.addToInventory(new Item(createMaterialItem(RES.name)));
     }
-    roomGen(x,y) {
+    roomGen(x,y, data, wrap ) {      
         const INC = this._NUM_PIXELS / this._GRID_SIZE;                             // Pixel increment
         const conv = (ox,oy) => {
             const TDR = {                                                   // Offset to center screen
@@ -387,7 +400,8 @@ class Dungeon {
             const MAP_Y = (TDR.y % 1 !== 0) ? TDR.y.toFixed(3) : TDR.y;     // Gen map y address
             return { x: MAP_X, y: MAP_Y };
         }
-        const room = [
+        wrap = (wrap === undefined ) ? 14 : wrap;
+        data = (data === undefined) ? [
             0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
             0,  0,  1,  1,  1,  1,  1,  1,  1,  1,  0,  0,  0,  0,
             0,  0,  1,  0,  0,  0,  0,  0,  0,  1,  0,  0,  0,  0,
@@ -401,29 +415,30 @@ class Dungeon {
             0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
             0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
             0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-        ];
-        room.forEach( (e,i) => {
-            const xx = x + (i % 14);
-            const yy = y + Math.floor(i/14);
+        ] : data;
+        data.forEach( (e,i) => {
+            const xx = x + (i % wrap);
+            const yy = y + Math.floor(i/wrap);
             const LOC = conv(xx,yy);
             this._map.memory[[`${LOC.x},${LOC.y}`]] = e;
         });
     }
     init() {
         if ( this._map === undefined ) {
-            this._map = new Perlin((this._prnt.loc.x*this._prnt.loc.y)+SEED);
-            this._mats = new Perlin(SEED+(this._prnt.loc.x*this._prnt.loc.y));
+            this._map = new Perlin(SEED+(this._prnt.loc.x*this._prnt.loc.y));
+            this._mats = new Perlin(SEED+(this._prnt.loc.x*this._prnt.loc.y)+1);
             this._map.memory[["0,0"]] = -10;
             this._seen = { "0,0": -10 };
             this._lghtmap = {};
             this._lights = [];
         }        
+        this.addLight( 0, 0, 8, DATA.colors[2] );
+        this.addLight( 21, 5, 10, DATA.colors[3] );
+        this.addLight( 37, 11, 10, DATA.colors[4] );
+        this.addLight( 5, 5, 10, DATA.colors[5] );
         this.genMapRadius( this._pos.x, this._pos.y, this.pl_lght_rnge);
-        this.genLight( this._pos.x, this._pos.y, 8 );                           // Entrance Light
-        this.addLight( 0, 0, 8, `255,0,0` );
-        this.addLight( 21, 5, 10, `26,117,242` );
-        this.addLight( 37, 11, 10, `243,54,207` );
-        this.addLight( 5, 5, 10, `255,0,0` );
+
+        // this.genLight( this._pos.x, this._pos.y, 8 );                           // Entrance Light
 
         // this.genLight(21,5,10);
         // this.genLight(37,11,10); 

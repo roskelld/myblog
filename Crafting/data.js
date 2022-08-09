@@ -661,7 +661,7 @@ const DATA = {
                 fabric: 1,
             },
             stats: {
-                fuel:       8000,
+                fuel:       9000,
                 range:      7,
             },
             type:           ["light"],
@@ -859,6 +859,45 @@ const DATA = {
             description:    "Add description for item here"
         },
     },
+    colors: [
+        `#000000`,  // Pure Black
+        `#ffffff`,  // Pure White
+        `#f9f871`,  // Yellow Light
+        `#85e858`,  // Green Light
+        `#00fef9`,  // Blue Light
+        `#f86f29`,  // Orange Light
+        `#ec59f3`,  // Pink Light
+        `#132019`,  // Obsidian
+        `#1e281e`,  // Deep Moss
+        `#033A2A`,  // Ceramic Dark Green
+        `#5e5b4d`,  // Moss Rock
+        `#989889`,  // Rock Wall
+        `#5e5b4d`,  // Moss Rock
+        `#93a2ba`,  // Rock Blue
+        `#a65052`,  // Rock Red
+        `#505646`,  // Irish Moss
+        `#86423e`,  // Brick
+        `#968977`,  // Cobble
+        `#574141`,  // Brick Brown
+        `#bfa5a4`,  // Brick Tan
+        `#63702c`,  // Brick Moss
+        `#98a45c`,  // Brick Pale Moss
+        `#00aeca`,  // Ceramic Blue
+        `#645fbc`,  // Ceramic Lilac
+        `#994f96`,  // Ceramic Pink
+        `#a53268`,  // Ceramic Deep Pink
+        `#b491cf`,  // Ceramic Purple
+        `#95b0b7`,  // Ceramic Teal
+        `#3e8e7d`,  // Ceramic Light Green
+
+        `#005b90`,  // Water
+        `#0067A3`,  // Light Water
+        `#003452`,  // Dark Water
+
+        `#FF7C0A`,  // Light Lava
+        `#FF7700`,  // Dark Lava
+
+    ]
     // aitem: {
     //     pickaxe: {
     //         name:           "Pickaxe",
