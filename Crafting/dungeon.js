@@ -203,7 +203,7 @@ class Dungeon {
             let MAP = this._map.read( POS.x, POS.y );                           // Get cell data from next cell
             if ( MAP === -100 ) MAP = this._map.get( POS.x, POS.y );            // Get cell data so it can be drawn
             const MAT = this._mats.read( POS.x, POS.y );
-            if ( MAT >= this._min && MAP > 0 ) {                                           // Try Mining
+            if ( MAT >= this._min && MAP > 0 && MAP < 100 ) {                                           // Try Mining
                 this.mine(POS.x,POS.y,MAT);
                 this.genMapRadius(this._pos.x, this._pos.y, 5);
                 this.render();
@@ -377,10 +377,8 @@ class Dungeon {
                 C.fillStyle = pSBC(LIGHT,COL);                              
                 C.fillRect(X,Y,P,P);
                 if ( ITEM !== undefined ) this.renderItem( X, Y, ITEM, LIGHT ); // Find item and render
-            } else { 
-                
-                WALL = (MAP >= 100) ? DATA.colors[MAP-100] : WALL;
-
+            } else {               
+                WALL = (MAP >= 100) ? DATA.colors[MAP-100] : WALL;              // Get Wall Color
                 this._CTX.fillStyle=pSBC(LIGHT,WALL);                           // Wall
                 this._CTX.fillRect(X,Y,P,P);  
                 if (MAT >= this._min && MAP < 100) {                            // Add Material resource to cell
@@ -431,6 +429,8 @@ class Dungeon {
         console.log("ERROR"); return [255,255,255];                             // Error
     }
     mine( x, y ) {
+        const MAP = this._map.read(x,y);
+        if ( MAP > 100 || MAP <= 0 ) return;                                    // Check within valid mining range
         const value = this._mats.read( x, y );
         if (value === undefined) return;
         const RES = this.resource( value );
