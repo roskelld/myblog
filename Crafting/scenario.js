@@ -94,4 +94,8 @@ class Cave extends Scenario {
     move(dir) {
         this.DGN.move( dir );
     }
+    addItem( item ) {
+        const POS = this.DGN.pos;
+        this.DGN.addItem( POS.x, POS.y, item );
+    }
 }

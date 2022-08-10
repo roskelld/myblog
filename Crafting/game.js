@@ -402,7 +402,8 @@ function keyInput(e) {
                     } else {
                         INV_SEL.selectedIndex--;
                     }
-                    selectItem( INV_SEL.value );
+                    // selectItem( INV_SEL.value );
+                    selectItem();
                     return;
                 case INV_DOWN:
                     if ( INV_SEL.selectedIndex === INV_SEL.length - 1 ) {
@@ -410,7 +411,8 @@ function keyInput(e) {
                     } else {
                         INV_SEL.selectedIndex++;
                     }
-                    selectItem( INV_SEL.value );
+                    // selectItem( INV_SEL.value );
+                    selectItem();
                     return;
                 case ACT_UP:
                     if ( ITEM_ACTIONS.selectedIndex === 0 || ITEM_ACTIONS.selectedIndex === -1 ) {
@@ -539,7 +541,8 @@ function keyInput(e) {
                     } else {
                         INV_SEL.selectedIndex--;
                     }
-                    selectItem( INV_SEL.value );
+                    // selectItem( INV_SEL.value );
+                    selectItem();
                 break;
                 case INV_DOWN:
                     if ( INV_SEL.selectedIndex === INV_SEL.length - 1 ) {
@@ -547,7 +550,8 @@ function keyInput(e) {
                     } else {
                         INV_SEL.selectedIndex++;
                     }
-                    selectItem( INV_SEL.value );
+                    // selectItem( INV_SEL.value );
+                    selectItem();
                 break;
                 case ACT_UP:
                     if ( ITEM_ACTIONS.selectedIndex === 0 || ITEM_ACTIONS.selectedIndex === -1 ) {
@@ -619,10 +623,10 @@ function selectShopItem() {
     }
 }
 
-function selectItem( name ) {
+function selectItem(none = false) {
     // Show all actions
     // Get Item
-    let item = avatar.getItem( INV_SEL.value );
+    let item = (none) ? undefined : avatar.getItem( INV_SEL.value );
     
     // clear current actions
     let items = ITEM_ACTIONS.options.length;
@@ -655,6 +659,10 @@ function selectItem( name ) {
         ITEM_ACTIONS.options[ITEM_ACTIONS.length - 1]
             .addEventListener("click", () => useItem( INV_SEL.value ), false );
     });
+
+    ITEM_ACTIONS.options[ITEM_ACTIONS.length] = new Option( "Drop", "Drop" );  
+    ITEM_ACTIONS.options[ITEM_ACTIONS.length - 1]
+        .addEventListener("click", () => useItem( INV_SEL.value ), false );
     
     // Select first option;
     ITEM_ACTIONS.options[0].selected = true;
@@ -722,6 +730,7 @@ function useItem( id ) {
         case "Fish":        fish();                     break;   
         case "Chop":        chopTree();                 break;
         case "Enter":       enterScenario();            break;                        
+        case "Drop":        dropItem(item);             break;  
         default:
             break;
     }
@@ -731,10 +740,21 @@ function enterScenario() {
     const F = getLandscapeFeature(avatar.loc.x, avatar.loc.y);
     F.start();
     setGameMode("dungeon");
+    SetGameLocation(F);
     setLandscapeFeatureActions(F);
     clearUI();
 }
+// ----------------------------------------------------------------------------
+// Set and get current player scenario - Dungeon instance
 
+let current_scenario = null;
+function SetGameLocation(scenario) {
+    current_scenario = scenario;
+}
+
+function GetGameLocation() {
+    return current_scenario;
+}
 // ----------------------------------------------------------------------------
 // Crafting
 function enterCrafting() {
@@ -1122,6 +1142,15 @@ function chopTree() {
     increaseGameTime(1);
     lastDirection = null;
     gameUpdate();
+}
+
+function dropItem( item ) {
+    item = (item === undefined) ? avatar.getItem(SELCT_ITM_ID()) : item;
+    if (item === undefined){console.log("BAD ITEM CANNOT DROP");return};
+    if (getGameMode()!==6){updateLog(`Cannot drop ${item.name} here.`);return};   
+    GetGameLocation().addItem( item );                                          // Add item to scenario inventory
+    avatar.removeFromInventory( item.id );                                      // Remove item from player
+    selectItem();                                                               // Select NONE item
 }
 
 function buy( item ) {
@@ -1654,7 +1683,8 @@ function gameUpdate() {
             }
             LAND.draw(avatar.location[0], avatar.location[1], avatar.sight);
             drawAvatar();
-            selectItem(SELCT_ITM_ID());
+            // selectItem(SELCT_ITM_ID());
+            selectItem();
             break;
     }
 
@@ -1714,22 +1744,23 @@ function init() {
     CRAFT_UI.classList.add("hide");
 
     // console.log( startTown );
-    avatar.location = [LAND._SCENARIOS[0].loc.x, LAND._SCENARIOS[0].loc.y];
-    // avatar.location = [startTown.location.x, startTown.location.y];
+    // avatar.location = [LAND._SCENARIOS[0].loc.x, LAND._SCENARIOS[0].loc.y];
+    avatar.location = [startTown.location.x, startTown.location.y];
     
     // Default terrain
     avatar.addValidTerrain("soil");
     
     // Default items
     // avatar.addToInventory( new Item( DATA.items.torch_wood ) );
-    avatar.addToInventory( new Item( DATA.items.lantern ) );
+    // avatar.addToInventory( new Item( DATA.items.lantern ) );
     // avatar.addToInventory( new Item( DATA.items.torch_wood ) );
     avatar.addToInventory(new Item(DATA.items.dowsing_twig));
     avatar.addToInventory(new Item(DATA.items.wood_axe, undefined, undefined, undefined, undefined, undefined, 150));
     avatar.addToInventory(new Item(DATA.items.pickaxe, undefined, undefined, undefined, undefined, undefined, 10));
 
     INV_SEL.selectedIndex = 0; 
-    selectItem(INV_SEL.value);
+    // selectItem(INV_SEL.value);
+    selectItem(true);
     
     avatar.addGold(10);
 

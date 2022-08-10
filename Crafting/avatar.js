@@ -119,7 +119,7 @@ class Avatar {
     }
     removeFromInventory( id ) {
         Object.values(INV_SEL.options).find( e => e.value == id ).remove();
-
+        INV_SEL.options.selectedIndex = 0;
         this._inventory.splice( this._inventory.findIndex( e => e.id === id ), 1);
     }
     getItem(id) {

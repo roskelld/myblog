@@ -1,4 +1,6 @@
-
+const FILES = {
+    items: `/images/item_sheet.png`,
+}
 const DATA = {
     towns: [
         "Aerilon",
@@ -662,7 +664,7 @@ const DATA = {
             },
             stats: {
                 fuel:       9000,
-                range:      7,
+                range:      11,
             },
             type:           ["light"],
             description:    "A lantern to light the way."
@@ -1270,3 +1272,15 @@ const DATA = {
 };
 
 
+// Map Data
+// Walls 100 > 999
+// Value is tied to color range ()
+// Floors -100 > -999
+// Items 1000 >
+// Fixtures -1000 <
+
+// -1000 > Exit to Overworld Door
+// -1001 > Light- Range: 8 Color: white
+// -1002 > Light- Range: 10 Color: white
+// -1003 > Light- Range: 8 Color: orange
+// -1004 > Light- Range: 10 Color: orange
