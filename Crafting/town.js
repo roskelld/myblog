@@ -64,7 +64,10 @@ class Town extends Scenario {
         return quality;
     }
     genItemSalePrice( item ) {
-        // console.log( item );
+        // -------------------------------------------
+        // This code kinda doesn't work now that there are resources that 
+        // don't have a known abundance so needs a rethink
+
         // If item is material, then price should reflect abundance
         if ( item.properties.includes( "material" ) ) {            
             let highest_total = 0;
@@ -80,14 +83,17 @@ class Town extends Scenario {
                 return MKT_PRC;
             }
 
+            // Presume no resource material has been found but item is material
+            if ( item.data !== undefined )
+                return item.data.price * ( 1 + this._economic_status * 0.1 );   // Tweak based on local economy
+
             console.error(`Missing Resource: ${item.name}`);                    // Track missing resources
         }
 
         // TEMP CODE
-        if ( item.efficency === - 1 ) {
-            const DATA = Object.values(ITEM_DATA)
-                            .find( e => e.name === item._name );
-            const PRICE = DATA.price * ( 1+ this._economic_status * 0.1 );
+        if ( item.efficency === -1 ) {
+            let D = Object.values(DATA.items).find(e => e.name === item._name);
+            const PRICE = D.price * ( 1+ this._economic_status * 0.1 );
             return PRICE;
         }
 
