@@ -76,6 +76,16 @@ function genID( length = 8 ) {
     return Math.random().toString(16).substring(2, 2 + length);                 // Return random string
 }
 
+// https://stackoverflow.com/a/46161940/6126468
+function ShuffleArray( array ) {
+    const newArr = array.slice()
+    for (let i = newArr.length - 1; i > 0; i--) {
+        const rand = Math.floor(Math.random() * (i + 1));
+        [newArr[i], newArr[rand]] = [newArr[rand], newArr[i]];
+    }
+    return newArr;
+}
+
 // Generate array of values that simulate a spiral (r,d,l,u)
 function spiral( r ) {
     r = (r * 2) + 1;
@@ -160,4 +170,19 @@ function convertRange( val, omin, omax, nmin, nmax ) {
     const orange = omax-omin;
     const nrange = nmax-nmin;
     return (((val - omin)*nrange)/orange)+nmin;
+}
+
+function randomIndice(array, r) {
+    let sum = 0;
+    let x = 0;
+    let i = 0;
+    for (; i < array.length; i++) sum += array[i];
+    i = 0;
+    r *= sum;
+    while (r && i < array.length) {
+        x += array[i];
+        if (r <= x) return i;
+        i++;
+    }
+    return 0;
 }

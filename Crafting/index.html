@@ -53,7 +53,7 @@
             <table>
                 <tbody>
                     <tr>
-                        <td>Day</td>
+                        <td>Time</td>
                     </tr>
                     <tr>
                         <td id="game-time">0</td>
@@ -112,6 +112,7 @@
     <script type="text/javascript">
         const cache = Math.round(new Date().getTime()/1000);
         document.write(`<${"script"} src="lib.js?cb=${cache}" charset="utf-8"></${"script"}>`);
+        document.write(`<${"script"} src="wfc.js?cb=${cache}" charset="utf-8"></${"script"}>`);
         document.write(`<${"script"} src="data.js?cb=${cache}" charset="utf-8"></${"script"}>`);
         document.write(`<${"script"} src="perlin.js?cb=${cache}" charset="utf-8"></${"script"}>`);
         document.write(`<${"script"} src="scenario.js?cb=${cache}" charset="utf-8"></${"script"}>`);

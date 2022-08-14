@@ -15,9 +15,9 @@ class Avatar {
     }
     update(duration) {
         
-        for (let index = 0; index < Math.round(duration); index++) {
-            this.eatFood();
-        }
+        // for (let index = 0; index < Math.round(duration); index++) {
+            
+        // }
     }
     get sight() {
         return this._sight;

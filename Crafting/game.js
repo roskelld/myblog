@@ -304,8 +304,7 @@ LAND.addTerrain( 0.3,   [93, 96, 106],  "mountains",        "rock",     2 );
 LAND.addTerrain( 0.47,  [133, 133, 133],"high mountains",   "rock",     2 );
 LAND.addTerrain( 1,     [250, 250, 250],"snow peaks",       "rock",     2.5 );
 
-// Set Material
-
+// Set Overworld Material
 const MAT = new Material( document.getElementById("materials"));
 MAT.addResource( new Resource( 
     "copper", 
@@ -348,6 +347,9 @@ MAT.addResource( new Resource(
     [77,79,78], 
     ["metal","silver"], 0.4, 2, 0.40, 1, 
     {} ) );
+
+// WFC
+const WFC_OL = new WFC();
 
 // Game Time
 let gameTime = 1;
@@ -1426,6 +1428,7 @@ function moveCharacter( direction ) {
         }
         // Calculate travel time
         increaseGameTime(TERRAIN.difficulty);
+        avatar.eatFood();
         checkedTile = false;
         updateIntructions();
         setLandscapeFeatureActions();
@@ -1448,10 +1451,9 @@ function moveCharacter( direction ) {
                 moveDir(false);
                 break;
             default:
-                if ( INV_SEL.value === "none" ) 
-                    setLandscapeFeatureActions();
+                if ( INV_SEL.value === "none" ) setLandscapeFeatureActions();
                 updateLog( 
-                    `DRIBBLE You travel ${DIRECTION[direction]} 
+                    `You travel ${DIRECTION[direction]} 
                     into ${TERRAIN.name}` );
                 moveDir(true);
                 break;
@@ -1676,21 +1678,23 @@ function gameUpdate() {
             if (FEAT) {
                 if ( FEAT.type === "town" ) {
                     avatar.addFood(avatar._MAX_FOOD);
+                } else {
+                    
                 }
             }           
             if ( Math.round(gameTime % 10) === 0 ) {
                 LAND._TOWNS.forEach ( e => e.generateMarket() );                // Refresh Town Markets every ~10 days
             }
             LAND.draw(avatar.location[0], avatar.location[1], avatar.sight);
-            drawAvatar();
+            drawAvatar();           
             // selectItem(SELCT_ITM_ID());
             selectItem();
             break;
-    }
-
+        }
+        
     UI_GAME_TIME.textContent = Math.round(gameTime);                            // update game time        
-    UI_GOLD.forEach( el => el.textContent = avatar.gold );                      // update gold          
     UI_FOOD.textContent = avatar.food;                                          // update food 
+    UI_GOLD.forEach( el => el.textContent = avatar.gold );                      // update gold          
     UI_WEIGHT.textContent = avatar.weight;                                      // update weight
     updateItemDetailsUI();
 }
@@ -1744,8 +1748,8 @@ function init() {
     CRAFT_UI.classList.add("hide");
 
     // console.log( startTown );
-    // avatar.location = [LAND._SCENARIOS[0].loc.x, LAND._SCENARIOS[0].loc.y];
-    avatar.location = [startTown.location.x, startTown.location.y];
+    avatar.location = [LAND._SCENARIOS[0].loc.x, LAND._SCENARIOS[0].loc.y];
+    // avatar.location = [startTown.location.x, startTown.location.y];
     
     // Default terrain
     avatar.addValidTerrain("soil");

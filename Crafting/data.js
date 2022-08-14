@@ -824,7 +824,7 @@ const DATA = {
         oak_wood: {
             name:       "oak wood",
             weight:     0.3,
-            price:      10,
+            price:      0.1,
             use:        ["Attack", "Defend", "Throw", "Look"],
             efficency:  -1,
             max_efficency:  10,
@@ -846,7 +846,7 @@ const DATA = {
         leather: {
             name:       "Leather (Pig)",
             weight:     0.3,
-            price:      10,
+            price:      0.1,
             use:        ["Attack", "Defend", "Throw", "Look"],
             efficency:  -1,
             max_efficency:  10,
@@ -861,45 +861,146 @@ const DATA = {
             description:    "Add description for item here"
         },
     },
-    colors: [
-        `#000000`,  // Pure Black
-        `#ffffff`,  // Pure White
-        `#f9f871`,  // Yellow Light
-        `#85e858`,  // Green Light
-        `#00fef9`,  // Blue Light
-        `#f86f29`,  // Orange Light
-        `#ec59f3`,  // Pink Light
-        `#132019`,  // Obsidian
-        `#1e281e`,  // Deep Moss
-        `#033A2A`,  // Ceramic Dark Green
-        `#5e5b4d`,  // Moss Rock
-        `#989889`,  // Rock Wall
-        `#5e5b4d`,  // Moss Rock
-        `#93a2ba`,  // Rock Blue
-        `#a65052`,  // Rock Red
-        `#505646`,  // Irish Moss
-        `#86423e`,  // Brick
-        `#968977`,  // Cobble
-        `#574141`,  // Brick Brown
-        `#bfa5a4`,  // Brick Tan
-        `#63702c`,  // Brick Moss
-        `#98a45c`,  // Brick Pale Moss
-        `#00aeca`,  // Ceramic Blue
-        `#645fbc`,  // Ceramic Lilac
-        `#994f96`,  // Ceramic Pink
-        `#a53268`,  // Ceramic Deep Pink
-        `#b491cf`,  // Ceramic Purple
-        `#95b0b7`,  // Ceramic Teal
-        `#3e8e7d`,  // Ceramic Light Green
-
-        `#005b90`,  // Water
-        `#0067A3`,  // Light Water
-        `#003452`,  // Dark Water
-
-        `#FF7C0A`,  // Light Lava
-        `#FF7700`,  // Dark Lava
-
-    ]
+    colors: {
+         "0":            `#000000`,  // Pure Black
+         "1":            `#ffffff`,  // Pure White
+         "2":            `#f9f871`,  // Yellow Light
+         "3":            `#85e858`,  // Green Light
+         "4":            `#00fef9`,  // Blue Light
+         "5":            `#f86f29`,  // Orange Light
+         "6":            `#ec59f3`,  // Pink Light
+         "7":            `#132019`,  // Obsidian
+         "8":            `#1e281e`,  // Deep Moss
+         "9":            `#033A2A`,  // Ceramic Dark Green
+        "10":            `#5e5b4d`,  // Moss Rock
+        "11":            `#989889`,  // Rock Wall
+        "12":            `#5e5b4d`,  // Moss Rock
+        "13":            `#93a2ba`,  // Rock Blue
+        "14":            `#a65052`,  // Rock Red
+        "15":            `#505646`,  // Irish Moss
+        "16":            `#86423e`,  // Brick
+        "17":            `#968977`,  // Cobble
+        "18":            `#574141`,  // Brick Brown
+        "19":            `#bfa5a4`,  // Brick Tan
+        "20":            `#63702c`,  // Brick Moss
+        "21":            `#98a45c`,  // Brick Pale Moss
+        "22":            `#00aeca`,  // Ceramic Blue
+        "23":            `#645fbc`,  // Ceramic Lilac
+        "24":            `#994f96`,  // Ceramic Pink
+        "25":            `#a53268`,  // Ceramic Deep Pink
+        "26":            `#b491cf`,  // Ceramic Purple
+        "27":            `#95b0b7`,  // Ceramic Teal
+        "28":            `#3e8e7d`,  // Ceramic Light Green
+        "29":            `#005b90`,  // Water
+        "30":            `#0067A3`,  // Light Water
+        "31":            `#003452`,  // Dark Water
+        "32":            `#FF7C0A`,  // Light Lava
+        "33":            `#FF7700`,  // Dark Lava
+    },
+    tile: {
+        0: {
+            n:              3,
+            symmetry:       3,
+            periodic:       0, 
+            periodicInput:  0,
+            width:          70,
+            height:         70,
+            sampleWidth:    32,
+            sampleHeight:   32,
+            ground:         0,
+            offsetW:        0,
+            offsetH:        0,
+            legend: {
+                "255,255,255":  "floor",
+                "0,0,0":        "wall",
+            },
+        },
+        1: {
+            n:              3,
+            symmetry:       8,
+            periodic:       0, 
+            periodicInput:  0,
+            width:          50,
+            height:         50,
+            sampleWidth:    32,
+            sampleHeight:   32,
+            ground:         0,
+            offsetW:        32,
+            offsetH:        0,
+            legend: {
+                "255,0,0":      ["floor","crafted","int"],
+                "255,0,235":    ["floor","crafted","int"],
+                "255,240,0":    ["door","int"],
+                "118,108,108":  ["wall","crafted","int"],
+                "0,0,0":        ["wall","crafted","int"],
+                "255,255,255":  ["floor","worked","ext"],
+                "0,198,255":    ["floor","worked","ext"],
+            },
+        },
+        2: {
+            n:              3,
+            symmetry:       8,
+            periodic:       0, 
+            periodicInput:  0,
+            width:          70,
+            height:         70,
+            sampleWidth:    32,
+            sampleHeight:   32,
+            ground:         0,
+            offsetW:        64,
+            offsetH:        0,
+            legend: {
+                "0,0,0":        ["wall","natural","int"],
+                "255,255,255":  ["floor","worked","int"],
+                "0,133,58":     ["wall","worked","room","int"],
+                "134,134,134":  ["wall","worked","corridor","int"],
+                "0,198,255":    ["floor","worked","corridor","int"],
+                "255,240,0":    ["door","int"],
+            },
+        },
+        3: {
+            n:              3,
+            symmetry:       8,
+            periodic:       0, 
+            periodicInput:  0,
+            width:          30,
+            height:         30,
+            sampleWidth:    15,
+            sampleHeight:   15,
+            ground:         0,
+            offsetW:        96,
+            offsetH:        0,
+            legend: {
+                "255,0,0":      ["floor","crafted","int"],
+                "0,133,58":     ["wall","worked","room","int"],
+                "255,255,255":  ["floor"],
+                "0,0,0":        ["wall"],
+                "255,240,0":    ["door","int"],
+            },
+        },
+        4: {
+            n:              3,
+            symmetry:       4,
+            periodic:       0, 
+            periodicInput:  0,
+            width:          30,
+            height:         30,
+            sampleWidth:    15,
+            sampleHeight:   15,
+            ground:         0,
+            offsetW:        96,
+            offsetH:        16,
+            legend: {
+                "255,0,0":      ["floor","crafted","int"],
+                "0,133,58":     ["wall","worked","room","int"],
+                "134,134,134":  ["wall","worked","corridor","int"],
+                "0,198,255":    ["floor","worked","corridor","int"],
+                "255,255,255":  ["floor"],
+                "0,0,0":        ["wall"],
+                "255,240,0":    ["door","int"],
+            },
+        },
+    }
     // aitem: {
     //     pickaxe: {
     //         name:           "Pickaxe",
