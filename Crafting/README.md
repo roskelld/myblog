@@ -27,42 +27,47 @@ needed.
 
 valid name list:
 
-Name Word Legend:
-int:        internal space
-ext:        external space
-floor:      solid walkable space
-wall:       solid non-walkable space
-hole:       hollow drop to whatever unseen lies below
-bridge:     constructed or natural crossing of a hole
-river:      directionally flowing liquid
-pond:       non-flowing liquid
-natural:    wild and natural with no manipulation
-worked:     natural but manipulated
-crafted:    constructed for purpose
-plant:      vegetation
-corridor:   passageway
-room:       umm, a room
-door:       door way with or without door in place
-bed:        place to sleep
-chair:      place to sit
-table:      place to place stuff
-statue:     construct depicting something of importance
-hidden:     unseen element 
-dense:      heavy element that complicates vision and/or movement
+### Name Word Legend:
+Tag           | Description
+------------- | -------------
+int          |internal space
+ext          |external space
+floor        |solid walkable space
+wall         |solid non-walkable space
+hole         |hollow drop to whatever unseen lies below
+bridge       |constructed or natural crossing of a hole
+river        |directionally flowing liquid
+pond         |non-flowing liquid
+natural      |wild and natural with no manipulation
+worked       |natural but manipulated
+crafted      |constructed for purpose
+plant        |vegetation
+corridor     |passageway
+room         |umm, a room
+door         |door way with or without door in place
+bed          |place to sleep
+chair        |place to sit
+table        |place to place stuff
+statue       |construct depicting something of importance
+hidden       |unseen element 
+dense        |heavy element that complicates vision and/or movement
 
-Codes:
-C
-Floor:       -100 ->  -999
-Wall:         100 ->   999
-Light:      -1001 -> -1200
-Item:        1000 ->  5000
-Fixture:    -1000 -> -5000
-Creature:    5001 ->  8000
+### Codes:
+Type    | ID Range
+------------- | -------------
+Floor   |   -100 ->  -999
+Wall    |    100 ->   999
+Light   |  -1001 -> -1200
+Item    |   1000 ->  5000
+Fixture |  -1000 -> -5000
+Creature|   5001 ->  8000
 
-Fixture List:
-Exit:               -1000
-Door Standard:      -1001
-Door Heavy:         -1002
-Door Secret:        -1003
+### Fixture List:
+Fixture         |   ID
+------------- | -------------
+Exit:           |   -1000
+Door Standard   |   -1001
+Door Heavy      |   -1002
+Door Secret     |   -1003
 
 
