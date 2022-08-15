@@ -956,6 +956,7 @@ const DATA = {
                 "134,134,134":  ["wall","worked","corridor","int"],
                 "0,198,255":    ["floor","worked","corridor","int"],
                 "255,240,0":    ["door","int"],
+                "255,0,235":    ["light"],
             },
         },
         3: {
@@ -976,6 +977,7 @@ const DATA = {
                 "255,255,255":  ["floor"],
                 "0,0,0":        ["wall"],
                 "255,240,0":    ["door","int"],
+                "255,0,235":    ["light"],
             },
         },
         4: {
@@ -998,8 +1000,16 @@ const DATA = {
                 "255,255,255":  ["floor"],
                 "0,0,0":        ["wall"],
                 "255,240,0":    ["door","int"],
+                "255,0,235":    ["light"],
             },
         },
+    },
+    legend: {
+        floor:      { s:  -999, e:  -100 },
+        wall:       { s:   100, e:   999 },
+        light:      { s: -1200, e: -1001 },
+        item:       { s:  1000, e:  4999 },
+        creature:   { s:  5000, e:  7999 },
     }
     // aitem: {
     //     pickaxe: {

@@ -1,7 +1,7 @@
 
-Crafting Prototype
+# Crafting Prototype
 
-Dungeon Generation
+## Dungeon Generation
 Locations are generated from a combination of localized themed cells and 
 general cells, ie. localized being the type of construction or resource the
 floor is made of, and general being wood or other universal resource.
@@ -55,10 +55,11 @@ dense        |heavy element that complicates vision and/or movement
 ### Codes:
 Type    | ID Range
 ------------- | -------------
+Special |     -2 ->  -99
 Floor   |   -100 ->  -999
 Wall    |    100 ->   999
 Light   |  -1001 -> -1200
-Item    |   1000 ->  5000
+Item    |   1000 ->  4999
 Fixture |  -1000 -> -5000
 Creature|   5001 ->  8000
 
@@ -66,8 +67,8 @@ Creature|   5001 ->  8000
 Fixture         |   ID
 ------------- | -------------
 Exit:           |   -1000
-Door Standard   |   -1001
-Door Heavy      |   -1002
-Door Secret     |   -1003
+Door Standard   |   -1201
+Door Heavy      |   -1202
+Door Secret     |   -1203
 
 

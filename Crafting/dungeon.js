@@ -32,10 +32,14 @@ class Dungeon {
             "floor,plant":                  -121,                        
             "wall":                          111,
             "wall,natural":                  111,                        
+            "wall,natural,int":              111,
             "wall,worked":                   111,
-            "wall,worked,room,int":          111,                        
+            "wall,worked,room,int":          111, 
+            "wall,worked,corridor,int":      111,  
             "wall,crafted,int":              112,                        
-            "door,int":                     -108,                        
+            "door,int":                     -108,
+            "light":                       -1001,
+
 
         }
         this.tile_selection =            [0,1,2,3,4];
@@ -71,7 +75,7 @@ class Dungeon {
 
             const CHUNK = this.getChunk( TILE_TYPE );
             if ( CHUNK === null ) {
-                console.log(`try to create -- ${CURRENT} ${RES} > ${R}`);
+                // console.log(`try to create -- ${CURRENT} ${RES} > ${R}`);
                 WFC_OL.start( TILE_TYPE, this );
                 this.last_wfc_request = gameTime;
             } else {
@@ -106,24 +110,57 @@ class Dungeon {
         }
         return true;
     }
-    addChunkBorder( data, width, border ) {
+    addChunkBorder( data, width, border, feather = true ) {
         let len = data.length;
-        for (let i = len; i >= width; i-= width) {                              // Add Right hand side
-            const A = new Array(border).fill(-118);
-            data.splice(i, 0, ...A);
+        for (let i = len; i >= width; i-= width) {                              // Add Right
+            const C_SPL = ( i === 0 ) ? data[i] : data[i-1];                    // Get adjacent chunk cell            
+            const R = [...Array(border)].map( (_,i) => {
+                const RND = Math.random();
+                const ODDS = 1-i/border*1;
+                const BOOST = (C_SPL >= DATA.legend.floor.s 
+                               && C_SPL <= DATA.legend.floor.e) ? 0.1 : 0;      // Slightly boost favor for floor
+                return ( ODDS + BOOST > RND ) ? C_SPL : -2;                     // Return sample tile or use map data
+            });        
+            data.splice(i, 0, ...R);
         }
+       
         len = data.length;
         width = width + border;
-        for (let i = len-width; i >= 0; i-= width) {                              // Add Left hand side
-            const A = new Array(border).fill(-118);
-            data.splice(i, 0, ...A);
+        for (let i = len-width; i >= 0; i-= width) {                            // Add Left
+            const C_SPL = ( i === 0 ) ? data[i] : data[i+1];                    // Get adjacent chunk cell
+            const L = [...Array(border)].map( (_,i) => {
+                const RND = Math.random();
+                const ODDS = i/border*1;
+                const BOOST = (C_SPL >= DATA.legend.floor.s 
+                               && C_SPL <= DATA.legend.floor.e) ? 0.1 : 0;      // Slightly boost favor for floor
+                return ( ODDS + BOOST > RND ) ? C_SPL : -2;                     // Return sample tile or use map data
+            });        
+            data.splice(i, 0, ...L);
         }
         width = width + border;
-        const A = new Array(width * border).fill(-118);
-        data.splice(0, 0, ...A);
+        const T = [...Array(width*border)].map( (_,i) => {                      // Add Top side
+            const C_SPL = data[i % width];                                      // Get adjacent chunk cell
+            // console.log(`${C_SPL} data[${i % width}]`);
+            const RND = Math.random();
+            const BASE = Math.ceil(i/width)/border;                             // lower odds as rows shift up
+            const BOOST = (C_SPL >= DATA.legend.floor.s 
+                           && C_SPL <= DATA.legend.floor.e) ? 0.1 : 0;          // Slightly boost favor for floor
+            const ODDS = Math.min(BASE + BOOST, 0.9);
+            return ( ODDS > RND ) ? C_SPL : -2;                                 // Return sample tile or use map data
+        });   
+        data.splice(0, 0, ...T);
+                                         
         len = data.length;
-        data.splice(len, 0, ...A);
-
+        const B = [...Array(width*border)].map( (_,i) => {                      // Add Bottom side
+            const C_SPL = data[len - width + i];                                // Get adjacent chunk cell
+            const RND = Math.random();
+            const BASE = 1-Math.ceil(i/width)/border;                           // lower odds as rows shift down
+            const BOOST = (C_SPL >= DATA.legend.floor.s 
+                           && C_SPL <= DATA.legend.floor.e) ? 0.1 : 0;          // Slightly boost favor for floor
+            const ODDS = Math.min(BASE + BOOST, 0.9);
+            return ( ODDS > RND ) ? C_SPL : -2;                                 // Return sample tile or use map data
+        }); 
+        data.splice(0, 0, ...B);
         const HEIGHT = len / width;
         if ( Number.isInteger(HEIGHT) ) {
             return { data: data, width: width, height: HEIGHT };
@@ -200,19 +237,19 @@ class Dungeon {
             switch (order[tries]) {                                                    // Set OG starting point (n,s,e,w)
                 case 0: 
                     loc = [POS.x - Math.round(WIDTH/2), POS.y - DIST - HEIGHT]; 
-                    console.log("Trying up"); 
+                    // console.log("Trying up"); 
                 break;
                 case 1: 
                     loc = [POS.x + DIST, POS.y - Math.round(HEIGHT/2)]; 
-                    console.log("Trying right"); 
+                    // console.log("Trying right"); 
                 break;
                 case 2: 
                     loc = [POS.x - Math.round(WIDTH/2), POS.y + DIST];  
-                    console.log("Trying down"); 
+                    // console.log("Trying down"); 
                 break;
                 case 3: 
                     loc = [POS.x - WIDTH - DIST, POS.y - Math.round(HEIGHT/2) ];  
-                    console.log("Trying left"); 
+                    // console.log("Trying left"); 
                 break;
             }        
             success = this.isChunkEmpty( loc[0], loc[1], WIDTH, HEIGHT );         // Check if location in map is empty
@@ -222,12 +259,10 @@ class Dungeon {
             this.addChunkToMap( loc[0], loc[1], DATA, WIDTH );                    // Generate and add the chunk to the map
             this.removeChunk( TILE );
         } else {
-            console.log("failed to find location");                             // Warn if no valid map location found
+            // console.log("failed to find location");                             // Warn if no valid map location found
         }
     }
     addChunkToMap( x,y, data, wrap ) {      
-        console.log(`Generated room: ${x},${y} : ${wrap}`);
-        console.log(data);
         const INC = this._NUM_PIXELS / this._GRID_SIZE;                         // Pixel increment
         const conv = (ox,oy) => {
             const TDR = {                                                       // Offset to center screen
@@ -259,7 +294,9 @@ class Dungeon {
             const yy = y + Math.floor(i/wrap);
             const MAP = conv(xx,yy);
             const POS = this.toPOSCoord(MAP.x,MAP.y);
-            if (e > -1000 && e < 1000) {                                        // Walls and Floors
+            if (e > -100 && e < -1 ) {                                          // Special (Convert to switch when needed)
+                this._map.get(MAP.x,MAP.y);
+            } else if (e > -1000 && e < 1000) {                                 // Walls and Floors
                 this._map.memory[[`${MAP.x},${MAP.y}`]] = e;
             } else if ( e <= -1000 ) {                                          // Fixtures
                 this.addLight(POS.x,POS.y,8,DATA.colors[5]);
@@ -437,6 +474,15 @@ class Dungeon {
         const NAME = item.data.name.substring(0,1).toLowerCase();
         this._CTX.fillText(`${NAME}`, sx+P, sy+P ); 
     }
+    renderMark( sx, sy, mark, base_color, light = 0 ) {
+        this._CTX.font = `${20}px monospace`;
+        const color = pSBC(-0.4,base_color);
+        this._CTX.fillStyle = pSBC(light,color);
+        this._CTX.textAlign = "center";
+        this._CTX.textBaseline = `middle`;
+        const P = this.PIXEL/2;
+        this._CTX.fillText(`${mark}`, sx+P, sy+P ); 
+    }
     clear() {                                                                   // Clear Screen
         this._CTX.clearRect(0,0,this._CANVAS.width, this._CANVAS.height);
     }
@@ -461,7 +507,7 @@ class Dungeon {
             this._pos.x = this._pos.x + x;
             this._pos.y = this._pos.y + y;
             // const tmp = this.toMapCoord( this._pos.x, this._pos.y )
-            console.log(`${this._pos.x},${this._pos.y}`)
+            // console.log(`${this._pos.x},${this._pos.y}`)
             if ( this._pos.x === 0 && this._pos.y === 0 ) {
                 this._prnt.exit();
             } else {
@@ -559,12 +605,15 @@ class Dungeon {
                 LIGHT = Math.max(LIGHT,-1)
                 C.fillStyle = pSBC(LIGHT,COL);                              
                 C.fillRect(X,Y,P,P);  
+                const MARK = (Math.random() > 0.5) ? "∽" : "~";
+                this.renderMark( X, Y, MARK, COL, LIGHT);                       // Add Water Texture                
             } else if ( MAP <= 0 ) {                                            // Floor
                 FLOOR = (MAP <= -100) ? DATA.colors[Math.abs(MAP)-100] : FLOOR; // Get Floor Color     
                 const COL = pSBC(AMT,FLOOR,TORCH);
                 LIGHT = Math.max(LIGHT,-1);
                 C.fillStyle = pSBC(LIGHT,COL);                              
                 C.fillRect(X,Y,P,P);
+                this.renderMark( X, Y, "·", COL, LIGHT);                       // Add Water Texture                
                 if ( ITEM !== undefined ) this.renderItem(X, Y, ITEM, LIGHT);   // Find item and render
             } else {               
                 WALL = (MAP >= 100) ? DATA.colors[MAP-100] : WALL;              // Get Wall Color
@@ -581,6 +630,8 @@ class Dungeon {
                     C.fill();
                     C.strokeStyle = pSBC(LIGHT,WHITE);                          // Mat Stroke
                     C.stroke();
+                } else {
+                    this.renderMark( X, Y, "#", WALL, LIGHT);                   // Add Wall Texture
                 }
             }
             break;

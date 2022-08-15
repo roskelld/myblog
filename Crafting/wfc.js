@@ -138,7 +138,7 @@ class WFC {
         this.WFC_WORKER.postMessage(MESSAGE, [MESSAGE.generatedImage]);
     }
     _returnData() {
-        this._debug();
+        // this._debug();
         this.map.convertWFCToChunk(this.generatedData, this.tile_num);
         this.selected_tile = null;
         this.map = null;
