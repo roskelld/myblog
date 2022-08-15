@@ -39,8 +39,6 @@ class Dungeon {
             "wall,crafted,int":              112,                        
             "door,int":                     -108,
             "light":                       -1001,
-
-
         }
         this.tile_selection =            [0,1,2,3,4];
         this.prep_chunk_array = {};                                              // Store prepared chunks for use
@@ -264,6 +262,7 @@ class Dungeon {
     }
     addChunkToMap( x,y, data, wrap ) {      
         const INC = this._NUM_PIXELS / this._GRID_SIZE;                         // Pixel increment
+        const FIX_ARR = [];
         const conv = (ox,oy) => {
             const TDR = {                                                       // Offset to center screen
                 x: Number(( ox * INC ).toFixed(3)),
@@ -300,13 +299,20 @@ class Dungeon {
                 this._map.memory[[`${MAP.x},${MAP.y}`]] = e;
             } else if ( e <= -1000 ) {                                          // Fixtures
                 this.addLight(POS.x,POS.y,8,DATA.colors[5]);
+                FIX_ARR.push(POS);
                 this._map.memory[[`${MAP.x},${MAP.y}`]] = 0;
             } else if ( e >= 1000 ) {                                           // Items
                 const ITEM = new Item(DATA.items[[Object.keys(DATA.items)[e-1000]]]);
                 if ( ITEM !== undefined ) this.addItem(POS.x, POS.y, ITEM);
                 this._map.memory[[`${MAP.x},${MAP.y}`]] = 0;
+                FIX_ARR.push(POS);
             }
 
+        });
+
+        // Run through the fixture array and try to find floor texture
+        FIX_ARR.forEach( e => {
+            this.tryGenFloorTile( e.x, e.y );            
         });
 
     }
@@ -613,7 +619,7 @@ class Dungeon {
                 LIGHT = Math.max(LIGHT,-1);
                 C.fillStyle = pSBC(LIGHT,COL);                              
                 C.fillRect(X,Y,P,P);
-                this.renderMark( X, Y, "·", COL, LIGHT);                       // Add Water Texture                
+                this.renderMark( X, Y, "·", COL, LIGHT);                        // Add Floor Texture                
                 if ( ITEM !== undefined ) this.renderItem(X, Y, ITEM, LIGHT);   // Find item and render
             } else {               
                 WALL = (MAP >= 100) ? DATA.colors[MAP-100] : WALL;              // Get Wall Color
@@ -680,10 +686,35 @@ class Dungeon {
         }
         updateLog(`You have mined ${RES.name} ore.`);
         this._mats.memory[[`${x},${y}`]] = 0;
-        this._map.memory[[`${x},${y}`]] = 0;
+        const POS = this.toPOSCoord( x, y );
+        this.tryGenFloorTile( POS.x, POS.y );
+        // this._map.memory[[`${x},${y}`]] = 0;
         avatar.addToInventory(new Item(createMaterialItem(RES.name)));
     }
-
+    tryGenFloorTile( x, y ) {                                                   // Generate floor tile from removed block
+        const FLOOR = DATA.legend.floor;
+        let cell;
+        let map;
+        const SAMPLES = [];
+        for (let i = 0; i < 7; i++) {
+            switch (i) {
+                case 0: map = this.toMapCoord( x + 1, y );      break;
+                case 1: map = this.toMapCoord( x + 1, y + 1 );  break;
+                case 2: map = this.toMapCoord( x, y + 1 );      break;
+                case 3: map = this.toMapCoord( x - 1, y + 1 );  break;    
+                case 4: map = this.toMapCoord( x - 1, y );      break;
+                case 5: map = this.toMapCoord( x - 1, y - 1 );  break;
+                case 6: map = this.toMapCoord( x, y - 1 );      break;
+                case 7: map = this.toMapCoord( x + 1, y - 1 );  break;               
+            }
+            cell = this._map.memory[[`${map.x},${map.y}`]];
+            if ((cell >= FLOOR.s && cell <= FLOOR.e) 
+                || (cell >= -1 && cell <= 0) ) SAMPLES.push(cell);
+        }
+        cell = (SAMPLES.length > 0 ) ? mostCommon(SAMPLES) : 0;
+        map = this.toMapCoord( x, y );                                          // Set target to og tile
+        this._map.memory[[`${map.x},${map.y}`]] = cell;                     // Inject found neighbor
+    }
     isOnScreen( x, y ) {
         const POS = this._pos;
         const OFF = Math.ceil((this._GRID_SIZE * this._RESOLUTION)/2);
@@ -704,24 +735,8 @@ class Dungeon {
             this._init_gen = 0;
         }
         this.genMapRadius( this._pos.x, this._pos.y, 5);
-        // this.addLight( 0, 0, 8, DATA.colors[2] );
-        // this.addLight( 21, 5, 10, DATA.colors[3] );
-        // this.addLight( 37, 11, 10, DATA.colors[4] );
-        // this.addLight( 5, 5, 10, DATA.colors[5] );
-
-        // this.genRoom(0,-20);
-        // for (let i = 0; i < 5; i++) {         
-        // }
-        this.requestWFC(true);
         this.addItem( 0, -3, new Item(DATA.items.lantern) );
-        
         this.render();
         this.drawAvatar();
     }
 }
-
-//    this._CTX.font = `${60*INC}px monospace`;
-//    this._CTX.fillStyle = "white";
-//    this._CTX.textAlign = "center";
-//    this._CTX.fillText(`${(MAT-this._min).toFixed(4)}`, LOC.x + (this.PIXEL/2), LOC.y + (this.PIXEL/1.05)); 
-

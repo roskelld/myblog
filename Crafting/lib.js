@@ -186,3 +186,23 @@ function randomIndice(array, r) {
     }
     return 0;
 }
+
+function histogram(iterable) {
+    const result = new Map();
+    for (const x of iterable) {
+        result.set(x, (result.get(x) || 0) + 1);
+    }
+    return result;
+};
+
+function mostCommon(iterable) {
+    let maxCount = 0;
+    let maxKey;
+    for (const [key, count] of histogram(iterable)) {
+        if (count > maxCount) {
+            maxCount = count;
+            maxKey = key;
+        }
+    }
+    return maxKey;
+};
