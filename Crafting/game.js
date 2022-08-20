@@ -349,7 +349,8 @@ MAT.addResource( new Resource(
     {} ) );
 
 // WFC
-const WFC_OL = new WFC();
+const WFC_OL = new WFC_OVERLAP();
+const WFC_T  = new WFC_TILE();
 
 // Game Time
 let gameTime = 1;

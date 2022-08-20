@@ -40,7 +40,7 @@ class Dungeon {
             "door,int":                     -108,
             "light":                       -1001,
         }
-        this.tile_selection =            [0,1,2,3,4];
+        this.tile_selection =            [0,1,2,3,4,5];
         this.prep_chunk_array = {};                                              // Store prepared chunks for use
     }
     get pl_lght_rnge() {                                                        // Return player light range
@@ -73,8 +73,16 @@ class Dungeon {
 
             const CHUNK = this.getChunk( TILE_TYPE );
             if ( CHUNK === null ) {
-                // console.log(`try to create -- ${CURRENT} ${RES} > ${R}`);
-                WFC_OL.start( TILE_TYPE, this );
+                switch ( DATA.tile[TILE_TYPE].wfc ) {
+                    case "overlap":
+                        WFC_OL.start( TILE_TYPE, this.convertWFCToChunk.bind(this) );
+                        break;
+                    case "simpletile":
+                        WFC_T.start( TILE_TYPE, null, this.convertWFCToChunk.bind(this) );
+                        break;
+                    default:
+                        break;
+                }
                 this.last_wfc_request = gameTime;
             } else {
                 console.log("Chunk Generated Trying to Add to Map");
@@ -733,9 +741,9 @@ class Dungeon {
             this._lights = [];
             if ( !this.last_wfc_request ) this.last_wfc_request = gameTime;     // Track map gen request time
             this._init_gen = 0;
+            this.addItem( 0, -3, new Item(DATA.items.lantern) );
         }
         this.genMapRadius( this._pos.x, this._pos.y, 5);
-        this.addItem( 0, -3, new Item(DATA.items.lantern) );
         this.render();
         this.drawAvatar();
     }
