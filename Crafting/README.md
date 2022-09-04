@@ -64,11 +64,47 @@ Fixture |  -1000 -> -5000
 Creature|   5001 ->  8000
 
 ### Fixture List:
-Fixture         |   ID
-------------- | -------------
-Exit:           |   -1000
-Door Standard   |   -1201
-Door Heavy      |   -1202
-Door Secret     |   -1203
+Fixture                         |   ID
+--------------------------------| -------------
+Undiscovered                    |      -2
+Exit                            |      -3
+Exit                            |      -
+Door Standard Closed (North)    |   -1202
+Door Standard Open (North)      |   -1203
+Door Standard Closed (East)     |   -1204
+Door Standard Open (East)       |   -1205
+Door Heavy                      |   -1206
+Door Secret                     |   -1210
 
-
+Tile        | Symmetry      | Left Hand Description | Right Hand Description|
+------------|---------------|-----------------------|-----------------------|
+z_c_i 0     | L             |   BLUE                |   W/BK/BL             | x
+z_c_i 1     | L             |   W/BK/BL             |   BLUE                | x   
+z_c_i 2     | L             |   BL/BK/W             |   BLUE                | x   
+z_c_i 3     | L             |   BLUE                |   BL/BK/W             | x      
+z_c_i_i 0   | L             |   BLUE                |   BL/BK/BL            | x       
+z_c_i_i 1   | L             |   BL/BK/BL            |   BLUE                | x   
+z_c_i_i 2   | L             |   BL/BK/BL            |   BLUE                | x   
+z_c_i_i 3   | L             |   BLUE                |   BL/BK/BL            | x       
+z_c_o 0     | L             |   WHITE               |   BL/BK/BL            | x       
+z_c_o 1     | L             |   BL/BK/W             |   WHITE               | x    
+z_c_o 2     | L             |   W/BK/BL             |   WHITE               | x    
+z_c_o 3     | L             |   WHITE               |   W/BK/BL             | x      
+z_c_o_o 0   | L             |   WHITE               |   W/BK/W              | x     
+z_c_o_o 1   | L             |   W/BK/W              |   WHITE               | x    
+z_c_o_o 2   | L             |   W/BK/W              |   WHITE               | x    
+z_c_o_o 3   | L             |   WHITE               |   W/BK/W              | x      
+z_f_i 0     | X             |   BLUE                |   BLUE                | x  
+z_f_o 0     | X             |   WHITE               |   WHITE               | x    
+z_w_i_i 0   | I             |   BLUE                |   BLUE                | x   
+z_w_i_i 1   | I             |   BL/BK/BL            |   BL/BK/BL            | x       
+z_w_i_i 2   | I             |   BLUE                |   BLUE                | x   
+z_w_i_i 3   | I             |   BL/BK/BL            |   BL/BK/BL            | x       
+z_w_o 0     | I             |   BLUE                |   WHITE               | x    
+z_w_o 1     | I             |   W/BK/BL             |   W/BK/BL             | x      
+z_w_o 2     | I             |   WHITE               |   BLUE                | x   
+z_w_o 3     | I             |   BL/BK/W             |   BL/BK/W             | x      
+z_w_o_o 0   | I             |   WHITE               |   WHITE               | x    
+z_w_o_o 1   | I             |   W/BK/W              |   W/BK/W              | x     
+z_w_o_o 2   | I             |   WHITE               |   WHITE               | x    
+z_w_o_o 3   | I             |   W/BK/W              |   W/BK/W              | x     

@@ -1,7 +1,4 @@
 'use strict'
-
-
-const COL = [80,100,40];
 class Dungeon {
     constructor( canvas, parent ) {
         this._CANVAS = canvas;
@@ -17,8 +14,9 @@ class Dungeon {
         this._camera = { x: 0, y: 0 };
         this._range = 5;      
         this._min = 0.25;                                                       // Mining base value (Lower more resources)
-        this.lght_mn = -0.9995;
-        this.lght_mx = 0; 
+        // this.lght_mn = -0.9995;
+        this.lght_mn = -0.999;
+        this.lght_mx = 0;
         this.wtr_lv = -0.1;
         this.legend = {
             "floor":                        -118,
@@ -38,18 +36,45 @@ class Dungeon {
             "wall,worked,corridor,int":      111,  
             "wall,crafted,int":              112,                        
             "door,int":                     -108,
-            "light":                       -1001,
+            "door,int,north":               -1202,
+            "door,int,east":                -1204,
+            "light":                        -1001,
         }
         this.tile_selection =            [0,1,2,3,4,5];
+        // this.tile_selection =               [5];
         this.prep_chunk_array = {};                                              // Store prepared chunks for use
+    }
+    init() {
+        if ( this._map === undefined ) {
+            this._map = new Perlin(SEED+(this._prnt.loc.x*this._prnt.loc.y));
+            this._res = new Perlin(SEED+(this._prnt.loc.x*this._prnt.loc.y)+1);
+            this._map.memory[["0,0"]] = DATA.id.exit;
+            this._seen = { "0,0": DATA.id.exit };
+            this._lghtmap = {};
+            this._visible = {};                                                 // Stores current visible tiles 
+            this.DM = new DeviceManager(this);                                  // Store for functional devices (doors, levers, traps)
+            this._item = [];
+            this._lights = [];
+            if ( !this.last_wfc_request ) this.last_wfc_request = gameTime;     // Track map gen request time
+            this._init_gen = 0;
+            this.addItem( 0, -3, new Item(DATA.items.lantern) );
+            this.addLight( 0, 0, 8, DATA.colors[1] );
+
+            // this.addLight( 0, -4, 11, DATA.colors[1] );
+
+        }
+        this.requestWFC(true);
+        this.uncover_visible_tiles( this._pos.x, this._pos.y, this.pl_lght_rnge);
+        this.render();
+        this.drawAvatar();
     }
     get pl_lght_rnge() {                                                        // Return player light range
         const ITMS = avatar.getItemsByType( "light" );
-        if (ITMS.length === 0) return 0;
+        if (ITMS.length === 0) return avatar.sight;
         const FLTR = ITMS.filter( e => e.stats.fuel > 0 );
         FLTR.sort( (a,b) => a.stats.range <= b.stats.range );
         if (FLTR.length > 0) return FLTR[0].stats.range;
-        return 0;
+        return avatar.sight;
     }
     get pos() {                                                                 // Player position
         return this._pos;
@@ -57,6 +82,9 @@ class Dungeon {
     get rndTileType() {
         const ARR = ShuffleArray(this.tile_selection);
         return ARR[0];
+    }
+    getMapValue( map_x, map_y ) {
+        return this._map.get(map_x,map_y);
     }
     requestWFC( force = false ) {
         if ( !this.last_wfc_request ) this.last_wfc_request = gameTime;        
@@ -75,10 +103,13 @@ class Dungeon {
             if ( CHUNK === null ) {
                 switch ( DATA.tile[TILE_TYPE].wfc ) {
                     case "overlap":
-                        WFC_OL.start( TILE_TYPE, this.convertWFCToChunk.bind(this) );
+                        WFC_OL.start( TILE_TYPE, 
+                                      this.convertWFCToChunk.bind(this) );
                         break;
                     case "simpletile":
-                        WFC_T.start( TILE_TYPE, null, this.convertWFCToChunk.bind(this) );
+                        WFC_T.start( TILE_TYPE, 
+                                     null, 
+                                     this.convertWFCToChunk.bind(this) );
                         break;
                     default:
                         break;
@@ -119,7 +150,8 @@ class Dungeon {
     addChunkBorder( data, width, border, feather = true ) {
         let len = data.length;
         for (let i = len; i >= width; i-= width) {                              // Add Right
-            const C_SPL = ( i === 0 ) ? data[i] : data[i-1];                    // Get adjacent chunk cell            
+            let C_SPL = ( i === 0 ) ? data[i] : data[i-1];                      // Get adjacent chunk cell
+            C_SPL = ( this.getDataType(C_SPL) === "device" ) ? -2 : C_SPL;      // Don't duplicate devices
             const R = [...Array(border)].map( (_,i) => {
                 const RND = Math.random();
                 const ODDS = 1-i/border*1;
@@ -133,7 +165,8 @@ class Dungeon {
         len = data.length;
         width = width + border;
         for (let i = len-width; i >= 0; i-= width) {                            // Add Left
-            const C_SPL = ( i === 0 ) ? data[i] : data[i+1];                    // Get adjacent chunk cell
+            let C_SPL = ( i === 0 ) ? data[i] : data[i+1];                      // Get adjacent chunk cell
+            C_SPL = ( this.getDataType(C_SPL) === "device" ) ? -2 : C_SPL;      // Don't duplicate devices
             const L = [...Array(border)].map( (_,i) => {
                 const RND = Math.random();
                 const ODDS = i/border*1;
@@ -145,7 +178,8 @@ class Dungeon {
         }
         width = width + border;
         const T = [...Array(width*border)].map( (_,i) => {                      // Add Top side
-            const C_SPL = data[i % width];                                      // Get adjacent chunk cell
+            let C_SPL = data[i % width];                                        // Get adjacent chunk cell
+            C_SPL = ( this.getDataType(C_SPL) === "device" ) ? -2 : C_SPL;      // Don't duplicate devices
             // console.log(`${C_SPL} data[${i % width}]`);
             const RND = Math.random();
             const BASE = Math.ceil(i/width)/border;                             // lower odds as rows shift up
@@ -158,7 +192,8 @@ class Dungeon {
                                          
         len = data.length;
         const B = [...Array(width*border)].map( (_,i) => {                      // Add Bottom side
-            const C_SPL = data[len - width + i];                                // Get adjacent chunk cell
+            let C_SPL = data[len - width + i];                                  // Get adjacent chunk cell
+            C_SPL = ( this.getDataType(C_SPL) === "device" ) ? -2 : C_SPL;      // Don't duplicate devices
             const RND = Math.random();
             const BASE = 1-Math.ceil(i/width)/border;                           // lower odds as rows shift down
             const BOOST = (C_SPL >= DATA.legend.floor.s 
@@ -301,28 +336,81 @@ class Dungeon {
             const yy = y + Math.floor(i/wrap);
             const MAP = conv(xx,yy);
             const POS = this.toPOSCoord(MAP.x,MAP.y);
-            if (e > -100 && e < -1 ) {                                          // Special (Convert to switch when needed)
-                this._map.get(MAP.x,MAP.y);
-            } else if (e > -1000 && e < 1000) {                                 // Walls and Floors
-                this._map.memory[[`${MAP.x},${MAP.y}`]] = e;
-            } else if ( e <= -1000 ) {                                          // Fixtures
-                this.addLight(POS.x,POS.y,8,DATA.colors[5]);
-                FIX_ARR.push(POS);
-                this._map.memory[[`${MAP.x},${MAP.y}`]] = 0;
-            } else if ( e >= 1000 ) {                                           // Items
-                const ITEM = new Item(DATA.items[[Object.keys(DATA.items)[e-1000]]]);
-                if ( ITEM !== undefined ) this.addItem(POS.x, POS.y, ITEM);
-                this._map.memory[[`${MAP.x},${MAP.y}`]] = 0;
-                FIX_ARR.push(POS);
+            switch (this.getDataType(e)) {
+                case "perlin":
+                    this._map.memory[[`${MAP.x},${MAP.y}`]] = e;
+                    break;
+                case "special":
+                    this._map.get(MAP.x,MAP.y);
+                    break;
+                case "floor":
+                    this._map.memory[[`${MAP.x},${MAP.y}`]] = e;
+                    break;
+                case "wall":
+                    this._map.memory[[`${MAP.x},${MAP.y}`]] = e;
+                    break;
+                case "light":
+                    this.addLight(POS.x,POS.y,8,DATA.colors[5]);
+                    FIX_ARR.push(POS);
+                    this._map.memory[[`${MAP.x},${MAP.y}`]] = 0;
+                    break;
+                case "device":
+                    const DOOR = new Door();
+                    if ( Math.random() > 0.9 ) DOOR.addBarricade(5);
+                    this.DM.add( DOOR, POS.x, POS.y );
+                    FIX_ARR.push(POS);
+                    break;
+                case "item":
+                    const ITEM = new Item(DATA.items[[Object.keys(DATA.items)[e-1000]]]);
+                    if ( ITEM !== undefined ) this.addItem(POS.x, POS.y, ITEM);
+                    this._map.memory[[`${MAP.x},${MAP.y}`]] = 0;
+                    FIX_ARR.push(POS);
+                    break;
+                case "creature":
+                    break;
+                default:
+                    this._map.get(MAP.x,MAP.y);
+                    break;
             }
-
         });
 
         // Run through the fixture array and try to find floor texture
-        FIX_ARR.forEach( e => {
-            this.tryGenFloorTile( e.x, e.y );            
-        });
+        FIX_ARR.forEach( e => this.tryGenFloorTile( e.x, e.y ) );
 
+    }
+    getDataType( id ) {
+        if ( id === undefined ) return null;
+        const L = Object.keys(DATA.legend);
+        const D = DATA.legend;
+        const LEN = Object.keys(DATA.legend).length;
+        let tag = null;
+        let i = 0;
+        do {
+            if (!!L[i])
+                if (id >= D[[L[i]]].s && id <= D[[L[i]]].e)
+                    tag = L[i];
+            i++;
+        } while (!tag && i <= LEN);
+        if (tag) { 
+            return tag;
+        } else {
+            console.error(`Couldn't get map tile ${id} legend type`);
+            return null;
+        }
+    }
+    is_blocking( x, y, self = LAND._SCENARIOS[0].DGN ) {
+        if ( self.DM.isDevice(x,y) ) 
+            return self.DM.getFromPos( x, y ).opaque === 1 ? true : false;      // Check if there's a device blocking view
+        return self.is_wall( x, y, true )                                       // Check if wall is blocking view
+    }
+    is_wall( x, y, undef_is_wall = true ) {
+        const MAP = this.toMapCoord( x, y );
+        const VALUE = this.getMapValue( MAP.x, MAP.y );
+        if ( VALUE === undefined && undef_is_wall === true ) return true;       // Consider undefined tiles as walls
+        const L = DATA.legend;
+        const RES = ( (VALUE > L.perlin_wall.s && VALUE <= L.perlin_wall.e) || 
+                  (VALUE >= L.wall.s && VALUE <= L.wall.e) ) ? true : false;
+        return RES;
     }
     convertCoordinates( x, y ) {
         let loc_x = x * this._PIXEL_SIZE / this._CANVAS.width;
@@ -348,19 +436,10 @@ class Dungeon {
 
         return { x: X, y: Y };
     }
-    draw( x, y, color ) {
-        const MAP = this._map.read( x, y );  
-        const COORD = this.convertCoordinates( this._pos.x, this._pos.y );
-        this._CTX.fillStyle = `rgba(${color[0]},${color[1]},${color[2]},${color[3]})`;
-        this._CTX.fillRect(
-            (COORD.x + x) / this._GRID_SIZE * this._CANVAS.width,
-            (COORD.y + y) / this._GRID_SIZE * this._CANVAS.width,
-            this._CANVAS.width / this._RESOLUTION / this._GRID_SIZE,
-            this._CANVAS.width / this._RESOLUTION / this._GRID_SIZE
-        );
-    }
-    genMapRadius( x, y, r ) {   
+    dead_genMapRadius( x, y, r ) {   
         if ( r === 0 ) return;                                                  // Generate map data based on vision radius & sight-lines
+        this.uncover_visible_tiles( x, y, this.pl_lght_rnge );
+        return;
         const INC = this._NUM_PIXELS / this._GRID_SIZE;
         const MATRIX = spiral(r);                                               // Generate viewing cells as spiral
         const CHK = new Array(DATA.directions.length).fill(true);               // Create array of view directions to check vision
@@ -384,11 +463,16 @@ class Dungeon {
                 const MAP_X = (TDR.x % 1 !== 0) ? (TDR.x).toFixed(3) : TDR.x;   // Cull unneeded decimals
                 const MAP_Y = (TDR.y % 1 !== 0) ? (TDR.y).toFixed(3) : TDR.y;
                 
+                // Check devices
+                let D = this.DM.getFromMapPos( MAP_X,MAP_Y );
+                D = ( D === undefined ) ? D = { opaque: 0 } : D;
+
                 const RES = this._map.get(MAP_X,MAP_Y);                         // Get or generate map data
                 this._seen[[`${MAP_X},${MAP_Y}`]] = RES;                        // Record this location as seen
-                this._mats.get(MAP_X,MAP_Y);                                    // Generate materials data
+                this._res.get(MAP_X,MAP_Y);                                    // Generate materials data
+
                 if (i===0) return;                                              // Don't perform occlusion on standing cell
-                if ( RES > 0 ) {                                                // Record vision block for next cycle
+                if ( RES > 0 || D.opaque === 1) {                               // Record vision block for next cycle
                     LAST.dir = DIR; 
                     LAST.chk = false; 
                     LAST.ring = Math.max(Math.abs(loc[0]), Math.abs(loc[1]));   // Check if the spiral has stepped out a layer
@@ -399,31 +483,31 @@ class Dungeon {
         });  
     }
     genLight( x, y, r, c ) {
-        if ( r === 0 ) return;                                                  // Generate map data based on vision radius & sight-lines
+        const VISIBLE = [];
+        compute_fov( { x: x, y: y}, r, this.is_blocking, VISIBLE );
         const MATRIX = spiral(r);                                               // Generate viewing cells as spiral
-        const CHK = new Array(DATA.directions.length).fill(true);               // Create array of view directions to check vision
-        const LAST = { dir: 0, ring: 0, chk: false };                           // Track previous view for comparison
-        MATRIX.forEach( (loc, i) => {
-            if (Math.abs(loc[0]) + Math.abs(loc[1]) <= r + (r/2)) {
-                const DIR = degAsCardinalNum( 
-                    Math.direction( x, y, x + loc[0], y + loc[1]));             // Convert to DATA.directions number
-                if ( DIR !== LAST.dir ) CHK[LAST.dir] = LAST.chk;               // Only commit results when changing direction
-                if ( Math.abs(loc[0]) > LAST.ring || 
-                    Math.abs(loc[1]) > LAST.ring ) {                            // If stepped out a ring layer then treat as above
-                    CHK[LAST.dir] = LAST.chk;
-                }                                                               
-                if (!CHK[DIR]) return;                                          // Don't draw if view is blocked
-                const POS = this.toMapCoord( x + loc[0], y + loc[1] );
-                const DIST = Math.distance(0,0,loc[0],loc[1]);                  // Calc distance from light
-                const LIGHT = convertRange(DIST,0,r,this.lght_mx,this.lght_mn); // Convert range to -1 1
-                const CUR = this.getLghtLvl( POS.x, POS.y );                    // Check if cell has light
-                if ( CUR === -100 ) {                                               
-                    this._lghtmap[[`${POS.x},${POS.y}`]] = { l: LIGHT, c: c };  // Add light if non already there
-                } else if ( LIGHT > CUR ) {
-                    this._lghtmap[[`${POS.x},${POS.y}`]] = { l: LIGHT, c: c };  // Add light if brighter than current
+        MATRIX.forEach( loc => {
+            if (Math.abs(loc[0]) + Math.abs(loc[1]) <= r + (r/2)) {             // Convert to a circle
+                const CUR = { x: x + loc[0], y: y + loc[1]};                    // Get current offset cell
+                if ( VISIBLE.some( e => ( e.x === CUR.x && e.y === CUR.y ))) {  // Add light if its a visible cell
+                    const MAP = this.toMapCoord( CUR.x, CUR.y );
+                    let DIST = Math.distance( x, y, CUR.x, CUR.y );           // Calc distance from light source
+                    DIST = ( DIST > r ) ? r : DIST;
+                    const L_LVL = convertRange(DIST,0,r,0,-1);                // Convert to light range based on distance from source
+                    const C_LIGHT = this.getLghtLvl( MAP.x, MAP.y );            // Check if cell already has light
+                    const C_COL   = this.getLghtCol( MAP.x, MAP.y );            // Get light color of current cell
+                    if ( C_LIGHT === DATA.id.unseen ) {                                               
+                        this._lghtmap[[`${MAP.x},${MAP.y}`]] = { l: L_LVL, c: c };  // Add light if non already there
+                    } else if ( L_LVL > C_LIGHT ) {
+                        const BLEND = pSBC( L_LVL - C_LIGHT, C_COL, c );        // Blend current cell light color with new
+                        this._lghtmap[[`${MAP.x},${MAP.y}`]] = { 
+                            l: L_LVL, 
+                            c: BLEND 
+                        };                                                      // Add new light values
+                    }
                 }
             }
-        });  
+        });
     }
     addLight(x,y,r,color) {
         this._lights.push({x:x,y:y,r:r,c:color});
@@ -441,9 +525,15 @@ class Dungeon {
                         (e.y >= FRM.y && e.y <= TO.y));                        
         const ITEMS = this.getScreenItems()
                                 .filter(e=>e.i.type.includes("light"));         // Find any on screen items that are lights
+        const PL = avatar.getItemsByType("light");
+        if ( PL.length > 0 ) {
+            const R = PL[0].stats.range;
+            LIGHTS.push(
+                {x: POS.x, y: POS.y, r: R, c: DATA.colors[27]});
+        }
         ITEMS.forEach( e => {
             LIGHTS.push(
-                {x: e.x, y: e.y, r: e.i.data.stats.range, c: DATA.colors[5]});
+                {x: e.x, y: e.y, r: e.i.data.stats.range, c: DATA.colors[27]});
         });
         return LIGHTS
     }
@@ -456,6 +546,33 @@ class Dungeon {
                             (e.x >= FRM.x && e.x <= TO.x) && 
                             (e.y >= FRM.y && e.y <= TO.y));
     }
+    get_visible_tiles( x, y ) {
+        const VISIBLE = [];
+        this._visible = {};
+        compute_fov( this.pos, 11, this.is_blocking, VISIBLE );
+        VISIBLE.forEach( loc => {
+            const MAP = this.toMapCoord( loc.x, loc.y );
+            this._visible[[`${MAP.x},${MAP.y}`]] = true;
+        });
+    }
+    uncover_visible_tiles( x, y, r ) {
+        const VISIBLE = [];
+        r = 11;
+        compute_fov( this.pos, r, this.is_blocking, VISIBLE );
+        const MATRIX = spiral(r);                                               // Generate viewing cells as spiral
+        const POS = this.pos;
+        MATRIX.forEach( (loc, i) => {
+            if (Math.abs(loc[0]) + Math.abs(loc[1]) <= r + (r/2)) {
+                const CUR = { x: POS.x + loc[0], y: POS.y + loc[1]};
+                if ( VISIBLE.some( e => ( e.x === CUR.x && e.y === CUR.y ))) {
+                    const MAP = this.toMapCoord( CUR.x, CUR.y );
+                    const RES = this._map.get(MAP.x,MAP.y);                             // Get or generate map data
+                    this._seen[[`${MAP.x},${MAP.y}`]] = RES;
+                    this._res.get(MAP.x,MAP.y); 
+                }
+            }
+        });
+    }
     addItem( x, y, item ) {
         if (!this._item.some(e => e.x === x && e.y === y)) {
             this._item.push({x:x,y:y,i:item});
@@ -466,51 +583,85 @@ class Dungeon {
             }
         }
     }
-    removeItem( x, y ) {
+    removeItem( x, y ) {                                                        // Avatar coords
         if (!this._item.some(e => e.x === x && e.y === y)) return undefined;
         const ITEM = this._item.find(e => e.x === x && e.y === y).i;
         const IDX = this._item.findIndex(e => e.x === x && e.y === y);
         this._item.splice(IDX,1);
         return ITEM;
     }
-    getItem( mx, my ) {
-        const P = this.toPOSCoord(mx,my);
+    getItem( map_x, map_y ) {                                                   // Map coords
+        const P = this.toPOSCoord(map_x,map_y);
         if (!this._item.some(e=>e.x===P.x&&e.y===P.y)) return undefined;
         const ITEM = this._item.find( e => e.x === P.x && e.y === P.y);
         if (ITEM !== undefined) return ITEM.i;
     }
-    renderItem( sx, sy, item, light = 0 ) {
+    renderItem( screen_x, screen_y, item, light = 0 ) {                         // Screen coords
         this._CTX.font = `${20}px monospace`;
         this._CTX.fillStyle = pSBC(light,DATA.colors[1]);
         this._CTX.textAlign = "center";
         this._CTX.textBaseline = `middle`;
         const P = this.PIXEL/2;
         const NAME = item.data.name.substring(0,1).toLowerCase();
-        this._CTX.fillText(`${NAME}`, sx+P, sy+P ); 
+        this._CTX.fillText(`${NAME}`, screen_x+P, screen_y+P ); 
     }
-    renderMark( sx, sy, mark, base_color, light = 0 ) {
+    renderMark( screen_x, screen_y, mark, base_color, light = 0 ) {
         this._CTX.font = `${20}px monospace`;
-        const color = pSBC(-0.4,base_color);
-        this._CTX.fillStyle = pSBC(light,color);
+        // const color = pSBC(0.3,base_color,false,true);
+        this._CTX.fillStyle = pSBC(light,base_color,false,true);
         this._CTX.textAlign = "center";
         this._CTX.textBaseline = `middle`;
         const P = this.PIXEL/2;
-        this._CTX.fillText(`${mark}`, sx+P, sy+P ); 
+        this._CTX.fillText(`${mark}`, screen_x+P, screen_y+P ); 
     }
-    clear() {                                                                   // Clear Screen
-        this._CTX.clearRect(0,0,this._CANVAS.width, this._CANVAS.height);
+    renderResource( screen_x, screen_y, res, light = 0 ) {
+        const X = screen_x;
+        const Y = screen_y;
+        const D = this.resource(res);
+        const COL = `rgb(${D.col[0]},${D.col[1]},${D.col[2]})`;
+        const WHITE = DATA.colors[1];
+        const P = this.PIXEL;
+        const HP = P/2;                                                         // Half of screen pixel
+
+        this._CTX.fillStyle = pSBC(light,COL,false,false); 
+        this._CTX.beginPath();
+        this._CTX.arc(X+HP,Y+HP,HP/2,0,2*Math.PI);
+        this._CTX.fill();
+        this._CTX.strokeStyle = pSBC(light,WHITE);                           // Mat Stroke
+        this._CTX.stroke();
+    }
+    clear() {                                       
+        this._CTX.clearRect(0,0,this._CANVAS.width, this._CANVAS.height);       // Clear Screen
     }
     move( dir ) {                                                               // Try move player in direction
         const updatePOS = ( x, y ) => {
             if ( this._init_gen < 5 ) { this.requestWFC(); this._init_gen++ }
-
-            const POS = this.toMapCoord( this._pos.x + x, this._pos.y + y );
+            const NON = DATA.id.unseen;                                         // Undiscovered map location
+            const CELL = { x: this._pos.x + x, y: this._pos.y + y };
+            const POS = this.toMapCoord( CELL.x, CELL.y  );
             let MAP = this._map.read( POS.x, POS.y );                           // Get cell data from next cell
-            if ( MAP === -100 ) MAP = this._map.get( POS.x, POS.y );            // Get cell data so it can be drawn
-            const MAT = this._mats.read( POS.x, POS.y );
-            if ( MAT >= this._min && MAP > 0 && MAP < 100 ) {                                           // Try Mining
+                      
+            if ( MAP === NON ) MAP = this._map.get( POS.x, POS.y );            // Get cell data so it can be drawn
+            const MAT = this._res.read( POS.x, POS.y );
+
+            // Check for Device 
+            if ( this.DM.isDevice( CELL.x, CELL.y ) ) {
+                switch (this.DM.touch( CELL.x, CELL.y )) {
+                    case "BLOCK":
+                        // this.genMapRadius(this._pos.x, this._pos.y, this.pl_lght_rnge);
+                        this.uncover_visible_tiles(this._pos.x,this._pos.y,this.pl_lght_rnge);
+                        this.render();
+                        this.drawAvatar();
+                        increaseGameTime(1);
+                        gameUpdate();
+                    return
+                    case "PASS": break;
+                }            
+            }
+            if ( MAT >= this._min && MAP > 0 && MAP < 100 ) {            // Try Mining
                 this.mine(POS.x,POS.y,MAT);
-                this.genMapRadius(this._pos.x, this._pos.y, 5);
+                // this.genMapRadius(this._pos.x, this._pos.y, this.pl_lght_rnge);
+                this.uncover_visible_tiles(this._pos.x, this._pos.y, this.pl_lght_rnge);
                 this.render();
                 this.drawAvatar();
                 increaseGameTime(1);
@@ -530,7 +681,8 @@ class Dungeon {
                     avatar.addToInventory(ITEM);                                // Add it to inventory 
                     updateLog(`You have picked up a ${ITEM.name}.`);
                 }
-                this.genMapRadius(this._pos.x, this._pos.y, this.pl_lght_rnge);
+                // this.genMapRadius(this._pos.x, this._pos.y, this.pl_lght_rnge);
+                this.uncover_visible_tiles(this._pos.x, this._pos.y, this.pl_lght_rnge);
                 this.render();
                 this.drawAvatar();
                 increaseGameTime(1);
@@ -554,8 +706,10 @@ class Dungeon {
         this._lghtmap = {}; // Clear light map
         this.getScreenLights().forEach(e => this.genLight(e.x,e.y,e.r,e.c));
         this.clear();                                                           // Clear the screen
-        const POS = this._pos;                                                  // Player position  
+        const POS = this._pos;                                                  // Player position
         const INC = this._NUM_PIXELS / this._GRID_SIZE;                         // Pixel increment
+        this.get_visible_tiles( POS.x, POS.y );
+
         const OFF = Math.floor((this._GRID_SIZE * this._RESOLUTION) / 2 ) * INC;
         for ( let y = 0; y < this._GRID_SIZE; y += INC ){                       
             for ( let x = 0; x < this._GRID_SIZE; x += INC ){
@@ -569,11 +723,98 @@ class Dungeon {
                     x: x / this._GRID_SIZE * this._CANVAS.width,
                     y: y / this._GRID_SIZE * this._CANVAS.width
                 };                                                              // Gen screenspace coord
-                this.renderCell( MAP_X, MAP_Y, LOC.x, LOC.y );                  // Draw Cell
+                const VIS = ( this._visible[[`${MAP_X},${MAP_Y}`]] !== undefined ) ? true : false;
+                this.render_cell( MAP_X, MAP_Y, LOC.x, LOC.y, VIS );                  // Draw Cell
             }
         }
     }
-    renderCell(map_x,map_y, screen_x, screen_y) {
+    render_cell( map_x,map_y, screen_x, screen_y, visible ) {
+        const X = screen_x - 0.01;                                              // Tweaked numbers to create overlap draw
+        const Y = screen_y - 0.01;                                   
+        const P = this.PIXEL + 0.4;                                             // Size of screen pixel
+        const C = this._CTX;
+        const HP = P/2;                                                         // Half of screen pixel
+        let COL;
+        
+        const WATER1 =  DATA.colors[29];
+        const WATER2 =  DATA.colors[30];
+        const TILE = this.getSeen(map_x, map_y);
+        const RES =  this._res.read(map_x, map_y);                              // Read resources data
+        const ITEM = this.getItem( map_x, map_y );
+        // const MOB                                                            // Pull in mob when added
+
+        // LIGHTING
+        const L_AMT     = this.getLghtLvl(map_x,map_y);
+        const L_COL     =  this.getLghtCol(map_x,map_y);
+        const SHDW_LVL  = this.lght_mn + 0.033;
+        const SHDW_COL  = `rgb(41,41,41)`;
+        const DIST = Math.distance(256-(P/2),256-(P/2),X,Y);                    // Calculate distance from center of screen
+
+        switch (this.getDataType(TILE)) {
+            case "floor":
+            case "perlin_floor":
+                if ( RES <= this.wtr_lv ) {                                     // WALKABLE WATER
+                    COL=(Math.random() > 0.5)?WATER1:WATER2;                    // Get Floor Color                                       
+                    COL=(visible && L_AMT >= avatar.vision_range.min) 
+                        ? pSBC(L_AMT,COL,false,false) 
+                        : pSBC(SHDW_LVL,COL,SHDW_COL,true,true);                // Update Color based on light/shadow level
+                    C.fillStyle = COL;
+                    C.fillRect(X,Y,P,P);  
+                    const MARK = (Math.random() > 0.5) ? "∽" : "~";
+                    if (visible && L_AMT >= avatar.vision_range.min)            // If visible and bright
+                        this.renderMark( X, Y, MARK, L_COL, L_AMT);             // Add Water Texture 
+                } else {
+                    COL=(TILE<=-100)                                            // WALKABLE FLOOR
+                        ? DATA.colors[Math.abs(TILE)-100]
+                        : DATA.colors[18];                                      // Get Floor Color
+                    COL=(visible && L_AMT >= avatar.vision_range.min) 
+                        ? pSBC(L_AMT,COL,false,false) 
+                        : pSBC(SHDW_LVL,COL,SHDW_COL,true,true);                // Update Color based on light/shadow level
+                    C.fillStyle = COL;
+                    C.fillRect(X,Y,P,P);  
+                    if (visible && L_AMT >= avatar.vision_range.min)            // If visible and bright
+                        this.renderMark( X, Y, "·", L_COL, L_AMT);
+                }             
+            break;
+            case "wall":
+            case "perlin_wall":
+                COL = (TILE >= 100) 
+                    ? DATA.colors[TILE-100] 
+                    : DATA.colors[11];                                          // Get Wall Color
+                COL = (visible && L_AMT >= avatar.vision_range.min) 
+                            ? pSBC(L_AMT,COL,false,false)
+                            : pSBC(SHDW_LVL,COL,SHDW_COL,true,true);            // Update Color based on light/shadow level
+                C.fillStyle = COL;
+                C.fillRect(X,Y,P,P);
+                if (visible && L_AMT >= avatar.vision_range.min) {
+                    if (RES >= this._min && TILE < 100)
+                        this.renderResource( X, Y, RES, L_AMT )                            // Add Material resource to cell
+                    else 
+                        this.renderMark( X, Y, "#", L_COL, L_AMT);                  // Add Wall Texture
+                }
+            break;
+            case "special":
+                if (TILE === DATA.id.exit){
+                    COL = DATA.colors[2];
+                    COL = (visible && L_AMT >= avatar.vision_range.min) ? pSBC(0,COL) : pSBC(SHDW_LVL,COL,SHDW_COL,true,true);
+                    C.fillStyle = COL;
+                    C.fillRect(X,Y,P,P);
+                    if (visible && L_AMT >= avatar.vision_range.min)
+                        this.renderMark( X, Y, "<", L_COL, L_AMT);
+                }
+            break;
+        }
+
+        if (visible && TILE !== -2 && L_AMT >= avatar.vision_range.min) {       // Render items if within visible range
+            this.DM.render(map_x, map_y, screen_x, screen_y, L_AMT);                
+            if (ITEM !== undefined) this.renderItem(X, Y, ITEM, 0);             // Find item and render
+        }
+
+
+    }
+    old_renderCell(map_x,map_y, screen_x, screen_y, visible ) {
+        // if (!visible) return;
+        // if (visible) console.log(`${map_x},${map_y} : ${visible}`);
         const X = screen_x - 0.01;                                              // Tweaked numbers to create overlap draw
         const Y = screen_y - 0.01;                                   
         const P = this.PIXEL + 0.4;                                             // Size of screen pixel
@@ -585,74 +826,83 @@ class Dungeon {
         const WATER2 =  DATA.colors[30];
         const WHITE =   DATA.colors[1];
         const PLIGHT =  DATA.colors[5];
-        let FLOOR =     DATA.colors[18];
+        let FLR =     DATA.colors[18];
         const DARK =    DATA.colors[0];
-        const MAP = this.getSeen(map_x, map_y);                                 // Read the map data: -100 if none
-        const MAT = this._mats.read(map_x, map_y);                              // Read materials data
+        const MAP = this.getSeen(map_x, map_y);                                 // Read the map data: -3 if none
+        const MAT = this._res.read(map_x, map_y);                              // Read materials data
         const ITEM = this.getItem( map_x, map_y );
-        let LIGHT = (this.getLghtLvl(map_x,map_y) === -100) ? 
+        let LGHT = (this.getLghtLvl(map_x,map_y) === DATA.id.unseen ) ? 
                                                 this.lght_mn : 
                                                 this.getLghtLvl(map_x,map_y);   // Get light or min light if none
         const DIST = Math.distance(256-(P/2),256-(P/2),X,Y);                    // Calculate distance from center of screen
         const MAX = this.pl_lght_rnge*P;                                        // Set max light range distance
         const PL = ( DIST <= MAX ) 
                 ? convertRange(DIST,0,MAX,this.lght_mx,this.lght_mn) 
-                : -100;                                                         // Convert to light range
-        switch (MAP) {
-            case -100:
-                C.fillStyle = DARK;
-                C.fillRect(X,Y,P,P);
+                : DATA.id.unseen;                                               // Convert to light range
+        LGHT = ( PL > LGHT ) ? PL : LGHT;                                       // Take the stronger of the two
+        const TORCH = ( PL > LGHT ) 
+                    ? PLIGHT 
+                    : this.getLghtCol(map_x,map_y);
+
+        switch (this.getDataType(MAP)) {            
+            case "floor":
+            case "perlin_floor":
+                const AMT = convertRange(LGHT,this.lght_mn,this.lght_mx,0,0.06);// Calculate light color influence
+                if ( MAT <= this.wtr_lv && (MAP <= 0 && MAP >= -1) ) {          // Water level and map data is perlin (Garbage stuff)        
+                    const WATER = (Math.random() > 0.5 ) ? WATER1 : WATER2;
+                    const COL = pSBC(AMT,WATER,TORCH);                          // Water
+                    LGHT = Math.max(LGHT,-1)
+                    C.fillStyle = pSBC(LGHT,COL);                              
+                    C.fillRect(X,Y,P,P);  
+                    const MARK = (Math.random() > 0.5) ? "∽" : "~";
+                    this.renderMark( X, Y, MARK, COL, LGHT);                    // Add Water Texture                
+                } else if ( MAP <= 0 ) {                                        // Floor or Device
+                    LGHT = Math.max(LGHT,-1);
+                    FLR = (MAP <= -100) ? DATA.colors[Math.abs(MAP)-100] : FLR; // Get Floor Color     
+                    const COL = pSBC(AMT,FLR,TORCH);                
+                    // const COL = (visible) ? pSBC(AMT,FLR,TORCH):'rgb(30,30,30)';// Floor
+                    C.fillStyle = pSBC(LGHT,COL);                              
+                    C.fillRect(X,Y,P,P);
+                    this.renderMark( X, Y, "·", COL, LGHT);                     // Add Floor Texture                
+                    this.DM.render(map_x, map_y, screen_x, screen_y, LGHT);                
+                    if (ITEM !== undefined) this.renderItem(X, Y, ITEM, LGHT);  // Find item and render
+                }
             break;
-            case -10:                                                           // Exit Door
-                C.fillStyle=pSBC(-0.2,DOOR);
-                C.fillRect(X,Y,P,P);
-            break;
-            default:
-            LIGHT = ( PL > LIGHT ) ? PL : LIGHT;                                // Take the stronger of the two
-            const TORCH = ( PL > LIGHT ) 
-                        ? PLIGHT 
-                        : this.getLghtCol(map_x,map_y);
-            const AMT = convertRange(LIGHT,this.lght_mn,this.lght_mx,0,0.06);   // Calculate light color influence
-            if ( MAT <= this.wtr_lv && (MAP <= 0 && MAP >= -1) ) {         
-                const WATER = (Math.random() > 0.5 ) ? WATER1 : WATER2;
-                const COL = pSBC(AMT,WATER,TORCH);                              // Water
-                LIGHT = Math.max(LIGHT,-1)
-                C.fillStyle = pSBC(LIGHT,COL);                              
-                C.fillRect(X,Y,P,P);  
-                const MARK = (Math.random() > 0.5) ? "∽" : "~";
-                this.renderMark( X, Y, MARK, COL, LIGHT);                       // Add Water Texture                
-            } else if ( MAP <= 0 ) {                                            // Floor
-                FLOOR = (MAP <= -100) ? DATA.colors[Math.abs(MAP)-100] : FLOOR; // Get Floor Color     
-                const COL = pSBC(AMT,FLOOR,TORCH);
-                LIGHT = Math.max(LIGHT,-1);
-                C.fillStyle = pSBC(LIGHT,COL);                              
-                C.fillRect(X,Y,P,P);
-                this.renderMark( X, Y, "·", COL, LIGHT);                        // Add Floor Texture                
-                if ( ITEM !== undefined ) this.renderItem(X, Y, ITEM, LIGHT);   // Find item and render
-            } else {               
+            case "wall":
+            case "perlin_wall":
                 WALL = (MAP >= 100) ? DATA.colors[MAP-100] : WALL;              // Get Wall Color
-                this._CTX.fillStyle=pSBC(LIGHT,WALL);                           // Wall
+                // WALL = (visible) ? WALL : 'rgb(60,60,60)';                          // Floor
+                this._CTX.fillStyle=pSBC(LGHT,WALL);                            // Wall
                 this._CTX.fillRect(X,Y,P,P);  
                 if (MAT >= this._min && MAP < 100) {                            // Add Material resource to cell
                     const K = this.resource(MAT);
-                    LIGHT = Math.max(LIGHT,-1);
+                    LGHT = Math.max(LGHT,-1);
                     C.fillStyle = 
                         shadeRGB(`rgb(${K.col[0]},
-                                    ${K.col[1]},${K.col[2]})`,LIGHT);           // Material Color
+                                    ${K.col[1]},${K.col[2]})`,LGHT);            // Material Color
                     C.beginPath();
                     C.arc(X+SI,Y+SI,SI/2,0,2*Math.PI);
                     C.fill();
-                    C.strokeStyle = pSBC(LIGHT,WHITE);                          // Mat Stroke
+                    C.strokeStyle = pSBC(LGHT,WHITE);                           // Mat Stroke
                     C.stroke();
                 } else {
-                    this.renderMark( X, Y, "#", WALL, LIGHT);                   // Add Wall Texture
+                    this.renderMark( X, Y, "#", WALL, LGHT);                    // Add Wall Texture
                 }
-            }
+            break;
+            case "special":
+                if (MAP === DATA.id.unseen) {
+                    C.fillStyle = DARK;
+                    C.fillRect(X,Y,P,P);
+                }
+                if (MAP === DATA.id.exit){
+                    C.fillStyle=pSBC(-0.2,DOOR);
+                    C.fillRect(X,Y,P,P);
+                }
             break;
         }
     }
     getLghtLvl(x,y) {
-        if ( this._lghtmap[[`${x},${y}`]] === undefined ) return -100;
+        if ( this._lghtmap[[`${x},${y}`]] === undefined ) return this.lght_mn;
         return this._lghtmap[[`${x},${y}`]].l;
     }
     getLghtCol(x,y) {
@@ -661,7 +911,7 @@ class Dungeon {
         return c;
     }
     getSeen(x,y) {
-        if ( this._seen[[`${x},${y}`]] === undefined ) return -100;
+        if ( this._seen[[`${x},${y}`]] === undefined ) return DATA.id.unseen;
         return this._seen[[`${x},${y}`]];
     }
     drawAvatar() {
@@ -685,7 +935,7 @@ class Dungeon {
     mine( x, y ) {
         const MAP = this._map.read(x,y);
         if ( MAP > 100 || MAP <= 0 ) return;                                    // Check within valid mining range
-        const value = this._mats.read( x, y );
+        const value = this._res.read( x, y );
         if (value === undefined) return;
         const RES = this.resource( value );
         if ( !avatar.currentItemHas("Mine")) {
@@ -693,7 +943,7 @@ class Dungeon {
             return;
         }
         updateLog(`You have mined ${RES.name} ore.`);
-        this._mats.memory[[`${x},${y}`]] = 0;
+        this._res.memory[[`${x},${y}`]] = 0;
         const POS = this.toPOSCoord( x, y );
         this.tryGenFloorTile( POS.x, POS.y );
         // this._map.memory[[`${x},${y}`]] = 0;
@@ -729,22 +979,5 @@ class Dungeon {
         const FRM = { x: x - OFF, y: y - OFF };
         const TO  = { x: x + OFF, y: y + OFF };
         return ((POS.x>=FRM.x&&POS.x<=TO.x)&&(POS.y>=FRM.y&&POS.y<=TO.y));
-    }
-    init() {
-        if ( this._map === undefined ) {
-            this._map = new Perlin(SEED+(this._prnt.loc.x*this._prnt.loc.y));
-            this._mats = new Perlin(SEED+(this._prnt.loc.x*this._prnt.loc.y)+1);
-            this._map.memory[["0,0"]] = -10;
-            this._seen = { "0,0": -10 };
-            this._lghtmap = {};
-            this._item = [];
-            this._lights = [];
-            if ( !this.last_wfc_request ) this.last_wfc_request = gameTime;     // Track map gen request time
-            this._init_gen = 0;
-            this.addItem( 0, -3, new Item(DATA.items.lantern) );
-        }
-        this.genMapRadius( this._pos.x, this._pos.y, 5);
-        this.render();
-        this.drawAvatar();
     }
 }

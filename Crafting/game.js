@@ -732,6 +732,7 @@ function useItem( id ) {
         case "Craft":       enterCrafting();            break;               
         case "Fish":        fish();                     break;   
         case "Chop":        chopTree();                 break;
+        case "Toggle":      toggle_item_function();     break;
         case "Enter":       enterScenario();            break;                        
         case "Drop":        dropItem(item);             break;  
         default:
@@ -740,12 +741,17 @@ function useItem( id ) {
 }
 
 function enterScenario() {
-    const F = getLandscapeFeature(avatar.loc.x, avatar.loc.y);
-    F.start();
-    setGameMode("dungeon");
-    SetGameLocation(F);
-    setLandscapeFeatureActions(F);
-    clearUI();
+    let F = getLandscapeFeature(avatar.loc.x, avatar.loc.y);
+    if (F === undefined ) {
+        F = LAND.getTerrainByPosition( avatar.pos.x, avatar.pos.y );
+        console.log( `Create ${F.name} type location`);
+    } else {
+        F.start();
+        setGameMode("dungeon");
+        SetGameLocation(F);
+        setLandscapeFeatureActions(F);
+        clearUI();
+    }
 }
 // ----------------------------------------------------------------------------
 // Set and get current player scenario - Dungeon instance
@@ -1097,7 +1103,7 @@ function fish() {
             updateLog(`You cast your ${avatar.getItem(SELCT_ITM_ID()).name} and wait watching the line drift in the water. After a few hours you manage to catch ${fishedTotalCount} fish.`);
             avatar.addFood(fishedTotalCount);
         } else {
-            updateLog(`The gods don't seem to smile favoribly upon you today. Despite your best efforts you fail to get a bite.`)
+            updateLog(`The gods don't seem to smile favorably upon you today. Despite your best efforts you fail to get a bite.`)
         }
 
         increaseGameTime(1);
@@ -1144,6 +1150,23 @@ function chopTree() {
 
     increaseGameTime(1);
     lastDirection = null;
+    gameUpdate();
+}
+
+// TEST CODE FOR LANTERN WON'T REALLY WORK
+function toggle_item_function() {
+    if ( getGameMode() !== 6 ) return;
+    const ITEM = avatar.getItem(SELCT_ITM_ID());
+    if ( ITEM.type.includes("light") ) {
+        ITEM.type.pop();
+        updateLog("Turned off lantern");
+    } else {
+        ITEM.type.push("light");
+        updateLog("Turned on lantern");
+    }
+    GetGameLocation().DGN.render()
+    GetGameLocation().DGN.drawAvatar();
+    increaseGameTime(1);
     gameUpdate();
 }
 
@@ -1490,6 +1513,8 @@ function setLandscapeFeatureActions(feat) {
             ITEM_ACTIONS.options[0].removeEventListener("click", () => useItem( INV_SEL.value ), false );
             ITEM_ACTIONS.options[0].remove();
         }
+        ITEM_ACTIONS.options[ITEM_ACTIONS.length] = new Option("Enter","Enter");// Add Enter as default (Might be a bad idea)
+        ITEM_ACTIONS.options.selectedIndex = 0;
         return;
     }
 

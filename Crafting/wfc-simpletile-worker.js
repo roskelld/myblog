@@ -35,15 +35,12 @@ importScripts('wfc-simpletile-model.js');
 
 onmessage = function(e) {
     postMessage({type:'message', message: '> Initiated the WebWorker'});
-    var tries = 0;
-    // var instance = new SimpleTiledModel(new Uint8Array(e.data.sampleData), e.data.sampleWidth, e.data.sampleHeight, e.data.n, e.data.width, e.data.height, e.data.periodicInput, e.data.periodic, e.data.symmetry, e.data.ground);
-    console.log( e.data );
-    // (data, subsetName, width, height, periodic) 
-    var instance = new SimpleTiledModel( e.data.data, null, e.data.width, e.data.height, e.data.periodic );
+    let tries = 0;
+    const instance = new SimpleTiledModel( e.data.data, null, e.data.width, e.data.height, e.data.periodic );
     postMessage({type:'message', message: '> Instantiated SimpleTileModel'});
     
-    var finished = false;
-    var time;
+    let finished = false;
+    let time;
     
     do {
         tries++;
@@ -52,7 +49,7 @@ onmessage = function(e) {
         finished = instance.generate();
         postMessage({type:'message', message: '> Generation completed ' + (finished ? 'successfully' : 'unsuccessfully') + ' in ' + ((Date.now() - time) / 1000).toFixed(3) + 's'});
     } while (tries < 5 && !finished);
-    var messageObject = {
+    const messageObject = {
         type: 'data',
         data: finished ? instance.graphics(new Uint8Array(e.data.generateData)).buffer : e.data.generateData,
         width: e.data.width * e.data.data.tilesize,

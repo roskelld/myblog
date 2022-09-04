@@ -10,17 +10,25 @@ class Avatar {
         this._dead = false;
         this._weight = 0;
         this._inventory = [];
-        this._sight = 3;
+        this._sight = 3;                                                        // In tiles
+        this._dim_sight = 4;
         this._luck = 0;
+        this._height = 200;                                                     // CM
+        this._vision_range = {
+            min: -0.6, max: 0
+        };
+    }
+    get height() {
+        return this._height;
     }
     update(duration) {
-        
-        // for (let index = 0; index < Math.round(duration); index++) {
-            
-        // }
+
     }
     get sight() {
         return this._sight;
+    }
+    get vision_range() {
+        return this._vision_range;
     }
     get weight() {
         let weight = 0;

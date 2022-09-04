@@ -236,6 +236,9 @@ const SimpleTiledModel = function SimpleTiledModel(data, subsetName, width, heig
             continue;
         }
 
+        if ( action[firstOccurrence[left[0]]] === undefined ) console.error(left[0]);
+        if ( action[firstOccurrence[right[0]]] === undefined ) console.error(right[0]);
+
         const L = action[firstOccurrence[left[0]]][left.length == 1 ? 0 : parseInt(left[1], 10)];
         const D = action[L][1];
         const R = action[firstOccurrence[right[0]]][right.length == 1 ? 0 : parseInt(right[1], 10)];

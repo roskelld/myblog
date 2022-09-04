@@ -60,6 +60,13 @@ class WFC_TILE {
         this.tileset_num = tileset; 
         this.subsetName = subsetName;                                           // Subset of tiles (optional)
         this.returnCallback = callback;                                         // Where to return the gen array to
+        this.width = this.tileset.width / this.tileset.tilesize;
+        this.height = this.tileset.height / this.tileset.tilesize;
+
+        if ( !Number.isInteger(this.width) || !Number.isInteger(this.height) )
+            return console.error(
+                `Requested size ${this.tileset.width}/${this.tileset.height} 
+                is not divisible by tilesize ${this.tileset.tilesize}`);
 
         this.remaining = 0;
         const ld_callback = () => {
@@ -105,14 +112,15 @@ class WFC_TILE {
 
     }
     _process(wfc, data) {
-        const WIDTH = 20;
+        const WIDTH = this.width;
+        const HEIGHT = this.height;
         this.canvas.width = WIDTH * data.tilesize;
-        this.canvas.height = WIDTH * data.tilesize;
+        this.canvas.height = HEIGHT * data.tilesize;
         this.ctx.width = WIDTH * data.tilesize;
-        this.ctx.height = WIDTH * data.tilesize;
+        this.ctx.height = HEIGHT * data.tilesize;
         this.ctx.imageSmoothingEnabled = false;
 
-        this.gen_data = this.ctx.createImageData( WIDTH * data.tilesize, WIDTH * data.tilesize );
+        this.gen_data = this.ctx.createImageData( WIDTH * data.tilesize, HEIGHT * data.tilesize );
 
         const MESSAGE = {
             generateData: this.gen_data.data.buffer,
