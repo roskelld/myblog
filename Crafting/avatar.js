@@ -10,7 +10,7 @@ class Avatar {
         this._dead = false;
         this._weight = 0;
         this._inventory = [];
-        this._sight = 3;                                                        // In tiles
+        this._sight = 11;//3;                                                        // In tiles
         this._dim_sight = 4;
         this._luck = 0;
         this._height = 200;                                                     // CM

@@ -513,6 +513,7 @@ class Item {
         this._max_efficency = efficency;
         this._stats = stats;
         this._name = name;
+        this._type = ( this._data !== undefined ) ? [...this._data.type] : [];
     }
     get name() {     
         const NAME = ( this._name == undefined ) ? this._data.name :this._name;
@@ -571,8 +572,8 @@ class Item {
         return DATA.item_quality[8];
     }
     hasType( type ) {
-        if ( this._data.type === undefined ) return false;
-        return this._data.type.includes( type );
+        if ( this._type === undefined ) return false;
+        return this._type.includes( type );
     }
     get itemType() {
         // Does the item have a specific subtype for its purpose?
@@ -608,7 +609,7 @@ class Item {
         return this._data;
     }
     get type() {
-        return this._data.type;
+        return this._type;
     }
     incrementStat( stat, value ) {
         if (this.stats[[stat]] === undefined ) return;

@@ -1312,10 +1312,10 @@ const DATA = {
         }
     },
     legend: {
-        perlin_floor:      { s:    -1, e:     0 },
-        perlin_wall:       { s:     0, e:     1 },
-        // perlin:     { s:    -1, e:     1 },
-        special:            { s:   -99, e:    -2 },
+        perlin_floor:       { s:    -1, e:     0 },
+        perlin_wall:        { s:     0, e:     1 },
+        unseen:             { s:    -2, e:    -2 },
+        special:            { s:   -99, e:    -3 },
         floor:              { s:  -999, e:  -100 },
         wall:               { s:   100, e:   999 },
         light:              { s: -1200, e: -1001 },
@@ -1334,6 +1334,60 @@ const DATA = {
         PASS:   "PASS",
         HARM:   "HARM",
     }),
+    cell: {
+        "-3": {
+            type:           `special`,
+            color:          `#f9f871`,
+            friction:       1,
+            opacity:        1,
+            temperature:    0,
+            mark: {
+                symbol:     `<`,
+                color:      `#000000`
+            }          
+        },
+        "-108": {
+            type:           `floor`,
+            color:          `#1e281e`,
+            friction:       1,
+            opacity:        1,
+            temperature:    0,
+            mark: {
+                symbol:     `·`,
+                color:      `#000000`
+            }          
+        },
+        "-100": {
+            type:           `floor`,
+            color:          `#574141`,
+            friction:       1,
+            opacity:        1,
+            temperature:    0,
+            mark:           `·`
+        },
+        "-121": {
+            type:           `floor`,        // Grass 1
+            color:          `#63702c`,
+            friction:       1,
+            opacity:        1,
+            temperature:    0,
+            mark: {
+                symbol:     `„`,
+                color:      `#A2AE64`,
+            }          
+        },
+        "116": {
+            type:           `wall`,        // Brick Wall 1
+            color:          `#86423e`,
+            friction:       1,
+            opacity:        1,
+            temperature:    0,
+            mark: {
+                symbol:     `#`,
+                color:      `#CC645E`,
+            }          
+        },
+    }
 };
 
 

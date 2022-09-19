@@ -743,15 +743,14 @@ function useItem( id ) {
 function enterScenario() {
     let F = getLandscapeFeature(avatar.loc.x, avatar.loc.y);
     if (F === undefined ) {
-        F = LAND.getTerrainByPosition( avatar.pos.x, avatar.pos.y );
-        console.log( `Create ${F.name} type location`);
-    } else {
-        F.start();
-        setGameMode("dungeon");
-        SetGameLocation(F);
-        setLandscapeFeatureActions(F);
-        clearUI();
+        F = LAND.genScenario( avatar.mapLocation.x, avatar.mapLocation.y, true );
     }
+    F.start();
+    setGameMode("dungeon");
+    SetGameLocation(F);
+    setLandscapeFeatureActions(F);
+    clearUI();
+    
 }
 // ----------------------------------------------------------------------------
 // Set and get current player scenario - Dungeon instance
@@ -1631,8 +1630,8 @@ function getTerrainFromDirection( direction ) {
 }
 
 function getLandscapeFeature( x, y ) {
-    let f = LAND._SCENARIOS.find(e=>x===e.loc.x && y===e.loc.y);                // Check for Game Scenarios
-    if (f===undefined) f = LAND._TOWNS.find(e=>x===e.loc.x&&y===e.loc.y);       // Check for a town
+    let f = LAND._TOWNS.find(e=>x===e.loc.x&&y===e.loc.y);                      // Check for a town
+    if (f===undefined) f = LAND.getScenario(x,y); // Check for Game Scenarios
     // NEXT
     if (f === undefined) {
         MAT._resources.forEach( e => {

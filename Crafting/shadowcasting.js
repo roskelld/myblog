@@ -5,7 +5,7 @@
  * @param {Array} mark_visible Size of the patterns
  *
  */
-function compute_fov(origin, distance, is_blocking, mark_visible) {
+function compute_fov(origin, distance, is_blocking, mark_visible, parent) {
     mark_visible.push( origin );
 
     for ( let i of range(4) ) {
@@ -19,14 +19,14 @@ function compute_fov(origin, distance, is_blocking, mark_visible) {
             if (tile === null) return false;
             // console.log(`is_wall ${tile}`);
             const LOC = quadrant.transform(tile);
-            return is_blocking( LOC.x, LOC.y );
+            return is_blocking( LOC.x, LOC.y, parent );
         }
 
         const is_floor = (tile) => {
             // console.log(`is_floor ${tile}`);
             if (tile === null) return false;
             const LOC = quadrant.transform(tile);
-            return !is_blocking( LOC.x, LOC.y );
+            return !is_blocking( LOC.x, LOC.y, parent );
         }
 
         const scan = (row) => {

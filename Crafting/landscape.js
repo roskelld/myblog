@@ -63,12 +63,27 @@ class Land {
         let loc_y = y * this._NUM_PIXELS / this._GRID_SIZE;;
         return { x: loc_x, y: loc_y };
     }
+    getScenario( x, y ) {
+        let f = this._SCENARIOS.find( e => x===e.loc.x && y===e.loc.y );
+        // if ( f === undefined ) return this.genScenario( x, y, true );
+        return f;
+    }
+    genScenario( x, y, convert = false ) {
+        const DGN = new Cave(this);
+        const X = (convert) ? x/this._GRID_SIZE*this._CANVAS.width : x;
+        const Y = (convert) ? y/this._GRID_SIZE*this._CANVAS.width : y;
+        DGN.loc = { x: X, y: Y };
+        const TYPE = this.getTerrainByPosition( X, Y ).name;
+        DGN.type = "cave";
+        this._SCENARIOS.push(DGN);   
+        return DGN;
+    }
     genScenarios() {   
-        this._SCENARIOS.length = 0;     
-        const MIN_HEIGHT    = 0.2;
-        const MAX_HEIGHT    = 0.22;
-        const MIN_D         = 8;
-        const MAX_D         = 16;
+        this._SCENARIOS.length  = 0;     
+        const MIN_HEIGHT        = 0.2;
+        const MAX_HEIGHT        = 0.22;
+        const MIN_D             = 8;
+        const MAX_D             = 16;
         const SITES = Object.entries(this._map.memory)
                         .filter(e=>e[1]>MIN_HEIGHT&&e[1]<MAX_HEIGHT); 
         const NUM = Math.max(MIN_D,Math.ceil(Math.rndseed(SEED)*MAX_D));
@@ -76,13 +91,9 @@ class Land {
             const LOC = SITES[Math.floor(Math.rndseed(SEED+i)*SITES.length)];
             const X = LOC[0].split(',')[0]/this._GRID_SIZE*this._CANVAS.width;
             const Y = LOC[0].split(',')[1]/this._GRID_SIZE*this._CANVAS.width;
-            const DGN = new Cave(this);
-            DGN.loc = { x: X, y: Y };
-            DGN.type = "cave";
-            this._SCENARIOS.push(DGN);         
+            this.genScenario( X, Y );
         }
         this._SCENARIOS.forEach( e => e.draw() );
-
     }
     genTowns() {
         this._TOWNS.length  = 0;                                                // Reset Towns     
